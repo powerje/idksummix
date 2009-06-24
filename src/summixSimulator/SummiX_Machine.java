@@ -82,6 +82,10 @@ public class SummiX_Machine {
 		this.pc++;
 	}
 	
+	public short getPC() {
+		return this.pc;
+	}
+	
 	public void setRegister(short register, short data) {
 		/**
 		 * Sets the given register with given data and updates the
