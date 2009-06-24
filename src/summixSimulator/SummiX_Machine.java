@@ -36,24 +36,50 @@ public class SummiX_Machine {
 	}
 
 	public void setMemory(short page, short offset, short data) {
+		/**
+		 * Sets memory at mem[page][offset]
+		 * 
+		 * @param page the page of memory
+		 * @param offset the offset within the page
+		 * @param data the data to store
+		 */
 		this.mem[page][offset] = data;
 	}
 	
 	public short loadMemory(short page, short offset) {
+		/**
+		 * Get data from mem[page][offset] and return it
+		 * 
+		 * @param page the page of memory
+		 * @param offset the offset within the page
+		 * @return data the value stored at the desired location in memory
+		 */
 		return this.mem[page][offset];
 	}
 	
-	public void setPC(short data) {
-		this.pc = data;
+	public void setPC(short addr) {
+		/**
+		 * Sets the PC to addr
+		 * 
+		 * @param addr address to be written to PC
+		 */
+		this.pc = addr;
 	}
 	
 	public void incrementPC() {
+		/**
+		 * Increments the PC
+		 */
 		this.pc++;
 	}
 	
 	public void setRegister(short register, short data) {
 		/**
+		 * Sets the given register with given data and updates the
+		 * CCR accordingly
 		 * 
+		 * @param register the register to be set
+		 * @param data the data to store in the register
 		 */
 		//store data into register
 		this.reg[register] = data;
