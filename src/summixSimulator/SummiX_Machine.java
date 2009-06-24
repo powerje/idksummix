@@ -99,22 +99,22 @@ public class SummiX_Machine {
 		this.reg[register] = data;
 		//always update CCR
 		if (data < 0) {
-			ccr[N] = true;
+			this.ccr[N] = true;
 		}
 		else {
-			ccr[N] = false;
+			this.ccr[N] = false;
 		}
 		if (data == 0) {
-			ccr[Z] = true;
+			this.ccr[Z] = true;
 		}
 		else {
-			ccr[Z] = false;
+			this.ccr[Z] = false;
 		}
 		if (data > 0) {
-			ccr[P] = true;
+			this.ccr[P] = true;
 			}
 		else {
-			ccr[P] = false;
+			this.ccr[P] = false;
 		}
 	}
 	
@@ -135,6 +135,6 @@ public class SummiX_Machine {
 		 * 
 		 * @param addr the return address to store in register 7
 		 */
-		this.reg[6] = addr;
+		this.reg[7] = addr;
 	}
 }
