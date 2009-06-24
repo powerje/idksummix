@@ -19,7 +19,7 @@ public class Simulator {
 		// TODO Auto-generated method stub
 		SummiX_Machine machine = new SummiX_Machine();
 		//Loader loader = new Loader(args[0], machine);
-		Loader loader = new Loader("example_input.txt", machine);
+		Loader loader = new Loader("input.txt", machine);
 		
 	}
 
