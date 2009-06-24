@@ -20,8 +20,9 @@ public class Simulator {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		SummiX_Machine machine = new SummiX_Machine();
-		//Loader loader = new Loader(args[0], machine);
-		Loader loader = new Loader("input.txt", machine);	//for testing purposes using hard coded input
+		//new Loader(args[0], machine);
+		new Loader("input.txt", machine);	//for testing purposes using hard coded input
+
 	}
 
 }

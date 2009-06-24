@@ -39,15 +39,16 @@ public class Loader {
 		//later add error checking to look for H and do something with segment name (positions 0-6)
 
 		this.init 	= hexstringToInt(input.subSequence(7,  11)); //initial program load address?  not the pc though, that's specified in the End Record
-		this.length	= hexstringToInt(input.subSequence(11, 15));//length of the segment		
+		this.length	= hexstringToInt(input.subSequence(11, 15)); //length of the segment
 	}
 	
 	private void fillMemory(SummiX_Machine machine) throws IOException {
 		String input = this.br.readLine();
 		while (input.charAt(0) == 'T')	//Text Record
 		{
-			int addr = hexstringToInt(input.subSequence(1, 5)); //need to convert addr to page and offset	
+			int addr = hexstringToInt(input.subSequence(1, 5)); 	
 			int data = hexstringToInt(input.subSequence(5, 9));	
+			//store data into machine memory
 			machine.setMemory(getPage(addr), getOffset(addr), (short) data);
 			input = this.br.readLine();
 		}
