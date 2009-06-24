@@ -27,12 +27,74 @@ public class SummiX_Machine {
 	private short[]		reg	= {0,0,0,0,0,0,0,0};		//init all registers to 0
 	private short		pc	= 0;						//pc starts at 0
 	private boolean[] 	ccr	= {false, true, false};		//N,Z,P = 0,1,0 (all registers are set to 0) initially
+	private final int   N	= 0, Z = 1, P = 2;
+
+
 	
 	public SummiX_Machine() {
-		// TODO Auto-generated constructor stub
+		// perhaps in the constructor we should set all memory to garbage?
 	}
 
-	public void setMem() {
-		
+	public void setMemory(short page, short offset, short data) {
+		this.mem[page][offset] = data;
+	}
+	
+	public short loadMemory(short page, short offset) {
+		return this.mem[page][offset];
+	}
+	
+	public void setPC(short data) {
+		this.pc = data;
+	}
+	
+	public void incrementPC() {
+		this.pc++;
+	}
+	
+	public void setRegister(short register, short data) {
+		/**
+		 * 
+		 */
+		//store data into register
+		this.reg[register] = data;
+		//always update CCR
+		if (data < 0) {
+			ccr[N] = true;
+		}
+		else {
+			ccr[N] = false;
+		}
+		if (data == 0) {
+			ccr[Z] = true;
+		}
+		else {
+			ccr[Z] = false;
+		}
+		if (data > 0) {
+			ccr[P] = true;
+			}
+		else {
+			ccr[P] = false;
+		}
+	}
+	
+	public short loadRegister(short register) {
+		/**
+		 * Loads data from a register
+		 * 
+		 * @param register the register to load data from
+		 * @return data the value stored in the specified register
+		 */
+		return this.reg[register];
+	}
+	
+	public void setSubroutineReturn(short addr) {
+		/**
+		 * For the special case of setting register 7 without changing the CCR
+		 * as for JSR/JSRR with the link bit set to 1.
+		 * 
+		 * @param addr the return address to store in register 7
+		 */
+		this.reg[7] = addr;
 	}
 }
