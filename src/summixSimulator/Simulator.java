@@ -24,5 +24,4 @@ public class Simulator {
 		new Loader("input.txt", machine);	//for testing purposes using hard coded input
 
 	}
-
 }
