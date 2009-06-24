@@ -24,6 +24,16 @@ public class Loader {
 		return Integer.valueOf((String) input, 16).intValue();
 	}
 	
+	private short getPage(int addr) {
+		//upper 7 bits (shift right 9)
+		return (short) (addr >> 9);
+	}
+	
+	private short getOffset(int addr) {
+		//lower 9 bits (bitmask out upper 7)
+		return (short) (0x1FF & addr);
+	}
+	
 	private void getHeader(SummiX_Machine machine) throws IOException {	
 		String input = this.br.readLine();
 		//later add error checking to look for H and do something with segment name (positions 0-6)
@@ -36,13 +46,14 @@ public class Loader {
 		String input = this.br.readLine();
 		while (input.charAt(0) == 'T')	//Text Record
 		{
-			int addr = hexstringToInt(input.subSequence(1, 5)); //need to convert addr to page and offset
-			int data = hexstringToInt(input.subSequence(5, 9));			
+			int addr = hexstringToInt(input.subSequence(1, 5)); //need to convert addr to page and offset	
+			int data = hexstringToInt(input.subSequence(5, 9));	
+			machine.setMemory(getPage(addr), getOffset(addr), (short) data);
 			input = this.br.readLine();
 		}
 		//all that is left is the end record which sets the PC
+		//need to add check for E at pos 0
 		machine.setPC((short)hexstringToInt(input.subSequence(1,5)));
-		System.out.println(machine.getPC());
 	}
 	
 	public Loader(String filename, SummiX_Machine machine) throws IOException {
