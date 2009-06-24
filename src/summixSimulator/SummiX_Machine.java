@@ -23,7 +23,7 @@ public class SummiX_Machine {
 	 * to 1 if the last value was 0, and P if it was positive.
 	 */
 	
-	private short[]		mem	= new short[65535];			//array to represent memory
+	private short[][]	mem	= new short[127][511];		//array to represent memory (0-127 pages, 0-511 words per page)
 	private short[]		reg	= {0,0,0,0,0,0,0,0};		//init all registers to 0
 	private short		pc	= 0;						//pc starts at 0
 	private boolean[] 	ccr	= {false, true, false};		//N,Z,P = 0,1,0 (all registers are set to 0) initially
