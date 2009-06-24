@@ -53,6 +53,7 @@ public class SummiX_Machine {
 		 * @param data the data to store
 		 */
 		this.mem[page][offset] = data;
+		//System.out.println("page: " + page + "\noffset: " + offset + "\ndata: " + data);
 	}
 	
 	public short loadMemory(short page, short offset) {
