@@ -24,15 +24,24 @@ public class SummiX_Machine {
 	 */
 	
 	private short[][]	mem	= new short[127][511];		//array to represent memory (0-127 pages, 0-511 words per page)
-	private short[]		reg	= {0,0,0,0,0,0,0,0};		//init all registers to 0
-	private short		pc	= 0;						//pc starts at 0
+	private short[]		reg	= {0,0,0,0,0,0,0,0};		//initialize all registers to 0
+	private short		pc	= 0;						//program counter starts at 0
 	private boolean[] 	ccr	= {false, true, false};		//N,Z,P = 0,1,0 (all registers are set to 0) initially
 	private final int   N	= 0, Z = 1, P = 2;
-
-
+	
+	private void randomizeMemory() {
+		/**
+		 * Randomize memory which maybe useful for debugging later
+		 */
+	    for (int i = 0; i < 127; i++) {
+	    	for (int j = 0; j < 511; j++) {
+	    		mem[i][j] = (short) Math.random ();
+	    	}	
+	   	} 
+	}
 	
 	public SummiX_Machine() {
-		// perhaps in the constructor we should set all memory to garbage?
+		randomizeMemory();
 	}
 
 	public void setMemory(short page, short offset, short data) {
@@ -121,6 +130,6 @@ public class SummiX_Machine {
 		 * 
 		 * @param addr the return address to store in register 7
 		 */
-		this.reg[7] = addr;
+		this.reg[6] = addr;
 	}
 }
