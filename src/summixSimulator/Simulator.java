@@ -12,9 +12,8 @@ import java.io.IOException;
  */
 
 public class Simulator {
-
 	/**
-	 * @param args
+	 * @param args command line arguments args[0] - filename, arg[1] - mode of simulator (quiet, trace, or step)
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
