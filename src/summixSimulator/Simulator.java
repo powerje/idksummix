@@ -1,6 +1,5 @@
 package summixSimulator;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**

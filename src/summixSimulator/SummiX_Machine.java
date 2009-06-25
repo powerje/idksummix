@@ -1,5 +1,7 @@
 package summixSimulator;
 
+import java.util.Random;
+
 public class SummiX_Machine {
 	/**
 	 * SummiX_Machine consists of:
@@ -35,7 +37,8 @@ public class SummiX_Machine {
 		 */
 	    for (int i = 0; i < 127; i++) {
 	    	for (int j = 0; j < 511; j++) {
-	    		mem[i][j] = (short) Math.random ();
+	    		Random randomNumbers = new Random();
+	    		mem[i][j] = (short) randomNumbers.nextInt((2^16)-1); //random int within the range of 16 bits
 	    	}	
 	   	} 
 	}
