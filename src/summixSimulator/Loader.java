@@ -3,6 +3,7 @@ package summixSimulator;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.NumberFormatException;
 
 /**
  * The SummiX loader puts the input information into data 
@@ -18,6 +19,7 @@ public class Loader {
 	private int length;
 	
 	private int hexstringToInt(CharSequence input) {
+		int returnVal = 0; // needs initialized in the case an exception is caught
 		/**
 		 * Takes a CharSequence that is a hex number and converts it to an integer.
 		 * 
@@ -25,7 +27,13 @@ public class Loader {
 		 */
 		//there is a lot of crappy looking casting going on here, is there a better way?
 		//should probably check for anything other than hex digits in these CharSequence
-		return Integer.valueOf((String) input, 16).intValue();
+		try {
+			returnVal = Integer.valueOf((String) input, 16).intValue();
+		} catch (NumberFormatException e)	{
+			System.out.println("Expected: hex value");
+			System.exit(-1); //error
+		}
+		return returnVal;
 	}
 	
 	private short getPage(int addr) {
@@ -50,7 +58,7 @@ public class Loader {
 	
 	private void getHeader(SummiX_Machine machine) throws IOException {
 		/**
-		 * Gets the header information out of the input (I'm not sure what this stuff is used for just now?
+		 * Gets the header information out of the input
 		 * 
 		 * @param machine the SummiX_Machine to potentially put the header info into
 		 */
@@ -59,7 +67,6 @@ public class Loader {
 			System.out.println("Expected: H");
 			System.exit(-1);	//error
 		}
-		//later do something with segment name/length, not sure what?
 		this.init 	= hexstringToInt(input.subSequence(7,  11)); //initial program load address?  not the pc though, that's specified in the End Record
 		this.length	= hexstringToInt(input.subSequence(11, 15)); //length of the segment
 	}
