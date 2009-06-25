@@ -1,10 +1,6 @@
 #summary Details of IDK Team meetings.
 = Introduction =
-Meetings blah blah 
+We have them!
 
 = Details =
-foo
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Meeting minutes are available in pdf on the mailing list.
