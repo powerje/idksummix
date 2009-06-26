@@ -6,7 +6,7 @@ import java.io.IOException;
  * The SummiX simulator is the user interface that displays the
  * state of the machine as appropriate and controls execution.
  * 
- * @author Mike/Mike/Don/Jim
+ * @author Mike/Mike/Dan/Jim
  * 
  */
 
