@@ -10,7 +10,7 @@ import java.lang.NumberFormatException;
  * structures that represent the memory and registers of the 
  * machine.
  * 
- * @author Mike/Mike/Don/Jim
+ * @author Mike/Mike/Dan/Jim
  * 
  */
 public class Loader {
