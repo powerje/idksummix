@@ -67,8 +67,8 @@ public class Loader {
 			System.out.println("Expected: H");
 			System.exit(-1);	//error
 		}
-		this.init 	= hexstringToInt(input.subSequence(7,  11)); //initial program load address?  not the pc though, that's specified in the End Record
-		this.length	= hexstringToInt(input.subSequence(11, 15)); //length of the segment
+		this.init 	= hexstringToInt(input.subSequence(7,  11)); //programs memory begins here
+		this.length	= hexstringToInt(input.subSequence(11, 15)); //length of the segment of memory
 	}
 	
 	private void fillMemory(SummiX_Machine machine) throws IOException {
