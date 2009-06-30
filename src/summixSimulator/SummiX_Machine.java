@@ -1,5 +1,6 @@
 package summixSimulator;
 
+import java.util.BitSet;
 import java.util.Random;
 
 public class SummiX_Machine {
@@ -28,7 +29,7 @@ public class SummiX_Machine {
 	private short[][]	mem	= new short[127][511];		//array to represent memory (0-127 pages, 0-511 words per page)
 	private short[]		reg	= {0,0,0,0,0,0,0,0};		//initialize all registers to 0
 	private short		pc	= 0;						//program counter starts at 0
-	private boolean[] 	ccr	= {false, true, false};		//N,Z,P = 0,1,0 (all registers are set to 0) initially
+	private BitSet		ccr	= new BitSet(3);			//N,Z,P = 0,1,0 (all registers are set to 0) initially
 	private final int   N	= 0, Z = 1, P = 2;
 	
 	private void randomizeMemory() {
@@ -45,6 +46,7 @@ public class SummiX_Machine {
 	
 	public SummiX_Machine() {
 		randomizeMemory();
+		this.ccr.set(Z);
 	}
 
 	public void setMemory(short page, short offset, short data) {
@@ -68,6 +70,10 @@ public class SummiX_Machine {
 		 * @return data the value stored at the desired location in memory
 		 */
 		return this.mem[page][offset];
+	}
+	
+	public BitSet getCCR() {
+		return this.ccr;
 	}
 	
 	public void setPC(short addr) {
@@ -101,24 +107,17 @@ public class SummiX_Machine {
 		//store data into register
 		this.reg[register] = data;
 		//always update CCR
+		
+		this.ccr.clear();
+		
 		if (data < 0) {
-			this.ccr[N] = true;
+			this.ccr.set(N);
+		} else if (data == 0) {
+			this.ccr.set(Z);
+		} else {
+			this.ccr.set(P);
 		}
-		else {
-			this.ccr[N] = false;
-		}
-		if (data == 0) {
-			this.ccr[Z] = true;
-		}
-		else {
-			this.ccr[Z] = false;
-		}
-		if (data > 0) {
-			this.ccr[P] = true;
-			}
-		else {
-			this.ccr[P] = false;
-		}
+			
 	}
 	
 	public short loadRegister(short register) {

@@ -25,6 +25,12 @@ public class SummiX_Utilities {
 		ST,
 		STI,
 		STR,
-		TRAP
+		OUT,	//TRAP ENUMS THIS LINE AND LOWER
+		PUTS,
+		IN,
+		HALT,
+		OUTN,
+		INN,
+		RND
 	}
 }
