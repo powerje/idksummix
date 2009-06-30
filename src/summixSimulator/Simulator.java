@@ -33,5 +33,12 @@ public class Simulator {
 		SummiX_Machine machine = new SummiX_Machine();
 		//new Loader(args[0], machine);
 		new Loader("input.txt", machine);	//for testing purposes using hard coded input
+		
+		//Ask user what mode they would like to run in
+		
+		//Ask user how many instructions they would like to execute before timing out (default = 1000)
+		
+		//
+		
 	}
 }
