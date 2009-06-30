@@ -71,5 +71,6 @@ public class Simulator {
 			//run interpreter
 			//output each executed instruction including the emmory locations and registers affected or used
 			//output ("memory page" and registers)
+		System.out.println((short) (0x7FFF + 0x7FFF));
 	}
 }

@@ -6,7 +6,10 @@ public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
 		switch (op) {
 			case ADD:
-				
+				short sr1 = SummiX_Utilities.getBits(data, 7, 3);
+				short sr2 = SummiX_Utilities.getBits(data, 12, 3);
+				short dr  = SummiX_Utilities.getBits(data, 4, 3);
+				machine.setRegister(dr, (short) (sr1 + sr2));
 				break;
 			case ADD2:
 				break;
