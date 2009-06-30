@@ -84,7 +84,16 @@ public class Loader {
 		}		
 		while (input.charAt(0) == 'T')	//Text Record
 		{
-			int addr = hexstringToInt(input.subSequence(1, 5)); 	
+			int addr = hexstringToInt(input.subSequence(1, 5));
+			if (addr < this.init) {
+				System.out.println("Address given (" + addr + " is less than start address (" + this.init + ")");
+				System.exit(-1);
+			}
+			if (addr > (this.init + this.length)) {
+				System.out.println("Address given (" + addr + " is greater than max address (" + (this.init + this.length) + ")");
+				System.exit(-1);
+			}
+			
 			int data = hexstringToInt(input.subSequence(5, 9));	
 			//store data into machine memory
 			machine.setMemory(getPage(addr), getOffset(addr), (short) data);
