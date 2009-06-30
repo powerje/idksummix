@@ -33,7 +33,7 @@ public class Simulator {
 		SummiX_Machine machine = new SummiX_Machine();
 		//new Loader(args[0], machine);
 		new Loader("input.txt", machine);	//for testing purposes using hard coded input
-		short a = SummiX_Utilities.getBits((short)0xB000,2, 4);
+		short a = SummiX_Utilities.getBits((short)0xd000,0, 4);
 		System.out.println(Integer.toHexString(a));
 	}
 }
