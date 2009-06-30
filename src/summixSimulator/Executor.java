@@ -25,6 +25,10 @@ public class Executor {
 				break;
 			case BRA:
 				break;
+			case BRGE:
+				break;
+			case BRLE:
+				break;
 			case NOP:
 			break;
 			case DBUG:
