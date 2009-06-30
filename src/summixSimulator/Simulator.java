@@ -16,13 +16,14 @@ public class Simulator {
 	 * @throws IOException 
 	 */
 	
-	private enum Simulator_States {
+	private enum Simulator_State {
 		QUIET,
 		TRACE,
 		STEP
 	}
 	
-	private int simState;
+	private Simulator_State simState;
+
 	
 	public static void main(String[] args) throws IOException {
 		/**
@@ -30,15 +31,45 @@ public class Simulator {
 		 * 
 		 * @param args filename mode timeout
 		 */
+		int timeOutCounter = 1000;
+		String fileName = "input.txt";
+		
 		SummiX_Machine machine = new SummiX_Machine();
-		//new Loader(args[0], machine);
-		new Loader("input.txt", machine);	//for testing purposes using hard coded input
 		
-		//Ask user what mode they would like to run in
+		//Figure out which args are present
 		
-		//Ask user how many instructions they would like to execute before timing out (default = 1000)
+		//If (they've entered the filename arg)
+			//new fileName = filename arg
+		//else prompt for file name
+		new Loader(fileName, machine);	//for testing purposes using hard coded input
 		
-		//
+		//If (they've entered the running mode arg)
+			//Use the mode arg to set the simState
+		//else prompt for running mode
+			
+		//If (they've entered the timeout arg)
+			//Use the timeout arg to set the timeOutCounter
+		//else prompt for running mode (default = 1000)
 		
+		//case select for mode type
+		
+		//QUIET MODE
+		//while (opCode is not Halt and timeout is not exceeded)
+			//run interpreter
+		
+		//TRACE MODE
+		//output ("memory page" and register)
+		//while (opCode is not Halt and timeout is not exceeded)
+			//run interpreter
+			//output each executed instruction including the emmory locations and registers affected or used
+			//output ("memory page" and registers)
+		
+		//STEP MODE
+		//output ("memory page" and register)
+		//while (opCode is not Halt and timeout is not exceeded)
+			//prompt user to continue
+			//run interpreter
+			//output each executed instruction including the emmory locations and registers affected or used
+			//output ("memory page" and registers)
 	}
 }
