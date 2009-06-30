@@ -6,6 +6,6 @@ public class SummiX_Utilities {
 		int i =  ((int)bitmask >>> n);
 		System.out.println(Integer.toHexString((int)bitmask).substring(4,8));
 		System.out.println(Integer.toHexString(i));
-		return (short)1;
+		return (short) ((data >>> (16-p)) & ((1 << n)-1));
 	}
 }
