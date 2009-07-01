@@ -39,39 +39,8 @@ public class Interpreter {
 				op = InstructionCode.AND2;
 			break;
 		case 0:  //BRx
-			if (SummiX_Utilities.getBits(data, 4, 1)==1) {
-				op = InstructionCode.BRN;
-			} else if (SummiX_Utilities.getBits(data, 5, 1)==1) {
-				op = InstructionCode.BRZ;
-			} else if (SummiX_Utilities.getBits(data, 6, 1)==1) {
-				op = InstructionCode.BRP;
-			}
-			// branch always
-			if ((	 SummiX_Utilities.getBits(data, 4, 1)==1) && 
-					(SummiX_Utilities.getBits(data, 5, 1)==1) && 
-					(SummiX_Utilities.getBits(data, 6, 1)==1))
-			{
-				op = InstructionCode.BRA;
-			} else if ((SummiX_Utilities.getBits(data, 4, 1)==0) && 
-						(SummiX_Utilities.getBits(data, 5, 1)==0) && 
-						(SummiX_Utilities.getBits(data, 6, 1)==0))
-			{
-				op = InstructionCode.NOP;
-			}
-			//BGE 0, 1, 1
-			else if  ((SummiX_Utilities.getBits(data, 4, 1)==0) && 
-					(SummiX_Utilities.getBits(data, 5, 1)==1) && 
-					(SummiX_Utilities.getBits(data, 6, 1)==1))
-			{
-				op = InstructionCode.BRGE;
-			}
-			else if  ((SummiX_Utilities.getBits(data, 4, 1)==1) && 
-					(SummiX_Utilities.getBits(data, 5, 1)==1) && 
-					(SummiX_Utilities.getBits(data, 6, 1)==0))
-			{
-				op = InstructionCode.BRLE;
-			}
-			break;
+				op = InstructionCode.BRX;
+		break;
 		case 8:  //DBUG
 			op = InstructionCode.DBUG;
 			break;
