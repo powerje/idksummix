@@ -1,6 +1,7 @@
 package summixSimulator;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * The SummiX simulator is the user interface that displays the
@@ -33,17 +34,33 @@ public class Simulator {
 		 */
 		int timeOutCounter = 1000;
 		String fileName = "input.txt";
+		Scanner in = new Scanner(System.in);
 		
 		SummiX_Machine machine = new SummiX_Machine();
 		
-		//Figure out which args are present
+		//Length of args array indicates args entered (filename == 1, running mode == 2, and timeout == 3) 
+		
+		//ADD ERROR CHECKING ON ARGS LENGTH HERE
 		
 		//If (they've entered the filename arg)
+		if (args.length > 0)
+		{
+			fileName = args[0];
 			//new fileName = filename arg
-		//else prompt for file name
-		new Loader(fileName, machine);	//for testing purposes using hard coded input
+		}
+		else		//else prompt for file name
+		{
+			System.out.print("Please enter the input file's name: ");
+			fileName = in.next();
+		}
+
+		//new Loader(fileName, machine);	//for testing purposes using hard coded input
 		
 		//If (they've entered the running mode arg)
+		if (args.length > 1)
+		{
+			
+		}
 			//Use the mode arg to set the simState
 		//else prompt for running mode
 			
@@ -71,6 +88,5 @@ public class Simulator {
 			//run interpreter
 			//output each executed instruction including the emmory locations and registers affected or used
 			//output ("memory page" and registers)
-		System.out.println((short) (0x7FFF + 0x7FFF));
 	}
 }
