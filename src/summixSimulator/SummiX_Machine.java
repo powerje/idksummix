@@ -91,7 +91,15 @@ public class SummiX_Machine {
 		/**
 		 * Increments the PC
 		 */
-		this.pc++;
+		short page = SummiX_Utilities.getBits(this.pc, 0, 7);
+		short offset = SummiX_Utilities.getBits(this.pc, 8, 9);
+		
+		if (offset==511) {
+			page = (short) (((short) (page >>> 9) + 1) << 9);
+			this.pc = page;
+		} else {
+			this.pc++;
+		}		
 	}
 	
 	public short getPC() {
