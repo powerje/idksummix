@@ -48,7 +48,7 @@ public class Executor {
 				break;
 			case DBUG: //The DBUG instruction displays the contents of PC, general registers, and ccr to the console
 				for (int i=0;i < 8;i++) { //print general registers
-					System.out.print("|R" + i + ": " + machine.loadRegister((short)i) + "\t|");
+					System.out.print("|R" + i + ": " + machine.loadRegister(i) + "\t|");
 				}
 				System.out.print("\n|PC: " + machine.getPC() + "\t|\n");
 				System.out.print("CCR: N - " + machine.getN() + " Z - " + machine.getZ() + " P - " + machine.getP());
