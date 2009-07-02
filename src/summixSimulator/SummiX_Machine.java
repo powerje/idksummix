@@ -147,13 +147,13 @@ public class SummiX_Machine {
 		this.reg[7] = addr;
 	}
 	
-	public short loadRegister(short register) {
+	public short loadRegister(int i) {
 		/**
 		 * Loads data from a register
 		 * 
 		 * @param register the register to load data from
 		 * @return data the value stored in the specified register
 		 */
-		return this.reg[register];
+		return this.reg[i];
 	}
 }
