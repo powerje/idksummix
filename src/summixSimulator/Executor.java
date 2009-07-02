@@ -15,10 +15,11 @@ public class Executor {
 		switch (op) {
 			case ADD:
 				sr1 = SummiX_Utilities.getBits(data, 7, 3);
-				sr2 = SummiX_Utilities.getBits(data, 12, 3);
+				sr2 = SummiX_Utilities.getBits(data, 13, 3);
 				dr  = SummiX_Utilities.getBits(data, 4, 3);
 				machine.setRegister(dr, (short) (machine.loadRegister(sr1) 
 												+ machine.loadRegister(sr2)));
+				System.out.println("ADD1\tdr:" + dr  + " sr1: " + sr1 + "(" + Integer.toHexString(machine.loadRegister(sr1)) + ")+ sr2:" + sr2 + "("+Integer.toHexString(machine.loadRegister(sr2))+") value:" + Integer.toHexString(machine.loadRegister(dr)));
 				break;
 			case ADD2:
 				sr1 = SummiX_Utilities.getBits(data, 7, 3);
@@ -26,6 +27,7 @@ public class Executor {
 				dr  = SummiX_Utilities.getBits(data, 4, 3);
 				machine.setRegister(dr, (short) (machine.loadRegister(sr1) 
 												+ imm5));
+				System.out.println("ADD2\t dr:" + dr  + " sr1: " + sr1 + "(" + Integer.toHexString(machine.loadRegister(sr1)) + ")+ imm5:" + imm5 + " value:" + Integer.toHexString(machine.loadRegister(dr)));
 				break;
 			case AND:
 				sr1 = SummiX_Utilities.getBits(data, 7, 3);
@@ -40,7 +42,7 @@ public class Executor {
 				dr  = SummiX_Utilities.getBits(data, 4, 3);
 				machine.setRegister(dr, (short) (machine.loadRegister(sr1) 
 												& imm5));
-				System.out.println(machine.loadRegister(dr));
+				//System.out.println(machine.loadRegister(dr));
 				break;
 			case BRX: 
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
@@ -49,6 +51,7 @@ public class Executor {
 					(SummiX_Utilities.getBits(data, 6, 1) == 1) && machine.getP()) { 
 					//if any of the above cases are true set the pc
 					machine.setPC((short) (SummiX_Utilities.getAbsoluteBits(oldpc, 0, 7) + pgoffset9));
+					System.out.println("branched to: " + machine.getPC());
 				}
 				break;
 			case DBUG: //The DBUG instruction displays the contents of PC, general registers, and ccr to the console
@@ -88,14 +91,15 @@ public class Executor {
 				index6 = SummiX_Utilities.getBits(data, 10, 6); //zero extend index6
 				baser = SummiX_Utilities.getBits(data, 7, 3);	
 				dr = SummiX_Utilities.getBits(data, 4, 3);
-				machine.setRegister(dr, (short) (index6 + machine.loadRegister((int)baser)));
+				machine.setRegister(dr, (short) (index6 + machine.loadRegister(((int)baser))));
+				System.out.println("LDR\t" + dr + "(" + Integer.toHexString(machine.loadRegister(dr)) + ") baser:"+baser + "(" + Integer.toHexString(machine.loadRegister(baser)) + ")");
 				break;
 			case LEA:
 				//15:9 pc + 8:0 pgoffset9
-				dr = SummiX_Utilities.getBits(data, 7, 3);
+				dr = SummiX_Utilities.getBits(data, 4, 3);
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
 				machine.setRegister(dr, (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(),0,7) + pgoffset9));
-				//System.out.println(Integer.toHexString(machine.loadRegister(dr))); works!
+				System.out.println("LEA\t" + "dr:"+dr + " ("+Integer.toHexString(machine.loadRegister(dr))+")");
 				break;
 			case NOT:
 				dr = SummiX_Utilities.getBits(data, 4, 3); // Get destination register
