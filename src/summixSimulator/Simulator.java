@@ -131,8 +131,11 @@ public class Simulator {
 				//quiet mode gets executed with the boolean in the while
 				break;
 			}
-		machine.incrementPC();
 		counter++;
+		}
+		if (counter==timeOutCounter) {
+			System.out.println("System error: instruction limit exceeded!");
+			System.exit(-1);
 		}
 		/*TODO:
 		  output each executed instruction including the memory locations and registers affected or used

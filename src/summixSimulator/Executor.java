@@ -10,7 +10,8 @@ public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
 		short sr1, sr2, sr, dr, pg, imm5, baser, pgoffset6, index6, pgoffset9;
 		Scanner in = new Scanner(System.in);
-		
+		short oldpc = machine.getPC();
+		machine.incrementPC();
 		switch (op) {
 			case ADD:
 				sr1 = SummiX_Utilities.getBits(data, 7, 3);
@@ -39,6 +40,7 @@ public class Executor {
 				dr  = SummiX_Utilities.getBits(data, 4, 3);
 				machine.setRegister(dr, (short) (machine.loadRegister(sr1) 
 												& imm5));
+				System.out.println(machine.loadRegister(dr));
 				break;
 			case BRX: 
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
@@ -46,7 +48,7 @@ public class Executor {
 					(SummiX_Utilities.getBits(data, 5, 1) == 1) && machine.getZ() || 
 					(SummiX_Utilities.getBits(data, 6, 1) == 1) && machine.getP()) { 
 					//if any of the above cases are true set the pc
-					machine.setPC((short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
+					machine.setPC((short) (SummiX_Utilities.getAbsoluteBits(oldpc, 0, 7) + pgoffset9));
 				}
 				break;
 			case DBUG: //The DBUG instruction displays the contents of PC, general registers, and ccr to the console
@@ -92,7 +94,8 @@ public class Executor {
 				//15:9 pc + 8:0 pgoffset9
 				dr = SummiX_Utilities.getBits(data, 7, 3);
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
-				machine.setRegister(dr, (short) (SummiX_Utilities.getBits(machine.getPC(),0,7) + pgoffset9));
+				machine.setRegister(dr, (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(),0,7) + pgoffset9));
+				//System.out.println(Integer.toHexString(machine.loadRegister(dr))); works!
 				break;
 			case NOT:
 				dr = SummiX_Utilities.getBits(data, 4, 3); // Get destination register
