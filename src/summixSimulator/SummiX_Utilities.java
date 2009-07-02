@@ -9,7 +9,6 @@ public class SummiX_Utilities {
 		short s = (short) ((data >>> (16-p-n)) & ((1 << n)-1));
 		return (short) (s << (16-p-n));
 	}
-	//testing new svn client
 	public enum InstructionCode{
 		ADD,
 		ADD2,
