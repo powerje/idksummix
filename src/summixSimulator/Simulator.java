@@ -1,6 +1,8 @@
 package summixSimulator;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 /**
@@ -41,17 +43,19 @@ public class Simulator {
 		}
 	}
 	
+	
 	public static void main(String[] args) throws IOException {
 		/**
 		 * Main procedure of the simulator
 		 * 
 		 * @param args filename mode timeout
 		 */
-		Simulator_State simState;
+		Simulator_State simState = Simulator_State.ERROR;
 		int timeOutCounter = 1000;
+		int counter = 0;
 		String fileName = "input.txt";
-		Scanner in = new Scanner(System.in);
-		
+	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+				
 		SummiX_Machine machine = new SummiX_Machine();
 		
 		//Length of args array indicates args entered (filename == 1, running mode == 2, and timeout == 3) 
@@ -67,48 +71,72 @@ public class Simulator {
 		else		//else prompt for file name
 		{
 			System.out.print("Please enter the input file's name: ");
-			fileName = in.next();
+			fileName = br.readLine();
 		}
 
-		//new Loader(fileName, machine);	//for testing purposes using hard coded input
+		new Loader(fileName, machine);
 		
 		//If (they've entered the running mode arg)
 		if (args.length > 1)
 		{
-			//maybe change this to produce an error if args[1].Length() > 1 ?
 			//Use the mode arg to set the simState
 			simState = getState(args[1].charAt(0));
-		} else {
-			//else prompt for running mode
-			System.out.print("Please enter the simulator mode ([q]uiet, [s]tep, or [t]race: ");
-			//maybe change this to produce an error if in.next().Length() > 1 ?
-			simState = getState(in.next().charAt(0));
 		}
-		//is the state in error?
+		else 
+		{
+			while (simState==Simulator_State.ERROR) {
+				//else prompt for running mode
+				System.out.print("Please enter the simulator mode ([q]uiet, [s]tep, or [t]race: ");
+				//maybe change this to produce an error if in.next().Length() > 1 ?
+				simState = getState(br.readLine().charAt(0));
+			}
+		}
 		
 		//If (they've entered the timeout arg)
+		if (args.length > 2)
+		{
 			//Use the timeout arg to set the timeOutCounter
-		//else prompt for running mode (default = 1000)
+			timeOutCounter = Integer.valueOf(args[2], 10).intValue();
+		}
+		else 
+		{
+			//else prompt for timeOutCounter (default = 1000)
+			System.out.print("Please enter the timeout value [press 'ENTER' for default (1000)] : ");
+
+			String temp = br.readLine();
+			
+			if (temp.length() > 0) {	
+					timeOutCounter = Integer.valueOf(temp, 10).intValue();
+			}
+		}
+			
 		
-		//case select for mode type
-		
-		//QUIET MODE
-		//while (opCode is not Halt and timeout is not exceeded)
-			//run interpreter
-		
-		//TRACE MODE
-		//output ("memory page" and register)
-		//while (opCode is not Halt and timeout is not exceeded)
-			//run interpreter
-			//output each executed instruction including the emmory locations and registers affected or used
-			//output ("memory page" and registers)
-		
-		//STEP MODE
-		//output ("memory page" and register)
-		//while (opCode is not Halt and timeout is not exceeded)
-			//prompt user to continue
-			//run interpreter
-			//output each executed instruction including the emmory locations and registers affected or used
-			//output ("memory page" and registers)
+
+
+		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),8,9))))
+				&& (counter < timeOutCounter)) {
+			//case select for mode type
+			switch (simState) {
+			case STEP:
+				//prompt user to continue
+				br.readLine();
+			case TRACE:
+				//TRACE MODE
+				//output ("memory page" and registers)
+				for (int i=0;i < 8;i++) { //print general registers
+					System.out.print("|R" + i + ": " + machine.loadRegister(i) + "\t");
+				}
+				System.out.print("|\n|PC: " + machine.getPC() + "\t|\n");
+				System.out.println("CCR: N - " + machine.getN() + " Z - " + machine.getZ() + " P - " + machine.getP());
+				//quiet mode gets executed with the boolean in the while
+				break;
+			}
+		machine.incrementPC();
+		counter++;
+		}
+		/*TODO:
+		  output each executed instruction including the memory locations and registers affected or used
+		  output ("memory page" and registers)
+		*/
 	}
 }
