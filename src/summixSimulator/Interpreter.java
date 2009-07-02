@@ -93,6 +93,7 @@ public class Interpreter {
 			case 0x25:  //HALT
 				op = InstructionCode.HALT;
 				halt = true;
+				System.out.println("Good");
 				break;
 			case 0x31:  //OUTN
 				op = InstructionCode.OUTN;
