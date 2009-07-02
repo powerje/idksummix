@@ -113,7 +113,7 @@ public class Simulator {
 		
 
 
-		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),8,9))))
+		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),7,9))))
 				&& (counter < timeOutCounter)) {
 			//case select for mode type
 			switch (simState) {
