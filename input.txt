@@ -8,11 +8,11 @@ T30056840		! 0110 1000 0100 0000	LDR
 T300616C4		! 0001 0110 1100 0100	ADD
 T30071261		! 0001 0010 0110 0001	ADD
 T300814BF		! 0001 0100 1011 1111	ADD
-T30090E04		! 0000 1110 0000 0100
-T300A5020		! 0101 0000 0010 0000
-T300B1003		! 0001 0000 0000 0011
-T300CF031		! 1111 0000 0011 0001
-T300DF025		! 1111 0000 0010 0101
+T30090E04		! 0000 1110 0000 0100	BRX
+T300A5020		! 0101 0000 0010 0000	AND r0, r0, 0	!clear register 0
+T300B1003		! 0001 0000 0000 0011	ADD r0, r0, r3
+T300CF031		! 1111 0000 0011 0001	TRAP 0x31
+T300DF025		! 1111 0000 0010 0101   TRAP 0x25
 T31000001		! 0000 0000 0000 0001
 T31010001		! 0000 0000 0000 0001
 T31020001		! 0000 0000 0000 0001
@@ -25,8 +25,9 @@ LEA r1, 512 	!r1 = (pc[15:9] + 512) which is 3000 + 0100 = 3100
 AND r3, r7, 0 	!r3 = r7 & 0, r7=0, 0=0, r3=0
 AND r2, r2, 0   !r2 = r2 & 0, r2=0, 0=0, r2=0
 ADD r2, r2, 4	!r2 = r2 + 4
-BR0 0xA			!branch if z is set, is not because just set r2 to 4 (p is set)
+BRZ 0xA			!branch if z is set, is not because just set r2 to 4 (p is set)
 LDR r4, r1, 0   !put value in r1 + 0 into r4, r4 = 3100
 ADD r3, r3, r4	!r3 = 0, r3 += r4, r3 = 3100
-ADD r1, r3, 1
-
+ADD r1, r1, 1   !r1 + 1 into r1 = 3101
+ADD r2, r2, 0x1F !r2=4,  r2+1F = I think this means to subtract 1! we're adding to it, this needs fixed i suppose
+BRA 4			!branch always to 3004 
