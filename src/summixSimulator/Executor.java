@@ -1,12 +1,14 @@
 package summixSimulator;
 
-import java.util.BitSet;
+import java.io.*;
+import java.util.Scanner;
+
 
 import summixSimulator.SummiX_Utilities.InstructionCode;
 
 public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
-		short sr1, sr2, sr, dr, imm5, pgoffset6, pgoffset9;
+		short sr1, sr2, sr, dr, pg, imm5, pgoffset6, pgoffset9;
 		
 		switch (op) {
 			case ADD:
@@ -77,6 +79,9 @@ despite updating a general purpose register (R7).
 				machine.setPC((short) (pgoffset6 + machine.loadRegister(SummiX_Utilities.getBits(data, 7, 3))));
 				break;
 			case LD:
+				dr = SummiX_Utilities.getBits(data, 4, 3);
+				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
+				machine.setRegister(dr, (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
 				break;
 			case LDI:
 				break;
@@ -91,8 +96,13 @@ despite updating a general purpose register (R7).
 				machine.setRegister(dr, sr); //Store data from source register into destination register
 				break;
 			case RET:
+				machine.setPC(machine.loadRegister(7)); // copies the contents of R7 to PC
 				break;
 			case ST:
+				sr = SummiX_Utilities.getBits(data, 4, 3);
+				pg = SummiX_Utilities.getBits(machine.getPC(), 0, 7);
+				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
+				machine.setMemory(pg, pgoffset9, machine.loadRegister(sr));
 				break;
 			case STI:
 				break;
@@ -125,14 +135,22 @@ despite updating a general purpose register (R7).
 				}
 				break;
 			case IN:
+				System.out.print("Please input character to be stored in R0: ");
+				Scanner in = new Scanner(System.in);
+				char ascii = in.next().charAt(0);
+				System.out.println(ascii);
+				// machine.setRegister(0,((short) ((ascii << 8) >>> 8))); 
+				machine.setRegister(0,(short)ascii); // may have to use above statement to clear upper 8 bits
 				break;
 			case HALT:
+				System.out.println("System exited normally.");
 				break;
 			case OUTN:
 				break;
 			case INN:
 				break;
 			case RND:
+				machine.setRegister(0, (short)Math.random());
 				break; 			
 		}
 	}
