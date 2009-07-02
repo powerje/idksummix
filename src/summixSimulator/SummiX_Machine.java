@@ -106,7 +106,7 @@ public class SummiX_Machine {
 		return this.pc;
 	}
 	
-	public void setRegister(short register, short data) {
+	public void setRegister(int register, short data) {
 		/**
 		 * Sets the given register with given data and updates the
 		 * CCR accordingly
