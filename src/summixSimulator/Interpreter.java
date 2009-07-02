@@ -77,9 +77,9 @@ public class Interpreter {
 		case 7:  //STR
 			op = InstructionCode.STR;
 			break;
-		case 16:  //TRAP
+		case 15:  //TRAP
 			//use case selects for multiple traps
-			short trap = SummiX_Utilities.getBits(data, 8, 8); // get trapvect8			
+			short trap = SummiX_Utilities.getBits(data, 8, 8); // get trapvect8
 			switch(trap){
 			case 0x21:  //OUT
 				op = InstructionCode.OUT;
@@ -108,12 +108,14 @@ public class Interpreter {
 				System.out.println("Error: Invalid TRAP code");
 				op = InstructionCode.HALT;
 				halt = true;
+				break;
 			}
 			break;
 		default:
-			System.out.println("Error: Invalid OPCODE");		
-			op = InstructionCode.HALT;
+			System.out.println("Error: Invalid OPCODE");
+			op = InstructionCode.ERR;
 			halt = true;
+			break;
 		}
 		new Executor(machine, data, op);
 		return halt;

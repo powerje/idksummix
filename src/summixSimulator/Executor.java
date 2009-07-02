@@ -151,7 +151,9 @@ despite updating a general purpose register (R7).
 				break;
 			case RND:
 				machine.setRegister(0, (short)Math.random());
-				break; 			
+				break; 
+			case ERR: //was an error op code
+				break;
 		}
 	}
 }

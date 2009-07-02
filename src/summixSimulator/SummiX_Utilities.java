@@ -33,6 +33,7 @@ public class SummiX_Utilities {
 		HALT,
 		OUTN,
 		INN,
-		RND
+		RND,
+		ERR
 	}
 }
