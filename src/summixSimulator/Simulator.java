@@ -20,11 +20,26 @@ public class Simulator {
 	private enum Simulator_State {
 		QUIET,
 		TRACE,
-		STEP
+		STEP,
+		ERROR
 	}
 	
-	private Simulator_State simState;
-
+	private static Simulator_State getState(char c) {
+	
+		switch (c) {
+		case 'q':
+		case 'Q':
+			return Simulator_State.QUIET;
+		case 's':
+		case 'S':
+			return Simulator_State.STEP;
+		case 't':
+		case 'T':
+			return Simulator_State.TRACE;
+		default:
+			return Simulator_State.ERROR;
+		}
+	}
 	
 	public static void main(String[] args) throws IOException {
 		/**
@@ -32,6 +47,7 @@ public class Simulator {
 		 * 
 		 * @param args filename mode timeout
 		 */
+		Simulator_State simState;
 		int timeOutCounter = 1000;
 		String fileName = "input.txt";
 		Scanner in = new Scanner(System.in);
@@ -59,11 +75,17 @@ public class Simulator {
 		//If (they've entered the running mode arg)
 		if (args.length > 1)
 		{
-			
-		}
+			//maybe change this to produce an error if args[1].Length() > 1 ?
 			//Use the mode arg to set the simState
-		//else prompt for running mode
-			
+			simState = getState(args[1].charAt(0));
+		} else {
+			//else prompt for running mode
+			System.out.print("Please enter the simulator mode ([q]uiet, [s]tep, or [t]race: ");
+			//maybe change this to produce an error if in.next().Length() > 1 ?
+			simState = getState(in.next().charAt(0));
+		}
+		//is the state in error?
+		
 		//If (they've entered the timeout arg)
 			//Use the timeout arg to set the timeOutCounter
 		//else prompt for running mode (default = 1000)
