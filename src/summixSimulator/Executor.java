@@ -6,8 +6,7 @@ import summixSimulator.SummiX_Utilities.InstructionCode;
 
 public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
-		short sr1, sr2, dr, imm5, pc, pgoffset6, pgoffset9;
-		BitSet ccr = machine.getCCR();
+		short sr1, sr2, dr, imm5, pgoffset6, pgoffset9;
 		
 		switch (op) {
 			case ADD:
@@ -38,25 +37,21 @@ public class Executor {
 				machine.setRegister(dr, (short) (machine.loadRegister(sr1) 
 												& imm5));
 				break;
-			case BRX:
-				pc = machine.getPC();
+			case BRX: 
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
-				//ccr is set above to machine.getCCR()
-				if ((SummiX_Utilities.getBits(data, 4, 1) == 1) && ccr.get(0) ||  // n bit
-					(SummiX_Utilities.getBits(data, 4, 2) == 1) && ccr.get(1) ||  // z bit
-					(SummiX_Utilities.getBits(data, 4, 3) == 1) && ccr.get(2)) {  // p bit
+				if ((SummiX_Utilities.getBits(data, 4, 1) == 1) && machine.getN() ||  
+					(SummiX_Utilities.getBits(data, 5, 1) == 1) && machine.getZ() || 
+					(SummiX_Utilities.getBits(data, 6, 1) == 1) && machine.getP()) { 
 					//if any of the above cases are true set the pc
-					machine.setPC((short) (pc + pgoffset9));
+					machine.setPC((short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
 				}
-				//else it is a nop
 				break;
 			case DBUG: //The DBUG instruction displays the contents of PC, general registers, and ccr to the console
 				for (int i=0;i < 8;i++) { //print general registers
 					System.out.print("|R" + i + ": " + machine.loadRegister((short)i) + "\t|");
 				}
 				System.out.print("\n|PC: " + machine.getPC() + "\t|\n");
-				//ccr is set above to machine.getCCR()
-				System.out.print("CCR: N - " + ccr.get(0) + " Z - " + ccr.get(1) + " P - " + ccr.get(2));
+				System.out.print("CCR: N - " + machine.getN() + " Z - " + machine.getZ() + " P - " + machine.getP());
 				break;
 /*
  * The JSR and JSRR instructions allow jumps to subroutines. The PC is modied according to
@@ -72,7 +67,7 @@ despite updating a general purpose register (R7).
 				}
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
 				//jump to first 7 bits of PC plus 9 given by offset
-				machine.setPC((short) (SummiX_Utilities.getBits(machine.getPC(), 0, 7) + pgoffset9));
+				machine.setPC((short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
 				break;
 			case JSRR: //someone read the directions for this and check to make sure i didn't mess it up
 				if (SummiX_Utilities.getBits(data, 4, 1)==1) { // link bit is set

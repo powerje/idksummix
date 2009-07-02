@@ -74,10 +74,17 @@ public class SummiX_Machine {
 		return this.mem[page][offset];
 	}
 	
-	public BitSet getCCR() {
-		return this.ccr;
+	public boolean getN() {
+		return this.ccr.get(N);
 	}
 	
+	public boolean getZ() {
+		return this.ccr.get(Z);
+	}
+	
+	public boolean getP() {
+		return this.ccr.get(P);
+	}
 	public void setPC(short addr) {
 		/**
 		 * Sets the PC to addr
@@ -130,16 +137,6 @@ public class SummiX_Machine {
 			
 	}
 	
-	public short loadRegister(short register) {
-		/**
-		 * Loads data from a register
-		 * 
-		 * @param register the register to load data from
-		 * @return data the value stored in the specified register
-		 */
-		return this.reg[register];
-	}
-	
 	public void setSubroutineReturn(short addr) {
 		/**
 		 * For the special case of setting register 7 without changing the CCR
@@ -148,5 +145,15 @@ public class SummiX_Machine {
 		 * @param addr the return address to store in register 7
 		 */
 		this.reg[7] = addr;
+	}
+	
+	public short loadRegister(short register) {
+		/**
+		 * Loads data from a register
+		 * 
+		 * @param register the register to load data from
+		 * @return data the value stored in the specified register
+		 */
+		return this.reg[register];
 	}
 }
