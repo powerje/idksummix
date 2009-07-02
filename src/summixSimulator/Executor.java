@@ -6,7 +6,7 @@ import summixSimulator.SummiX_Utilities.InstructionCode;
 
 public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
-		short sr1, sr2, dr, imm5, pgoffset6, pgoffset9;
+		short sr1, sr2, sr, dr, imm5, pgoffset6, pgoffset9;
 		
 		switch (op) {
 			case ADD:
@@ -62,7 +62,7 @@ and JMPR respectively.) Note that these instructions do not modify the condition
 despite updating a general purpose register (R7).
  */
 			case JSR:
-				if (SummiX_Utilities.getBits(data, 4, 1)==1) { // link bit is set
+				if (SummiX_Utilities.getBits(data, 4, 1) == 1) { // link bit is set
 					machine.setSubroutineReturn(machine.getPC()); //so set r7 to current pc for return
 				}
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
@@ -70,11 +70,11 @@ despite updating a general purpose register (R7).
 				machine.setPC((short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
 				break;
 			case JSRR: //someone read the directions for this and check to make sure i didn't mess it up
-				if (SummiX_Utilities.getBits(data, 4, 1)==1) { // link bit is set
+				if (SummiX_Utilities.getBits(data, 4, 1) == 1) { // link bit is set
 					machine.setSubroutineReturn(machine.getPC()); //so set r7 to current pc for return
 				}
-				pgoffset6 = (short) (SummiX_Utilities.getBits(data, 10, 6) << 9); //zero-extend the offset
-				machine.setPC((short) (pgoffset6 + SummiX_Utilities.getBits(data, 7, 3)));
+				pgoffset6 = (short) (SummiX_Utilities.getBits(data, 10, 6));
+				machine.setPC((short) (pgoffset6 + machine.loadRegister(SummiX_Utilities.getBits(data, 7, 3))));
 				break;
 			case LD:
 				break;
@@ -85,6 +85,10 @@ despite updating a general purpose register (R7).
 			case LEA:
 				break;
 			case NOT:
+				dr = SummiX_Utilities.getBits(data, 4, 3); // Get destination register
+				sr = SummiX_Utilities.getBits(data, 7, 3); // Get source register
+				sr = (short) ~sr; //Bitwise inversion of the value in source register
+				machine.setRegister(dr, sr); //Store data from source register into destination register
 				break;
 			case RET:
 				break;
@@ -95,8 +99,30 @@ despite updating a general purpose register (R7).
 			case STR:
 				break;
 			case OUT:
+				System.out.print((char)SummiX_Utilities.getBits(machine.loadRegister(0), 0, 8));
 				break;
 			case PUTS:
+				char tempChar;
+				short memorySpaceToLoadFrom = machine.loadRegister(0);
+				short page = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 0, 7);
+				short offset = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 8, 9);
+				tempChar = (char) machine.loadMemory(page, offset);
+				
+				while (tempChar != '\0')
+				{
+					System.out.print(tempChar);
+					
+					if (offset==511) {
+						page = (short) (((short) (page >>> 9) + 1) << 9);
+						memorySpaceToLoadFrom = page;
+					} else {
+						memorySpaceToLoadFrom++;
+					}
+					
+					page = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 0, 7);
+					offset = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 8, 9);
+					tempChar = (char) machine.loadMemory(page, offset);
+				}
 				break;
 			case IN:
 				break;
