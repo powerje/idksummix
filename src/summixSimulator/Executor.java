@@ -8,7 +8,8 @@ import summixSimulator.SummiX_Utilities.InstructionCode;
 
 public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
-		short sr1, sr2, sr, dr, pg, imm5, pgoffset6, pgoffset9;
+		short sr1, sr2, sr, dr, pg, imm5, baser, pgoffset6, index6, pgoffset9;
+		Scanner in = new Scanner(System.in);
 		
 		switch (op) {
 			case ADD:
@@ -55,14 +56,6 @@ public class Executor {
 				System.out.print("\n|PC: " + machine.getPC() + "\t|\n");
 				System.out.print("CCR: N - " + machine.getN() + " Z - " + machine.getZ() + " P - " + machine.getP());
 				break;
-/*
- * The JSR and JSRR instructions allow jumps to subroutines. The PC is modied according to
-the operand of JSR/JSRR. The destination address for JSR is computed as with ST, while the
-destination address for JSRR is computed as with STR. If the link bit (L) is set, the value of
-PC is saved to R7 before branching. (If the L bit is not set, these instructions are written JMP
-and JMPR respectively.) Note that these instructions do not modify the condition code registers,
-despite updating a general purpose register (R7).
- */
 			case JSR:
 				if (SummiX_Utilities.getBits(data, 4, 1) == 1) { // link bit is set
 					machine.setSubroutineReturn(machine.getPC()); //so set r7 to current pc for return
@@ -84,10 +77,22 @@ despite updating a general purpose register (R7).
 				machine.setRegister(dr, (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
 				break;
 			case LDI:
+				dr = SummiX_Utilities.getBits(data, 4, 3);
+				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
+				machine.setRegister(dr, (short) (SummiX_Utilities.getAbsoluteBits(machine.loadRegister(dr), 0, 7) + pgoffset9));				
 				break;
 			case LDR:
+				//zero extend  index6 and add it to value in BaseR
+				index6 = SummiX_Utilities.getBits(data, 10, 6); //zero extend index6
+				baser = SummiX_Utilities.getBits(data, 7, 3);	
+				dr = SummiX_Utilities.getBits(data, 4, 3);
+				machine.setRegister(dr, (short) (index6 + machine.loadRegister((int)baser)));
 				break;
 			case LEA:
+				//15:9 pc + 8:0 pgoffset9
+				dr = SummiX_Utilities.getBits(data, 7, 3);
+				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
+				machine.setRegister(dr, (short) (SummiX_Utilities.getBits(machine.getPC(),0,7) + pgoffset9));
 				break;
 			case NOT:
 				dr = SummiX_Utilities.getBits(data, 4, 3); // Get destination register
@@ -105,8 +110,17 @@ despite updating a general purpose register (R7).
 				machine.setMemory(pg, pgoffset9, machine.loadRegister(sr));
 				break;
 			case STI:
+				sr = SummiX_Utilities.getBits(data, 4, 3);
+				pg = SummiX_Utilities.getBits(sr, 0, 7);
+				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
+				machine.setMemory(pg, pgoffset9, machine.loadRegister(sr));
 				break;
 			case STR:
+				//zero extend  index6 and add it to value in BaseR
+				index6 = SummiX_Utilities.getBits(data, 10, 6);
+				baser = SummiX_Utilities.getBits(data, 7, 3);	
+				sr = SummiX_Utilities.getBits(data, 4, 3);
+				machine.setMemory(machine.loadRegister(baser), index6, machine.loadRegister(sr));
 				break;
 			case OUT:
 				System.out.print((char)SummiX_Utilities.getBits(machine.loadRegister(0), 0, 8));
@@ -136,7 +150,6 @@ despite updating a general purpose register (R7).
 				break;
 			case IN:
 				System.out.print("Please input character to be stored in R0: ");
-				Scanner in = new Scanner(System.in);
 				char ascii = in.next().charAt(0);
 				System.out.println(ascii);
 				// machine.setRegister(0,((short) ((ascii << 8) >>> 8))); 
@@ -145,14 +158,20 @@ despite updating a general purpose register (R7).
 			case HALT:
 				System.out.println("System exited normally.");
 				break;
-			case OUTN:
+			case OUTN:  //write value of r0 to console as a decimal
+				System.out.print(machine.loadRegister(0));
 				break;
 			case INN:
+				short input;
+				System.out.print("Please enter a number between -32768 and 32767 with no commas: ");
+				input = (short) Integer.getInteger(in.next()).intValue();
+				machine.setRegister(0, input);
 				break;
 			case RND:
 				machine.setRegister(0, (short)Math.random());
 				break; 
 			case ERR: //was an error op code
+				System.out.println("System error: ");
 				break;
 		}
 	}
