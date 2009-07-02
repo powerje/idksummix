@@ -1,10 +1,13 @@
 package summixSimulator;
 
+import java.util.BitSet;
+
 import summixSimulator.SummiX_Utilities.InstructionCode;
 
 public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
-		short sr1, sr2, dr, imm5, pc, pgoffset9, nzp;
+		short sr1, sr2, dr, imm5, pc, pgoffset9;
+		
 		switch (op) {
 			case ADD:
 				sr1 = SummiX_Utilities.getBits(data, 7, 3);
@@ -35,19 +38,17 @@ public class Executor {
 												& imm5));
 				break;
 			case BRX:
+				BitSet ccr = machine.getCCR();
 				pc = machine.getPC();
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
-				nzp = SummiX_Utilities.getBits(data, 4, 3);
 				
-				if (nzp == 1){  // n bit
-					
+				if ((SummiX_Utilities.getBits(data, 4, 1) == 1) && ccr.get(0) ||  // n bit
+					(SummiX_Utilities.getBits(data, 4, 2) == 1) && ccr.get(1) ||  // z bit
+					(SummiX_Utilities.getBits(data, 4, 3) == 1) && ccr.get(2)) {  // p bit
+					//if any of the above cases are true set the pc
+					machine.setPC((short) (pc + pgoffset9));
 				}
-				else if (nzp == 2){  // z bit
-					
-				}
-				else if (nzp == 4){  // p bit
-					
-				}
+				//else it is a nop
 				break;
 			case DBUG:
 				break;
