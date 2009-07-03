@@ -116,7 +116,11 @@ public class Interpreter {
 			halt = true;
 			break;
 		}
-		new Executor(machine, data, op);
+		new Executor(machine, data, op); //PC gets incremented in here
+		if (instruction == 15) { //traps are special
+			//all trap instructions set r7 to the address following the trap instruction
+			machine.setSubroutineReturn(machine.getPC());
+		}
 		return halt;
 	}
 }
