@@ -112,22 +112,30 @@ public class Simulator {
 			
 		
 
-
+		boolean firstStep = true;
 		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),7,9))))
 				&& (counter < timeOutCounter)) {
 			//case select for mode type
 			switch (simState) {
 			case STEP:
 				//prompt user to continue
-				br.readLine();
+				if (!firstStep) {
+					br.readLine();
+				} else {
+					firstStep=false;
+				}
 			case TRACE:
 				//TRACE MODE
 				//output ("memory page" and registers)
 				for (int i=0;i < 8;i++) { //print general registers
-					System.out.print("|R" + i + ": " + machine.loadRegister(i) + "\t");
+					String registerOutput = Integer.toHexString((int)machine.loadRegister(i));
+					if (registerOutput.length() > 4) {
+						registerOutput = registerOutput.substring(registerOutput.length()-4,registerOutput.length());
+					}
+					System.out.print("| R" + i + ": 0x" + registerOutput + "\t");
 				}
-				System.out.print("|\n|PC: " + machine.getPC() + "\t|\n");
-				System.out.println("CCR: N - " + machine.getN() + " Z - " + machine.getZ() + " P - " + machine.getP());
+				System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t|");
+				System.out.println(" CCR: N, " + machine.getN() + " | Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");
 				//quiet mode gets executed with the boolean in the while
 				break;
 			}
