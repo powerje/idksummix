@@ -21,10 +21,10 @@ public class Interpreter {
 		boolean halt = false;
 		instruction = SummiX_Utilities.getBits(data, 0, 4);
 		InstructionCode op=null;
+		int bit;
 		
 		switch(instruction) {
 		case 1: //ADD
-			int bit;
 			bit = SummiX_Utilities.getBits(data, 10, 1);  //get ADD bit			
 			if (bit == 0)
 				op = InstructionCode.ADD;
