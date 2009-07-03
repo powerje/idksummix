@@ -59,17 +59,19 @@ public class Executor {
 					(SummiX_Utilities.getBits(data, 6, 1) == 1) && machine.getP()) { 
 					//if any of the above cases are true set the pc
 					machine.setPC((short) (SummiX_Utilities.getAbsoluteBits(oldpc, 0, 7) + pgoffset9));
-					//System.out.println("BRX\tbranched to: " + Integer.toHexString(machine.getPC()));
-				}// else { //FOR TESTING PURPOSES ONLY!! Remove entire else when removing this code
-				//	System.out.println("BRX\tpurposely didn't branch to: " + Integer.toHexString(machine.getPC()));
-				//}
+				}
 				break;
 			case DBUG: //The DBUG instruction displays the contents of PC, general registers, and ccr to the console
+				System.out.println("SummiX system debug: \n");
 				for (int i=0;i < 8;i++) { //print general registers
-					System.out.print("|R" + i + ": " + machine.loadRegister(i) + "\t|");
+					String registerOutput = Integer.toHexString((int)machine.loadRegister(i));
+					if (registerOutput.length() > 4) {
+						registerOutput = registerOutput.substring(registerOutput.length()-4,registerOutput.length());
+					}
+					System.out.print("| R" + i + ": 0x" + registerOutput + "\t");
 				}
-				System.out.print("\n|PC: " + machine.getPC() + "\t|\n");
-				System.out.print("CCR: N - " + machine.getN() + " Z - " + machine.getZ() + " P - " + machine.getP());
+				System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t|");
+				System.out.println(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");
 				break;
 			case JSR:
 				if (SummiX_Utilities.getBits(data, 4, 1) == 1) { // link bit is set
