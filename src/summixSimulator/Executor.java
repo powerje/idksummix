@@ -1,6 +1,5 @@
 package summixSimulator;
 
-import java.io.*;
 import java.util.Scanner;
 
 
@@ -8,7 +7,7 @@ import summixSimulator.SummiX_Utilities.InstructionCode;
 
 public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
-		short sr1, sr1value, sr2, sr2value, sr, dr, pg, imm5, baser, pgoffset6, index6, pgoffset9;
+		short sr1, sr2, sr, dr, pg, imm5, baser, pgoffset6, index6, pgoffset9, addr, valueAtAddr;
 		Scanner in = new Scanner(System.in);
 		short oldpc = machine.getPC();
 		machine.incrementPC();
@@ -90,7 +89,14 @@ public class Executor {
 			case LD:
 				dr = SummiX_Utilities.getBits(data, 4, 3);
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
-				machine.setRegister(dr, (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
+				//working through the example1.txt (given on 560 web site) we apparently
+				//did this backwards, it's supposed to load the value at the address given
+				//originally we did:  machine.setRegister(dr, (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
+				addr = (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9);
+				valueAtAddr = machine.loadMemory(SummiX_Utilities.getBits(addr, 0, 7), SummiX_Utilities.getBits(addr, 7, 9));
+				machine.setRegister(dr, valueAtAddr);
+				//because of this i think perhaps we need to look at LDR and ST/STR... stupid specs
+				//System.out.println("LD\tdr: " + dr + " set to: " + Integer.toHexString(machine.loadRegister(dr)));
 				break;
 			case LDI:
 				dr = SummiX_Utilities.getBits(data, 4, 3);
@@ -100,9 +106,11 @@ public class Executor {
 			case LDR:
 				//zero extend  index6 and add it to value in BaseR
 				index6 = SummiX_Utilities.getBits(data, 10, 6); //zero extend index6
-				baser = SummiX_Utilities.getBits(data, 7, 3);	
+				baser = SummiX_Utilities.getBits(data, 7, 3);
+				addr = (short) (index6 + machine.loadRegister(((int)baser)));
+				valueAtAddr = machine.loadMemory(SummiX_Utilities.getBits(addr, 0, 7), SummiX_Utilities.getBits(addr, 7, 9));				
 				dr = SummiX_Utilities.getBits(data, 4, 3);
-				machine.setRegister(dr, (short) (index6 + machine.loadRegister(((int)baser))));
+				machine.setRegister(dr, valueAtAddr);
 				//System.out.println("LDR\t" + dr + "(" + Integer.toHexString(machine.loadRegister(dr)) + ") baser:"+baser + "(" + Integer.toHexString(machine.loadRegister(baser)) + ")");
 				break;
 			case LEA:
@@ -142,8 +150,7 @@ public class Executor {
 				break;
 			//Trap instructions below
 			case OUT:
-				System.out.print((char)SummiX_Utilities.getBits(machine.loadRegister(0), 0, 8));
-				//all trap calls set r7 to the PC
+				System.out.print((char)SummiX_Utilities.getBits(machine.loadRegister(0), 8, 8));
 				break;
 			case PUTS:
 				char tempChar;
@@ -176,10 +183,9 @@ public class Executor {
 				machine.setRegister(0,(short)ascii); // may have to use above statement to clear upper 8 bits
 				break;
 			case HALT:
-				System.out.println("System exited normally.");
+				System.out.println("\nSystem exited normally.");
 				break;
 			case OUTN:  //write value of r0 to console as a decimal
-				System.out.println("here?");
 				System.out.print(machine.loadRegister(0));
 				break;
 			case INN:
