@@ -140,8 +140,10 @@ public class Executor {
 				sr = SummiX_Utilities.getBits(data, 4, 3);
 				machine.setMemory(machine.loadRegister(baser), index6, machine.loadRegister(sr));
 				break;
+			//Trap instructions below
 			case OUT:
 				System.out.print((char)SummiX_Utilities.getBits(machine.loadRegister(0), 0, 8));
+				//all trap calls set r7 to the PC
 				break;
 			case PUTS:
 				char tempChar;
@@ -170,7 +172,7 @@ public class Executor {
 				System.out.print("Please input character to be stored in R0: ");
 				char ascii = in.next().charAt(0);
 				System.out.println(ascii);
-				// machine.setRegister(0,((short) ((ascii << 8) >>> 8))); 
+				//machine.setRegister(0,((short) ((ascii << 8) >>> 8))); 
 				machine.setRegister(0,(short)ascii); // may have to use above statement to clear upper 8 bits
 				break;
 			case HALT:
