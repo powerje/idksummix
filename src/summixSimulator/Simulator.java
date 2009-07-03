@@ -110,20 +110,26 @@ public class Simulator {
 			}
 		}
 			
+		//for STEP or TRACE need to print initial values of the machine, maybe should make this a method call..
+		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
+			System.out.println();
+			for (int i=0;i < 8;i++) { //print general registers
+				String registerOutput = Integer.toHexString((int)machine.loadRegister(i));
+				if (registerOutput.length() > 4) {
+					registerOutput = registerOutput.substring(registerOutput.length()-4,registerOutput.length());
+				}
+				System.out.print("| R" + i + ": 0x" + registerOutput + "\t");
+			}
+			System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t|");
+			System.out.println(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");	
+		}
 		
-
-		boolean firstStep = true;
 		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),7,9))))
 				&& (counter < timeOutCounter)) {
 			//case select for mode type
 			switch (simState) {
 			case STEP:
-				//prompt user to continue except for first time through
-				if (!firstStep) {
-					br.readLine();
-				} else {
-					firstStep=false;
-				}
+				br.readLine();
 			case TRACE:
 				//TRACE MODE
 				//output ("memory page" and registers)
