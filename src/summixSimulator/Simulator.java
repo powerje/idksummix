@@ -118,7 +118,7 @@ public class Simulator {
 			//case select for mode type
 			switch (simState) {
 			case STEP:
-				//prompt user to continue
+				//prompt user to continue except for first time through
 				if (!firstStep) {
 					br.readLine();
 				} else {
@@ -127,6 +127,7 @@ public class Simulator {
 			case TRACE:
 				//TRACE MODE
 				//output ("memory page" and registers)
+				System.out.println();
 				for (int i=0;i < 8;i++) { //print general registers
 					String registerOutput = Integer.toHexString((int)machine.loadRegister(i));
 					if (registerOutput.length() > 4) {
@@ -135,7 +136,7 @@ public class Simulator {
 					System.out.print("| R" + i + ": 0x" + registerOutput + "\t");
 				}
 				System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t|");
-				System.out.println(" CCR: N, " + machine.getN() + " | Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");
+				System.out.println(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");
 				//quiet mode gets executed with the boolean in the while
 				break;
 			}
