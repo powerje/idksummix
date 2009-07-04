@@ -7,7 +7,7 @@ import summixSimulator.SummiX_Utilities.InstructionCode;
 
 public class Executor {
 	public Executor(SummiX_Machine machine, short data, InstructionCode op) {
-		short sr1, sr2, sr, dr, pg, imm5, baser, pgoffset6, index6, pgoffset9, addr, valueAtAddr;
+		short sr1, sr2, sr, dr, pg, imm5, baser, pgoffset6, index6, pgoffset9, addr, valueAtAddr, valueAtBaseR;
 		Scanner in = new Scanner(System.in);
 		short oldpc = machine.getPC();
 		machine.incrementPC();
@@ -109,10 +109,9 @@ public class Executor {
 				//zero extend  index6 and add it to value in BaseR
 				index6 = SummiX_Utilities.getBits(data, 10, 6); //zero extend index6
 				baser = SummiX_Utilities.getBits(data, 7, 3);
-				addr = (short) (index6 + machine.loadRegister(((int)baser)));
-				valueAtAddr = machine.loadMemory(SummiX_Utilities.getBits(addr, 0, 7), SummiX_Utilities.getBits(addr, 7, 9));				
+				valueAtBaseR = machine.loadRegister(baser);
 				dr = SummiX_Utilities.getBits(data, 4, 3);
-				machine.setRegister(dr, valueAtAddr);
+				machine.setRegister(dr, (short) (index6 + valueAtBaseR));
 				//System.out.println("LDR\t" + dr + "(" + Integer.toHexString(machine.loadRegister(dr)) + ") baser:"+baser + "(" + Integer.toHexString(machine.loadRegister(baser)) + ")");
 				break;
 			case LEA:
