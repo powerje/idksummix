@@ -112,14 +112,11 @@ public class Simulator {
 		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
 			System.out.println();
 			for (int i=0;i < 8;i++) { //print general registers
-				String registerOutput = Integer.toHexString((int)machine.loadRegister(i));
-				if (registerOutput.length() > 4) {
-					registerOutput = registerOutput.substring(registerOutput.length()-4,registerOutput.length());
-				}
-				System.out.print("| R" + i + ": 0x" + registerOutput + "\t");
+				System.out.print("| R" + i + ": " + SummiX_Utilities.shortToHexString(machine.loadRegister(i)) + "\t");
 			}
-			System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t|");
-			System.out.println(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");	
+			short instrAtPC = machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(), 7, 9));
+			System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t| Instr: " + SummiX_Utilities.shortToHexString(instrAtPC)+ "\t|");	
+			System.out.print(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");	
 		}
 		
 		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),7,9))))
@@ -133,14 +130,11 @@ public class Simulator {
 				//output ("memory page" and registers)
 				System.out.println();
 				for (int i=0;i < 8;i++) { //print general registers
-					String registerOutput = Integer.toHexString((int)machine.loadRegister(i));
-					if (registerOutput.length() > 4) {
-						registerOutput = registerOutput.substring(registerOutput.length()-4,registerOutput.length());
-					}
-					System.out.print("| R" + i + ": 0x" + registerOutput + "\t");
+					System.out.print("| R" + i + ": " + SummiX_Utilities.shortToHexString(machine.loadRegister(i)) + "\t");
 				}
-				System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t|");
-				System.out.println(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");
+				short instrAtPC = machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(), 7, 9));
+				System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t| Instr: " + SummiX_Utilities.shortToHexString(instrAtPC) + "\t|");				
+				System.out.print(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");	
 				//quiet mode gets executed with the boolean in the while
 				break;
 			}
