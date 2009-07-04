@@ -3,7 +3,6 @@ package summixSimulator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 
 /**
  * The SummiX simulator is the user interface that displays the
@@ -57,7 +56,6 @@ public class Simulator {
 	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 				
 		SummiX_Machine machine = new SummiX_Machine();
-		
 		//Length of args array indicates args entered (filename == 1, running mode == 2, and timeout == 3) 
 		
 		//ADD ERROR CHECKING ON ARGS LENGTH HERE
