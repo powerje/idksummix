@@ -110,8 +110,10 @@ public class Executor {
 				index6 = SummiX_Utilities.getBits(data, 10, 6); //zero extend index6
 				baser = SummiX_Utilities.getBits(data, 7, 3);
 				valueAtBaseR = machine.loadRegister(baser);
+				addr = (short) (index6 + valueAtBaseR);			
+				valueAtAddr = machine.loadMemory(SummiX_Utilities.getBits(addr, 0, 7), SummiX_Utilities.getBits(addr, 7, 9));				
 				dr = SummiX_Utilities.getBits(data, 4, 3);
-				machine.setRegister(dr, (short) (index6 + valueAtBaseR));
+				machine.setRegister(dr, valueAtAddr);
 				//System.out.println("LDR\t" + dr + "(" + Integer.toHexString(machine.loadRegister(dr)) + ") baser:"+baser + "(" + Integer.toHexString(machine.loadRegister(baser)) + ")");
 				break;
 			case LEA:
