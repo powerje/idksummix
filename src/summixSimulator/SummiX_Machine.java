@@ -38,8 +38,8 @@ public class SummiX_Machine {
 		/**
 		 * Randomize memory which maybe useful for debugging later
 		 */
-	    for (int i = 0; i < 127; i++) {
-	    	for (int j = 0; j < 511; j++) {
+	    for (int i = 0; i < 128; i++) {
+	    	for (int j = 0; j < 512; j++) {
 	    		Random randomNumbers = new Random();
 	    		mem[i][j] = (short) randomNumbers.nextInt((2^16)-1); //random int within the range of 16 bits
 	    	}	
@@ -113,6 +113,14 @@ public class SummiX_Machine {
 		return this.pc;
 	}
 	
+	public int getPage() {
+		return SummiX_Utilities.getBits(this.pc, 0, 7);
+	}
+	
+	public int getOffset() {
+		return SummiX_Utilities.getBits(this.pc, 7, 9);
+	}
+	
 	public void setRegister(int register, short data) {
 		/**
 		 * Sets the given register with given data and updates the
@@ -155,5 +163,49 @@ public class SummiX_Machine {
 		 * @return data the value stored in the specified register
 		 */
 		return this.reg[i];
+	}
+	
+	public void outputMemoryPage(int page) {
+		System.out.println("Memory Page: " + page);
+	   	for (int i = 0; i < 512; i++) {
+	   		short data = mem[page][i];
+	   		String output = SummiX_Utilities.shortToHexString(data);
+	   		System.out.print("|" + i + ": " + output + "\t");
+	   		if ((i % 9 == 0) && (i > 0)) {
+	   			System.out.println();
+	   		}
+	   	}
+	   	System.out.println();
+	}
+	
+	public void outputMachineState() {
+		System.out.println();
+		for (int i=0;i < 8;i++) { //print general registers
+			System.out.print("| R" + i + ": " + SummiX_Utilities.shortToHexString(this.loadRegister(i)) + "\t");
+		}
+		//output PC and current instruction
+		short instrAtPC = this.loadMemory(SummiX_Utilities.getBits(this.pc, 0, 7), SummiX_Utilities.getBits(this.pc, 7, 9));
+		System.out.print("|\n| PC: 0x" + Integer.toHexString((int)this.pc) + "\t| Instr: " + SummiX_Utilities.shortToHexString(instrAtPC)+ "\t|");
+		//output CCR
+		System.out.print(" CCR: ");
+		if (this.ccr.get(N)) {
+			System.out.print("1");
+		}
+		else {
+			System.out.print("0");
+		}
+		if (this.ccr.get(Z)) {
+			System.out.print("1");
+		}
+		else {
+			System.out.print("0");
+		}
+		if (this.ccr.get(P)) {
+			System.out.print("1");
+		}
+		else {
+			System.out.print("0");
+		}
+		System.out.print("\t|\t");
 	}
 }

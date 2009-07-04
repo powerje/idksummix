@@ -42,7 +42,6 @@ public class Simulator {
 		}
 	}
 	
-	
 	public static void main(String[] args) throws IOException {
 		/**
 		 * Main procedure of the simulator
@@ -108,15 +107,10 @@ public class Simulator {
 			}
 		}
 			
-		//for STEP or TRACE need to print initial values of the machine, maybe should make this a method call..
+		//for STEP or TRACE need to print initial values of the machine registers and page of memory
 		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
-			System.out.println();
-			for (int i=0;i < 8;i++) { //print general registers
-				System.out.print("| R" + i + ": " + SummiX_Utilities.shortToHexString(machine.loadRegister(i)) + "\t");
-			}
-			short instrAtPC = machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(), 7, 9));
-			System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t| Instr: " + SummiX_Utilities.shortToHexString(instrAtPC)+ "\t|");	
-			System.out.print(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");	
+			machine.outputMemoryPage(machine.getPage());
+			machine.outputMachineState();
 		}
 		
 		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),7,9))))
@@ -128,14 +122,8 @@ public class Simulator {
 			case TRACE:
 				//TRACE MODE
 				//output ("memory page" and registers)
-				System.out.println();
-				for (int i=0;i < 8;i++) { //print general registers
-					System.out.print("| R" + i + ": " + SummiX_Utilities.shortToHexString(machine.loadRegister(i)) + "\t");
-				}
-				short instrAtPC = machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(), 7, 9));
-				System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t| Instr: " + SummiX_Utilities.shortToHexString(instrAtPC) + "\t|");				
-				System.out.print(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");	
-				//quiet mode gets executed with the boolean in the while
+				machine.outputMachineState();
+				//quiet mode gets executed during the 
 				break;
 			}
 		counter++;
