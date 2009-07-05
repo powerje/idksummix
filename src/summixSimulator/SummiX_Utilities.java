@@ -15,7 +15,7 @@ public class SummiX_Utilities {
 		if (returnVal.length() > 4) {
 			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
 		}
-		return "0x" + returnVal;
+		return "0x" + returnVal.toUpperCase();
 	}
 	
 	public enum Simulator_State {
