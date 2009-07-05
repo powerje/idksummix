@@ -18,6 +18,13 @@ public class SummiX_Utilities {
 		return "0x" + returnVal;
 	}
 	
+	public enum Simulator_State {
+		QUIET,
+		TRACE,
+		STEP,
+		ERROR
+	}
+	
 	public enum InstructionCode{
 		ADD,
 		ADD2,

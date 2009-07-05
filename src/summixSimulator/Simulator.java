@@ -3,6 +3,7 @@ package summixSimulator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import summixSimulator.SummiX_Utilities.Simulator_State;
 
 /**
  * The SummiX simulator is the user interface that displays the
@@ -17,13 +18,6 @@ public class Simulator {
 	 * @param args command line arguments args[0] - filename, arg[1] - mode of simulator (quiet, trace, or step)
 	 * @throws IOException 
 	 */
-	
-	private enum Simulator_State {
-		QUIET,
-		TRACE,
-		STEP,
-		ERROR
-	}
 	
 	private static Simulator_State getState(char c) {
 	
@@ -70,8 +64,6 @@ public class Simulator {
 			System.out.print("Please enter the input file's name: ");
 			fileName = br.readLine();
 		}
-
-		new Loader(fileName, machine);
 		
 		//If (they've entered the running mode arg)
 		if (args.length > 1)
@@ -106,7 +98,10 @@ public class Simulator {
 					timeOutCounter = Integer.valueOf(temp, 10).intValue();
 			}
 		}
-			
+	
+		new Loader(fileName, machine);
+		machine.setSimState(simState);
+		
 		//for STEP or TRACE need to print initial values of the machine registers and page of memory
 		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
 			machine.outputMemoryPage(machine.getPage());
@@ -132,9 +127,13 @@ public class Simulator {
 			System.out.println("System error: instruction limit exceeded!");
 			System.exit(-1);
 		}
-		/*TODO:
-		  output each executed instruction including the memory locations and registers affected or used
-		  output ("memory page" and registers)
-		*/
+		
+		if (simState == Simulator_State.STEP) {
+			System.out.println("Press enter to continue.");
+			br.readLine();
+			machine.outputMachineState();
+		} else if (simState == Simulator_State.TRACE) {
+			machine.outputMachineState();
+		}
 	}
 }
