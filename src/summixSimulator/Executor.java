@@ -63,16 +63,7 @@ public class Executor {
 				break;
 			case DBUG: //The DBUG instruction displays the contents of PC, general registers, and ccr to the console
 				System.out.println("SummiX system debug: \n");
-				for (int i=0;i < 8;i++) { //print general registers
-					String registerOutput = Integer.toHexString((int)machine.loadRegister(i));
-					if (registerOutput.length() > 4) {
-						registerOutput = registerOutput.substring(registerOutput.length()-4,registerOutput.length());
-					}
-					System.out.print("| R" + i + ": 0x" + registerOutput + "\t");
-				}
-				System.out.print("|\n| PC: 0x" + Integer.toHexString((int)machine.getPC()) + "\t|");
-				System.out.println(" CCR: N, " + machine.getN() + "\t| Z, " + machine.getZ() + "\t| P, " + machine.getP() + "\t|");
-				break;
+				machine.outputMachineState();
 			case JSR:
 				if (SummiX_Utilities.getBits(data, 4, 1) == 1) { // link bit is set
 					machine.setSubroutineReturn(machine.getPC()); //so set r7 to current pc for return
