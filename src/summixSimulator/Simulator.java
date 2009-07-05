@@ -65,6 +65,8 @@ public class Simulator {
 			fileName = br.readLine();
 		}
 		
+		new Loader(fileName, machine);
+	
 		//If (they've entered the running mode arg)
 		if (args.length > 1)
 		{
@@ -77,7 +79,12 @@ public class Simulator {
 				//else prompt for running mode
 				System.out.print("Please enter the simulator mode ([q]uiet, [s]tep, or [t]race: ");
 				//maybe change this to produce an error if in.next().Length() > 1 ?
-				simState = getState(br.readLine().charAt(0));
+				try {
+					simState = getState(br.readLine().charAt(0));
+				} catch (StringIndexOutOfBoundsException e) {
+					System.out.println("Default to step.");		//for testing purposes, we can just make it re-loop for real or set to something else
+					simState = Simulator_State.STEP;
+				}
 			}
 		}
 		
@@ -99,13 +106,13 @@ public class Simulator {
 			}
 		}
 	
-		new Loader(fileName, machine);
 		machine.setSimState(simState);
 		
 		//for STEP or TRACE need to print initial values of the machine registers and page of memory
 		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
 			machine.outputMemoryPage(machine.getPage());
 			machine.outputMachineState();
+			System.out.println("\n");
 		}
 		
 		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),7,9))))

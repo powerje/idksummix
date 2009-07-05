@@ -35,6 +35,7 @@ public class SummiX_Machine {
 	private BitSet			ccr	= new BitSet(3);			//N,Z,P = 0,1,0 (all registers are set to 0) initially
 	private final int   	N	= 0, Z = 1, P = 2;
 	private Simulator_State	simState;
+	
 	private void randomizeMemory() {
 		/**
 		 * Randomize memory which maybe useful for debugging later
@@ -203,10 +204,10 @@ public class SummiX_Machine {
 	public void outputMachineState() {
 		System.out.println();
 		for (int i=0;i < 8;i++) { //print general registers
-			System.out.print("| R" + i + ": " + SummiX_Utilities.shortToHexString(this.loadRegister(i)) + "\t");
+			System.out.print("| R" + i + ": " + SummiX_Utilities.shortToHexString(this.reg[i]) + "\t");
 		}
 		//output PC and current instruction
-		short instrAtPC = this.loadMemory(SummiX_Utilities.getBits(this.pc, 0, 7), SummiX_Utilities.getBits(this.pc, 7, 9));
+		short instrAtPC = this.mem[SummiX_Utilities.getBits(this.pc, 0, 7)][SummiX_Utilities.getBits(this.pc, 7, 9)];
 		System.out.print("|\n| PC: 0x" + Integer.toHexString((int)this.pc) + "\t| Instr: " + SummiX_Utilities.shortToHexString(instrAtPC)+ "\t|");
 		//output CCR
 		System.out.print(" CCR: ");
