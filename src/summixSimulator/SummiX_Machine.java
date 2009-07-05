@@ -42,7 +42,7 @@ public class SummiX_Machine {
 	    for (int i = 0; i < 128; i++) {
 	    	for (int j = 0; j < 512; j++) {
 	    		Random randomNumbers = new Random();
-	    		mem[i][j] = (short) randomNumbers.nextInt((2^16)-1); //random int within the range of 16 bits
+	    		mem[i][j] = (short) randomNumbers.nextInt(); //random int within the range of 16 bits
 	    	}	
 	   	} 
 	}
@@ -65,7 +65,9 @@ public class SummiX_Machine {
 		 * @param data the data to store
 		 */
 		this.mem[page][offset] = data;
-		//System.out.println("page: " + page + "\noffset: " + offset + "\ndata: " + data);
+		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
+			System.out.println("M[" + page + "][" + offset + "] = " + SummiX_Utilities.shortToHexString(data));
+		}
 	}
 	
 	public short loadMemory(short page, short offset) {
@@ -76,7 +78,11 @@ public class SummiX_Machine {
 		 * @param offset the offset within the page
 		 * @return data the value stored at the desired location in memory
 		 */
-		return this.mem[page][offset];
+		short data = this.mem[page][offset];
+		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
+			System.out.println("M[" + page + "][" + offset + "] = " + SummiX_Utilities.shortToHexString(data));
+		}
+		return data;
 	}
 	
 	public boolean getN() {
@@ -96,6 +102,9 @@ public class SummiX_Machine {
 		 * 
 		 * @param addr address to be written to PC
 		 */
+		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
+			System.out.println("PC = " + SummiX_Utilities.shortToHexString(addr));
+		}
 		this.pc = addr;
 	}
 	
@@ -147,7 +156,9 @@ public class SummiX_Machine {
 		} else {
 			this.ccr.set(P);
 		}
-			
+		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
+			System.out.println("R" + register + " = " + SummiX_Utilities.shortToHexString(data));
+		}
 	}
 	
 	public void setSubroutineReturn(short addr) {
@@ -158,6 +169,9 @@ public class SummiX_Machine {
 		 * @param addr the return address to store in register 7
 		 */
 		this.reg[7] = addr;
+		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
+			System.out.println("R7 = " + SummiX_Utilities.shortToHexString(addr));
+		}
 	}
 	
 	public short loadRegister(int i) {
@@ -167,6 +181,9 @@ public class SummiX_Machine {
 		 * @param register the register to load data from
 		 * @return data the value stored in the specified register
 		 */
+		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
+			System.out.println("R" + i + " = " + SummiX_Utilities.shortToHexString(this.reg[i]));
+		}
 		return this.reg[i];
 	}
 	
