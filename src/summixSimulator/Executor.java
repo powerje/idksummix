@@ -1,8 +1,6 @@
 package summixSimulator;
 
 import java.util.Scanner;
-
-
 import summixSimulator.SummiX_Utilities.InstructionCode;
 
 public class Executor {

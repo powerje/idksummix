@@ -2,6 +2,7 @@ package summixSimulator;
 
 import java.util.BitSet;
 import java.util.Random;
+import summixSimulator.SummiX_Utilities.Simulator_State;
 
 /**
  * SummiX_Machine consists of:
@@ -28,12 +29,12 @@ import java.util.Random;
 public class SummiX_Machine {
 
 	
-	private short[][]	mem	= new short[128][512];		//array to represent memory (0-127 pages, 0-511 words per page)
-	private short[]		reg	= {0,0,0,0,0,0,0,0};		//initialize all registers to 0
-	private short		pc	= 0;						//program counter starts at 0
-	private BitSet		ccr	= new BitSet(3);			//N,Z,P = 0,1,0 (all registers are set to 0) initially
-	private final int   N	= 0, Z = 1, P = 2;
-	
+	private short[][]		mem	= new short[128][512];		//array to represent memory (0-127 pages, 0-511 words per page)
+	private short[]			reg	= {0,0,0,0,0,0,0,0};		//initialize all registers to 0
+	private short			pc	= 0;						//program counter starts at 0
+	private BitSet			ccr	= new BitSet(3);			//N,Z,P = 0,1,0 (all registers are set to 0) initially
+	private final int   	N	= 0, Z = 1, P = 2;
+	private Simulator_State	simState;
 	private void randomizeMemory() {
 		/**
 		 * Randomize memory which maybe useful for debugging later
@@ -50,7 +51,11 @@ public class SummiX_Machine {
 		randomizeMemory();
 		this.ccr.set(Z);
 	}
-
+	
+	public void setSimState(Simulator_State simState) {
+		this.simState = simState;
+	}
+	
 	public void setMemory(short page, short offset, short data) {
 		/**
 		 * Sets memory at mem[page][offset]
