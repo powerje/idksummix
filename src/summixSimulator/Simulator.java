@@ -110,18 +110,11 @@ public class Simulator {
 		
 		while ((!Interpreter.getInstruction(machine, machine.loadMemory(SummiX_Utilities.getBits(machine.getPC(), 0, 7), SummiX_Utilities.getBits(machine.getPC(),7,9))))
 				&& (counter < timeOutCounter)) {
-			//case select for mode type
-			switch (simState) {
-			case STEP:
+			if (simState==Simulator_State.STEP) {
+				//require user input in step mode between instructions
 				br.readLine();
-			case TRACE:
-				//TRACE MODE
-				//output ("memory page" and registers)
-				machine.outputMachineState();
-				//quiet mode gets executed during the 
-				break;
 			}
-		counter++;
+			counter++;
 		}
 		if (counter==timeOutCounter) {
 			System.out.println("System error: instruction limit exceeded!");
@@ -131,8 +124,10 @@ public class Simulator {
 		if (simState == Simulator_State.STEP) {
 			System.out.println("Press enter to continue.");
 			br.readLine();
+			machine.outputMemoryPage(machine.getPage());
 			machine.outputMachineState();
 		} else if (simState == Simulator_State.TRACE) {
+			machine.outputMemoryPage(machine.getPage());
 			machine.outputMachineState();
 		}
 	}
