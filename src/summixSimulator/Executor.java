@@ -175,7 +175,7 @@ public class Executor {
 				machine.setRegister(0,(short)ascii); // may have to use above statement to clear upper 8 bits
 				break;
 			case HALT:
-				System.out.println("\nSystem exited normally.");
+				//handled by Interpreter
 				break;
 			case OUTN:  //write value of r0 to console as a decimal
 				System.out.print(machine.loadRegister(0));

@@ -120,6 +120,10 @@ public class Interpreter {
 		if (instruction == 15) { //traps are special
 			//all trap instructions set r7 to the address following the trap instruction
 			machine.setSubroutineReturn(machine.getPC());
+                        if (op == InstructionCode.HALT) {
+                            //this has to go here or it would look funny for step/trace to print register information after the machine has "halted"
+                            System.out.println("\nSystem exited normally.");
+                        }
 		}
 		return halt;
 	}
