@@ -3,6 +3,7 @@ package summixSimulator;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.lang.NumberFormatException;
 
 /**
@@ -110,7 +111,12 @@ public class Loader {
 	}
 	
 	public Loader(String filename, SummiX_Machine machine) throws IOException {
-		this.br = new BufferedReader(new FileReader(filename));	
+            try {
+		this.br = new BufferedReader(new FileReader(filename));
+            } catch (FileNotFoundException e) {
+                System.out.println("Invalid filename: " + filename);
+                System.exit(-1);
+            }
 		getHeader(machine);
 		fillMemory(machine);
 		this.br.close();
