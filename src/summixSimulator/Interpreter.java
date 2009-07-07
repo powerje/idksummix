@@ -116,7 +116,11 @@ public class Interpreter {
 			halt = true;
 			break;
 		}
+		try {
 		new Executor(machine, data, op); //PC gets incremented in here
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("Error: memory out of bounds exception - page: " + SummiX_Utilities.getBits(data, 0, 7) + ", offset: " + SummiX_Utilities.getBits(data, 7, 9));
+		}
 		if (instruction == 15) { //traps are special
 			//all trap instructions set r7 to the address following the trap instruction
 			machine.setSubroutineReturn(machine.getPC());
