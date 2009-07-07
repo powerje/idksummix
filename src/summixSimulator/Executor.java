@@ -145,25 +145,25 @@ public class Executor {
 				System.out.print((char)SummiX_Utilities.getBits(machine.loadRegister(0), 8, 8));
 				break;
 			case PUTS:
+				//from test.txt (lab2 ex) we get an inifite loop here, printing ? symbols... odd
 				char tempChar;
 				short memorySpaceToLoadFrom = machine.loadRegister(0);
 				short page = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 0, 7);
-				short offset = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 8, 9);
+				short offset = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 7, 9);
 				tempChar = (char) machine.loadMemory(page, offset);
 
 				while (tempChar != '\0')
 				{
 					System.out.print(tempChar);
-					
+										
 					if (offset==511) {
 						page = (short) (((short) (page >>> 9) + 1) << 9);
 						memorySpaceToLoadFrom = page;
 					} else {
 						memorySpaceToLoadFrom++;
-					}
-					
+					}					
 					page = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 0, 7);
-					offset = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 8, 9);
+					offset = SummiX_Utilities.getBits(memorySpaceToLoadFrom, 7, 9);
 					tempChar = (char) machine.loadMemory(page, offset);
 				}
 				break;
