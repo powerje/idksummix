@@ -79,7 +79,13 @@ public class SummiX_Machine {
 		 * @param offset the offset within the page
 		 * @return data the value stored at the desired location in memory
 		 */
-		short data = this.mem[page][offset];
+		short data = 0;
+		try {
+			data = this.mem[page][offset];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("Error: memory out of bounds exception - page: " + page + ",offset: " + offset);
+			System.exit(-1);
+		}
 		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
 			System.out.println("M[" + page + "][" + offset + "] = " + SummiX_Utilities.shortToHexString(data));
 		}

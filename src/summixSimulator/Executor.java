@@ -136,9 +136,12 @@ public class Executor {
 			case STR:
 				//zero extend  index6 and add it to value in BaseR
 				index6 = SummiX_Utilities.getBits(data, 10, 6);
-				baser = SummiX_Utilities.getBits(data, 7, 3);	
+				baser = SummiX_Utilities.getBits(data, 7, 3);
+				valueAtBaseR = machine.loadRegister(baser);
 				sr = SummiX_Utilities.getBits(data, 4, 3);
-				machine.setMemory(machine.loadRegister(baser), index6, machine.loadRegister(sr));
+				addr = (short) (index6 + valueAtBaseR);
+				valueAtAddr = machine.loadMemory(SummiX_Utilities.getBits(addr, 0, 7), SummiX_Utilities.getBits(addr, 7, 9));
+				machine.setMemory(SummiX_Utilities.getBits(valueAtAddr, 0, 7), SummiX_Utilities.getBits(valueAtAddr, 7, 9), machine.loadRegister(sr));
 				break;
 			//Trap instructions below
 			case OUT:
