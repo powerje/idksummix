@@ -105,7 +105,7 @@ public class Interpreter {
 				break;
 			default:
 				System.out.println("Error: Invalid TRAP code");
-				op = InstructionCode.HALT;
+				op = InstructionCode.ERR;
 				halt = true;
 				break;
 			}
