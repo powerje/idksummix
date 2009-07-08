@@ -193,7 +193,7 @@ public class Executor {
 				machine.setRegister(0, (short)Math.random());
 				break; 
 			case ERR: //was an error op code
-				System.out.println("System error: ");
+				System.out.println("System error.");
 				break;
 		}
 	}
