@@ -82,8 +82,8 @@ public class Simulator {
 				try {
 					simState = getState(br.readLine().charAt(0));
 				} catch (StringIndexOutOfBoundsException e) {
-					System.out.println("Default to step.");		//for testing purposes, we can just make it re-loop for real or set to something else
-					simState = Simulator_State.STEP;
+					System.out.println("Default to quiet.");		//for testing purposes, we can just make it re-loop for real or set to something else
+					simState = Simulator_State.QUIET;
 				}
 			}
 		}
@@ -127,7 +127,7 @@ public class Simulator {
 			counter++;
 		}
 		if (counter==timeOutCounter) {
-			System.out.println("System error: instruction limit exceeded!");
+			System.out.println("\nSystem error: instruction limit exceeded!");
 			System.exit(-1);
 		}
 		

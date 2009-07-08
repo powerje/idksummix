@@ -13,7 +13,7 @@ public class Executor {
 			case ADD:
 				sr1 = SummiX_Utilities.getBits(data, 7, 3);
 				sr2 = SummiX_Utilities.getBits(data, 13, 3);
-				dr  = SummiX_Utilities.getBits(data, 4, 3);			
+				dr  = SummiX_Utilities.getBits(data, 4, 3);
 				machine.setRegister(dr, (short) (machine.loadRegister(sr1) 
 												+ machine.loadRegister(sr2)));
 				//System.out.println("ADD1\tdr:" + dr  + " sr1: " + sr1 + "(" + Integer.toHexString(machine.loadRegister(sr1)) + ")+ sr2:" + sr2 + "("+Integer.toHexString(machine.loadRegister(sr2))+") value:" + Integer.toHexString(machine.loadRegister(dr)));
@@ -70,7 +70,7 @@ public class Executor {
 				//jump to first 7 bits of PC plus 9 given by offset
 				machine.setPC((short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
 				break;
-			case JSRR: //someone read the directions for this and check to make sure i didn't mess it up
+			case JSRR:
 				if (SummiX_Utilities.getBits(data, 4, 1) == 1) { // link bit is set
 					machine.setSubroutineReturn(machine.getPC()); //so set r7 to current pc for return
 				}
@@ -80,13 +80,10 @@ public class Executor {
 			case LD:
 				dr = SummiX_Utilities.getBits(data, 4, 3);
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
-				//working through the example1.txt (given on 560 web site) we apparently
-				//did this backwards, it's supposed to load the value at the address given
-				//originally we did:  machine.setRegister(dr, (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9));
 				addr = (short) (SummiX_Utilities.getAbsoluteBits(machine.getPC(), 0, 7) + pgoffset9);
 				valueAtAddr = machine.loadMemory(SummiX_Utilities.getBits(addr, 0, 7), SummiX_Utilities.getBits(addr, 7, 9));
 				machine.setRegister(dr, valueAtAddr);
-				//because of this i think perhaps we need to look at LDR and ST/STR... stupid specs
+				//System.out.println("LD\tdr: " + dr + " set to: " + Integer.toHexString(machine.loadRegister(dr)));
 				//System.out.println("LD\tdr: " + dr + " set to: " + Integer.toHexString(machine.loadRegister(dr)));
 				break;
 			case LDI:
