@@ -53,6 +53,9 @@ public class SummiX_Machine {
 		this.ccr.set(Z);
 	}
 	
+	public Simulator_State getSimState() {
+		return simState;
+	}
 	public void setSimState(Simulator_State simState) {
 		this.simState = simState;
 	}
