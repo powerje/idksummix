@@ -14,3 +14,8 @@ T300c10c0		! 0001 0000 1100 0000   ADD1  R0 = R3 + R0	R0 = 0xe
 T300dF025		! 1111 0000 0010 0101   TRAP 0x25
 E3001
 E3002			! *This line does not causes a fatal error, which is not the desired result.
+
+				! It is understood that the input files from the user should be error free
+				! because it is not a requirement of the lab to error check the input files.
+				! But I feel that we should fix this or it should be noted that loader will 
+				! not check for multiple End Records.
