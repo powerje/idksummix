@@ -1,6 +1,10 @@
 HSAMPLE30000104	! * The Instruction Code Test - DEBUG
-T30018000		! 1000 0000 0000 0000  
-E3001
+T30008000		! 1000 0000 0000 0000  
+T3001F025		! 1111 0000 0010 0101   TRAP 0x25
+E3000
 
 				! This is test for the instruction code DEBUG.
-				! The test produces the desire result.
+				! The test produces the desire result...ALMOST!
+				! After more testing of the debug instruction, it was found that
+				! The DEBUG and JSR instruction were both executing at the same time.
+				! BUG found and corrected. *NO BREAK STATEMENT in the switch statement.
