@@ -78,9 +78,10 @@ public class Loader {
 		 * 
 		 * @param machine the SummiX_Machine to store data in
 		 */
+		int line_counter = 2;
 		String input = this.br.readLine();
 		if (input.charAt(0) != 'T') {
-			System.out.println("Expected: T");
+			System.out.println("Expected: T on line " + line_counter);
 			System.exit(-1);	//error
 		}		
 		while (input.charAt(0) == 'T')	//Text Record
@@ -102,9 +103,10 @@ public class Loader {
 			machine.setMemory(getPage(addr), getOffset(addr), (short) data);
 			input = this.br.readLine();
 		}
+		line_counter++;
 		//all that is left is the end record which sets the PC
 		if (input.charAt(0) != 'E') {
-			System.out.println("Expected: E");
+			System.out.println("Expected: E on line " + line_counter);
 			System.exit(-1);	//error
 		}
 		machine.setPC((short)hexstringToInt(input.subSequence(1,5)));
