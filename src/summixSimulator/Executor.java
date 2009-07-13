@@ -89,6 +89,7 @@ public class Executor {
 			case DBUG: //The DBUG instruction displays the contents of PC, general registers, and ccr to the console
 				System.out.println("SummiX system debug: \n");
 				machine.outputMachineState();
+				break;
 			case JSR:
 				pgoffset9 = SummiX_Utilities.getBits(data, 7, 9);
 				if ((machine.getSimState()) == SummiX_Utilities.Simulator_State.STEP || (machine.getSimState() == SummiX_Utilities.Simulator_State.TRACE)) {
