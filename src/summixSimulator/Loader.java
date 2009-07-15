@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.lang.NumberFormatException;
+import java.lang.NullPointerException;
 
 /**
  * The SummiX loader puts the input information into data 
@@ -68,8 +69,12 @@ public class Loader {
 			System.out.println("Expected: H");
 			System.exit(-1);	//error
 		}
-		this.init 	= hexstringToInt(input.subSequence(7,  11)); //programs memory begins here
-		this.length	= hexstringToInt(input.subSequence(11, 15)); //length of the segment of memory
+		try {
+			this.init 	= hexstringToInt(input.subSequence(7,  11)); //programs memory begins here
+			this.length	= hexstringToInt(input.subSequence(11, 15)); //length of the segment of memory
+		} catch (NullPointerException e) {
+			System.out.println("Expected: hex value");
+		}
 	}
 	
 	private void fillMemory(SummiX_Machine machine) throws IOException {
@@ -86,8 +91,14 @@ public class Loader {
 		}		
 		while (input.charAt(0) == 'T')	//Text Record
 		{
-			int addr = hexstringToInt(input.subSequence(1, 5));
-
+			int addr = 0;
+			int data = 0;
+			try {
+				addr = hexstringToInt(input.subSequence(1, 5));
+			} catch (NullPointerException e) {
+				System.out.println("Expected: hex value");
+			}
+				
 			if (addr < this.init) {
 				System.out.println("Address given (" + addr + " is less than start address (" + this.init + ")");
 				System.exit(-1);
@@ -97,8 +108,11 @@ public class Loader {
 				System.out.println("Address given (" + addr + " is greater than max address (" + (this.init + this.length) + ")");
 				System.exit(-1);
 			}
-			
-			int data = hexstringToInt(input.subSequence(5, 9));	
+			try {
+				data = hexstringToInt(input.subSequence(5, 9));	
+			} catch (NullPointerException e) {
+				System.out.println("Expected: hex value");
+			}
 			//store data into machine memory
 			machine.setMemory(getPage(addr), getOffset(addr), (short) data);
 			input = this.br.readLine();
@@ -109,7 +123,13 @@ public class Loader {
 			System.out.println("Expected: E on line " + line_counter);
 			System.exit(-1);	//error
 		}
-		machine.setPC((short)hexstringToInt(input.subSequence(1,5)));
+		int startPC = 0;
+		try {
+			startPC = (short) hexstringToInt(input.subSequence(1, 5));
+		} catch (NullPointerException e) {
+			System.out.println("Expected: hex value");
+		}		
+		machine.setPC((short)startPC);
 	}
 	
 	public Loader(String filename, SummiX_Machine machine) throws IOException {
