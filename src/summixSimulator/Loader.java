@@ -74,6 +74,7 @@ public class Loader {
 			this.length	= hexstringToInt(input.subSequence(11, 15)); //length of the segment of memory
 		} catch (NullPointerException e) {
 			System.out.println("Expected: hex value");
+			System.exit(-1); //error
 		}
 	}
 	
@@ -97,6 +98,7 @@ public class Loader {
 				addr = hexstringToInt(input.subSequence(1, 5));
 			} catch (NullPointerException e) {
 				System.out.println("Expected: hex value");
+				System.exit(-1); //error
 			}
 				
 			if (addr < this.init) {
@@ -112,6 +114,7 @@ public class Loader {
 				data = hexstringToInt(input.subSequence(5, 9));	
 			} catch (NullPointerException e) {
 				System.out.println("Expected: hex value");
+				System.exit(-1); //error
 			}
 			//store data into machine memory
 			machine.setMemory(getPage(addr), getOffset(addr), (short) data);
@@ -128,6 +131,7 @@ public class Loader {
 			startPC = (short) hexstringToInt(input.subSequence(1, 5));
 		} catch (NullPointerException e) {
 			System.out.println("Expected: hex value");
+			System.exit(-1); //error
 		}		
 		machine.setPC((short)startPC);
 	}
