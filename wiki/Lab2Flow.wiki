@@ -7,4 +7,4 @@ This image details the flow of information through lab 2 from the source file to
 
 = Details =
 
-<a href="http://s208.photobucket.com/albums/bb173/Jazzepi/?action=view&current=Capture.jpg" target="_blank"><img src="http://i208.photobucket.com/albums/bb173/Jazzepi/Capture.jpg" border="0" alt="Photobucket"></a>
+<img src="http://i208.photobucket.com/albums/bb173/Jazzepi/Capture.jpg" border="0" alt="Photobucket">
