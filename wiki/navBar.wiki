@@ -1,6 +1,10 @@
 #summary Default navigation bar for the left side of the screen.
 
   * [Lab2]
+  * Overview
+    * [Lab2Flow]
+    * [WikiConventions]
+    * [Main]
   * Classes
     * [Pass1]
     * [Pass2]
@@ -9,7 +13,3 @@
     * [SymbolTable]
     * [LocationCounter]
     * [LiteralTable]
-  * Overview
-    * [Lab2Flow]
-    * [WikiConventions]
-    * [Main]
