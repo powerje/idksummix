@@ -1,13 +1,12 @@
-#summary Description of [Lab2]'s Pass1
+#summary Description of Pass1 used in lab 2
 
 = Introduction =
+* [Pass1 Input]
+* [Pass1 responsibilities]
 
-Add your content here.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= Pass1 Input =
+blah
+= Pass1 responsibilities =
+foo
