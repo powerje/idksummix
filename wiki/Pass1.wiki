@@ -12,6 +12,7 @@
 TBD
 ----
 = Input =
+Example input given for the lab:
 {{{
 ;2345678901234567890123456890
 ; Example Program
