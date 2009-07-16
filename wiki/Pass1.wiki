@@ -1,6 +1,7 @@
 #summary Description of Pass1 used in lab 2
 
 = Introduction =
+Lab2Overview
  *[ [Pass1#Implementation Implementation]
    *[ [Pass1#Variables Variables]
    *[ [Pass1#Methods Methods]
