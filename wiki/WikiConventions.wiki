@@ -2,9 +2,13 @@
 #sidebar navBar
 <wiki:toc max_depth="2" />
 ----
-= Implementation =
+=New Pages=
 
-==New Pages==
+  * Add '"#sidebar navBar"' at the top of the page.
+  * Add {{{<wiki:toc max_depth="2" />}}} at the top of the page.
 
-  * Add '"#sidebar navBar"' at the top of the page
-  * Add {{{<wiki:toc max_depth="2" />}}} at the top of the page
+=Naming=
+
+  * No spaces are allowed.
+  * Capitalize *every* letter of the words in a wiki page; navBar is the exception.
+  * Add new pages to the navBar page when appropriate.
