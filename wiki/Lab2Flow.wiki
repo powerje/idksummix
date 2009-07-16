@@ -7,8 +7,8 @@ This image details the flow of information through lab 2 from the source file to
 
 
 = Details =
-*[[sFile sFile - Source file from user]]
-*[[p1File p1File - File produced after the first pass]]
-*[[p2File p2File - File produced after the second pass (object file)]]
+[sFile sFile - Source file from user]<br>
+[p1File p1File - File produced after the first pass]<br>
+[p2File p2File - File produced after the second pass (object file)]<br>
 
 <img src="http://i208.photobucket.com/albums/bb173/Jazzepi/Capture.jpg" border="0" alt="Photobucket">
