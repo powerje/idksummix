@@ -1,8 +1,8 @@
 #summary One-sentence summary of this page.
 
   * [Lab2]
-  * [Classes]
+  * Classes
     * [Pass1]
     * [Pass2]
-  * [Overview]
+  * Overview
     * [Lab2Flow]
