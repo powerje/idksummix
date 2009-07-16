@@ -1,12 +1,12 @@
 #summary Description of Pass1 used in lab 2
 
 = Introduction =
-* [Pass1 Input]
-* [Pass1 responsibilities]
+* Pass1 [Input]
+* Pass1 [responsibilities]
 
 
 
-= Pass1 Input =
+= Input =
 blah
-= Pass1 responsibilities =
+= responsibilities =
 foo
