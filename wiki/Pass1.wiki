@@ -2,11 +2,11 @@
 
 = Introduction =
 * Pass1 [Input]
-* Pass1 [responsibilities]
+* Pass1 [Responsibilities]
 
 
 
 = Input =
 blah
-= responsibilities =
+= Responsibilities =
 foo
