@@ -41,3 +41,5 @@ Array    .BLKW   #3
 == Symbol Table ==
 == Literals Table ==
 == Error Checking ==
+----
+= Output =
