@@ -1,5 +1,5 @@
 #summary Description of Pass2 used in lab 2
-
+#sidebar navBar
 = Introduction =
 <wiki:toc max_depth="2" />
 ----
