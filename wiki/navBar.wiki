@@ -13,3 +13,7 @@
     * [LocationCounter]
     * [LiteralTable]
     * [Assembler]
+  * Files
+    * [sFile]
+    * [p1File]
+    * [p2File]
