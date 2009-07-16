@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Default navigation bar for the left side of the screen.
 
   * [Lab2]
   * Classes
