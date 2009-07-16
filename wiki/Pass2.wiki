@@ -18,4 +18,7 @@ TBD
 == Symbol Table ==
 == Literals Table ==
 == Error Checking ==
+----
 = Output =
+{{{
+}}}
