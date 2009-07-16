@@ -1,10 +1,8 @@
 #summary One-sentence summary of this page.
 
-  * [Articles HOWTO articles]
-    * [ArticlesXSS Web security]
-    * [ArticlesDom DOM manipulation]
-    * [ArticlesStyle CSS and style]
-    * [ArticlesTips Tips and tricks]
-  * [DOMReference DOM reference]
-  * [HTMLElements HTML reference]
-  * [CSSReference CSS reference]
+  * [Lab2]
+  * [Classes]
+    * [Pass1]
+    * [Pass2]
+  * [Overview]
+    * [Lab2Flow]
