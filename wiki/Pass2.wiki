@@ -1,15 +1,7 @@
-#summary Description of Pass1 used in lab 2
+#summary Description of Pass2 used in lab 2
 
 = Introduction =
 <wiki:toc max_depth="2" />
- *[ [Pass1#Implementation Implementation]
-   *[ [Pass1#Variables Variables]
-   *[ [Pass1#Methods Methods]
- *[ [Pass1#Input Input]
- *[ [Pass1#Responsibilities Responsibilities]
-   *[ [Pass1#Symbol_Table Symbol Table]
-   *[ [Pass1#Literals_Table Literal Table]
-   *[ [Pass1#Error_Checking Error Checking]
 ----
 = Implementation =
 TBD
@@ -17,11 +9,13 @@ TBD
 == Methods ==
 ----
 = Input =
-Example input given for the lab:
+Example input for Pass2 (Output of Pass1):
 {{{
+TBD
 }}}
 ----
 = Responsibilities =
 == Symbol Table ==
 == Literals Table ==
 == Error Checking ==
+= Output =
