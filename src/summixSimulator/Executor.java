@@ -24,7 +24,7 @@ public class Executor {
 				sr1 = SummiX_Utilities.getBits(data, 7, 3);
 				
 				if (SummiX_Utilities.getBits(data, 11, 1)==1) {
-					//negative value
+					//negative values
 					imm5 = (short) (SummiX_Utilities.getBits(data, 11, 5) << 27 >> 27);
 				} else {
 					imm5 = (short) (SummiX_Utilities.getBits(data, 11, 5));
