@@ -1,5 +1,5 @@
 #summary Description of Pass1 used in lab 2
-
+#sidebar navBar
 = Introduction =
  *[ [Pass1#Implementation Implementation]
    *[ [Pass1#Variables Variables]
