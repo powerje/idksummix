@@ -1,0 +1,14 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+A list of variables for Lab2
+
+= Variables for Lab2Main() =
+
+ * sFile
+   * sFile is the incoming source file from the user. This file is PRESERVED.
+ * p1File
+   * p1File a modified version of the incoming source file. This file is returned from the pass1 object.
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
