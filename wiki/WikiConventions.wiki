@@ -1,0 +1,6 @@
+#summary Description of Team IDK Wiki Conventions
+#sidebar navBar
+<wiki:toc max_depth="2" />
+----
+= Implementation =
+Read the specs
