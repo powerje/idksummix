@@ -1,7 +1,7 @@
 #summary Description of Pass1 used in lab 2
 
 = Introduction =
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
  *[ [Pass1#Implementation Implementation]
    *[ [Pass1#Variables Variables]
    *[ [Pass1#Methods Methods]
