@@ -1,13 +1,10 @@
-#summary Flow of data in Lab 2
+#summary Flow of data in Lab2
 
 = Introduction =
 
-This image details the flow of information through lab 2 from the source file to the output file, including Lab 2 Variables, Lab 2 Classes.
+This image details the flow of information through lab 2 from the source file to the output file, including Lab2Variables, Lab2Classes.
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+<a href="http://s208.photobucket.com/albums/bb173/Jazzepi/?action=view&current=Capture.jpg" target="_blank"><img src="http://i208.photobucket.com/albums/bb173/Jazzepi/Capture.jpg" border="0" alt="Photobucket"></a>
