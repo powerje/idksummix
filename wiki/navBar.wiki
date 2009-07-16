@@ -13,3 +13,4 @@
     * [SymbolTable]
     * [LocationCounter]
     * [LiteralTable]
+    * [Assembler]
