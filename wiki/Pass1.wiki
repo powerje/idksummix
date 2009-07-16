@@ -1,8 +1,8 @@
 #summary Description of Pass1 used in lab 2
 
 = Introduction =
-* [Input]
-* [Responsibilities]
+* [Pass1#Input]
+* [Pass1#Responsibilities]
 
 
 
