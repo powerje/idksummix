@@ -1,4 +1,5 @@
 #summary Flow of data in Lab2
+#sidebar navBar
 
 = Introduction =
 
