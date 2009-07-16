@@ -3,4 +3,7 @@
 <wiki:toc max_depth="2" />
 ----
 = Implementation =
-Read the specs
+
+==New Pages==
+
+* Add '#sidebar navBar directly below #summary'
