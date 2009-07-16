@@ -4,5 +4,12 @@
   * Classes
     * [Pass1]
     * [Pass2]
+    * [MachineOpTable]
+    * [PseudoOpTable]
+    * [SymbolTable]
+    * [LocationCounter]
+    * [LiteralTable]
   * Overview
     * [Lab2Flow]
+    * [WikiConventions]
+    * [Main]
