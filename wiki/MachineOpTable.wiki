@@ -1,7 +1,5 @@
 #summary Description of Machine Op Table used in lab 2
 #sidebar navBar
-= Introduction =
 <wiki:toc max_depth="2" />
-
 ----
 = Implementation =
