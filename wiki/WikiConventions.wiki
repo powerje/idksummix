@@ -6,4 +6,5 @@
 
 ==New Pages==
 
-* Add '#sidebar navBar directly below #summary'
+  * Add '"#sidebar navBar"' at the top of the page
+  * Add '<wiki:toc max_depth="2" />' at the top of the page
