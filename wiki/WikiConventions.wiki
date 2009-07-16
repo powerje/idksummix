@@ -10,5 +10,5 @@
 =Naming=
 
   * No spaces are allowed.
-  * Capitalize *every* letter of the words in a wiki page; navBar is the exception.
-  * Add new pages to the navBar page when appropriate.
+  * Capitalize *every* letter of the words in a wiki page; [navBar] is the exception.
+  * Add new pages to the [navBar] page when appropriate.
