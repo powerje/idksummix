@@ -7,9 +7,9 @@ For this lab we are writing an assembler for our abstract machine.
 
 
 = Pages =
-Lab 2 Flow<br>
-Pass1<br>
-Pass2
-Symbol Table
-Literal Table
-Location Counter
+ Lab 2 Flow
+ Pass1
+ Pass2
+ Symbol Table
+ Literal Table
+ Location Counter
