@@ -2,6 +2,8 @@
 
 = Introduction =
  *[ [Pass1#Implementation Implementation]
+   *[ [Pass1#Variables Variables]
+   *[ [Pass1#Methods Methods]
  *[ [Pass1#Input Input]
  *[ [Pass1#Responsibilities Responsibilities]
    *[ [Pass1#Symbol_Table Symbol Table]
@@ -10,6 +12,8 @@
 
 = Implementation =
 TBD
+== Variables ==
+== Methods ==
 ----
 = Input =
 Example input given for the lab:
