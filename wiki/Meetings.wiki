@@ -1,6 +1,0 @@
-#summary Details of IDK Team meetings.
-= Introduction =
-We have them!
-
-= Details =
-Meeting minutes are available in pdf on the mailing list.
