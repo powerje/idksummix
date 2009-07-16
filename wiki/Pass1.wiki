@@ -1,12 +1,18 @@
 #summary Description of Pass1 used in lab 2
 
 = Introduction =
+ *[ [Pass1#Implementation Implementation]
  *[ [Pass1#Input Input]
  *[ [Pass1#Responsibilities Responsibilities]
+   *[ [Pass1#Error_Checking Error Checking]
 
-
+= Implementation =
+TBD
 
 = Input =
 blah
+
 = Responsibilities =
 foo
+
+= Error Checking =
