@@ -7,7 +7,7 @@ For this lab we are writing an assembler for our abstract machine.
 
 
 = Pages =
-Lab 2 Flow
+[Lab 2 Flow]
 
 Pass1
 
