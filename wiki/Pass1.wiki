@@ -6,13 +6,13 @@
  *[ [Pass1#Responsibilities Responsibilities]
    *[ [Pass1#Error_Checking Error Checking]
 ----
-= Implementation =
+== Implementation ==
 TBD
 ----
-= Input =
+== Input ==
 blah
 ----
-= Responsibilities =
+== Responsibilities ==
 foo
 ----
-  = Error Checking =
+  == Error Checking ==
