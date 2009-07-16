@@ -5,14 +5,14 @@
  *[ [Pass1#Input Input]
  *[ [Pass1#Responsibilities Responsibilities]
    *[ [Pass1#Error_Checking Error Checking]
----- 
+----
 = Implementation =
 TBD
----- 
+----
 = Input =
 blah
----- 
+----
 = Responsibilities =
 foo
----- 
+----
   = Error Checking =
