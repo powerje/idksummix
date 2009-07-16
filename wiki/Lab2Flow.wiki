@@ -2,7 +2,7 @@
 
 = Introduction =
 
-This image details the flow of information through lab 2 from the source file to the output file, including Lab2Variables, Lab2Classes.
+This image details the flow of information through lab 2 from the source file to the output file.
 
 
 = Details =
