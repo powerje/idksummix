@@ -2,12 +2,14 @@
 #sidebar navBar
 <wiki:toc max_depth="2" />
 =Format=
+
 Record Position Meaning
-1-6 Label, if any, left justied
-7-9 Unused
-10-14 Operation eld
-15-17 Unused
-18-end of record Operands and comments
+  * 1-6 Label, if any, left justified
+  * 7-9 Unused
+  * 10-14 Operation field
+  * 15-17 Unused
+  * 18-end of record Operands and comments
+
 (comments begin with a semicolon (;)
 Exception: A semicolon (;) in the rst record position indicates that
 the entire record is a comment.
