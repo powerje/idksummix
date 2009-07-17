@@ -3,7 +3,7 @@
 <wiki:toc max_depth="2" />
 ----
 = Implementation =
-TBD
+For the purposes of this assignment, you may assume a maximum of *50 literals*
 == Variables ==
 == Methods ==
 ----
