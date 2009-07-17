@@ -1,8 +1,8 @@
-#summary Description of p2File for lab 2
+#summary Description of lFile for lab 2
 #sidebar navBar
 <wiki:toc max_depth="2" />
 =Format=
-The p2File is also known as the object file.  An example p2File is:
+The lFile is also known as the listing file.  An example lFile is:
 {{{
 ------------------------------------------------------------
 (Addr) Contents Contents (line #) Label Instruction Operands
