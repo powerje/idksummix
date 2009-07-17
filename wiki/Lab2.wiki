@@ -1,6 +1,25 @@
 #summary Overview of lab 2 implementation.
+#labels Featured
 #sidebar navBar
 
 = Introduction =
 
 For this lab we are writing an assembler for our abstract machine.
+
+= Flow Charts =
+  * Lab2Flow
+
+= Classes =
+  * Pass1
+  * Pass2
+  * MachineOpTable
+  * PseudoOpTable
+  * SymbolTable
+  * LocationCounter
+  * LiteralTable
+  * Assembler
+
+= Files =
+  * sFile
+  * p1File
+  * p2File
