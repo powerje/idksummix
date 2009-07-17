@@ -3,7 +3,32 @@
 <wiki:toc max_depth="2" />
 ----
 = Implementation =
-TBD
+{{{
+//Command line args
+//-d (turns on the dump between passes)
+//-f [fileName](lets the user input the fileName variable from the command line)
+//-v (verbose; means that the program outputs the [p2File] and [lFile] to the console before writing them to the files)
+
+//Display intro
+
+//Take fileName input from user if they haven't already submitted it as an argument
+
+//Create sFile from the user's fileName file
+
+//Give Pass1 the sFile as a parameter, and then take the return value as p1File
+
+//If -d switch is set, dump p1File, symbol table, and literal table to the display with the Dump() helper function
+
+//Give Pass2 the p1File and then take the return value as p2File
+
+//Create lFile from sFile (or maybe p1File?), p2File, symbol table, and literal table
+
+//If -v switch is set, display p2File and lFile
+
+//Write lFile and p2File to files with some sort of extension. Probably .l and .o respectively. .l is for list and .o is for object
+
+//Display success message for names of files written, and maybe some info about them like size
+}}}
 == Variables ==
 == Methods ==
 === Private ===
