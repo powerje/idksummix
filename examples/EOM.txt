@@ -1,0 +1,7 @@
+HSAMPLEFFFF0005	! * The End OF Memory Overflow Test
+TFFFFF025		! 1111 0000 0010 0101   TRAP 0x25
+EFFFF
+
+! This test increments the PC from [127][511] to [0][0]
+! The test produces the desired result.
+
