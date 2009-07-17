@@ -10,5 +10,11 @@ This image details the flow of information through lab 2 from the source file to
   *[[sFile] - Source file from user
   *[[p1File] - File produced after the first pass
   *[[p2File] - File produced after the second pass (object file)
+  *[[lFile] - File produced from [sFile] and [p2File] after [p2File] has been created
 
+= Legend =
+  *Red lines are I/O
+  *-v is the verbose command line arg, these only output to user when it's invoked
+  *-d is the dump command line arg, these only to user when it's invoked
+  *Green lines are file passing
 <img src="http://i208.photobucket.com/albums/bb173/Jazzepi/Capture.jpg" border="0" alt="Photobucket">
