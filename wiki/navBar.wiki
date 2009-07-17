@@ -7,14 +7,12 @@
   * Classes
     * [Assembler]
     * [LiteralTable]
-    * [Literal]
     * [LocationCounter]
     * [MachineOpTable]
     * [Pass1]
     * [Pass2]
     * [PseudoOpTable]
     * [SymbolTable]
-    * [Symbol]
     * [TextFile]
   * Files
     * [lFile]
