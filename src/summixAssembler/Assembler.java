@@ -1,4 +1,4 @@
-package assembler;
+package summixAssembler;
 
 import java.io.IOException;
 
