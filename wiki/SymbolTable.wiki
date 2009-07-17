@@ -4,11 +4,7 @@
 ----
 = Implementation =
 For the purposes of this assignment, you may assume a *maximum of 100 symbols*
-
 TBD
-== Classes ==
-=== Symbol ===
-Symbol objects contain a String name and an int value
 == Variables ==
 == Methods ==
 === Display ===
