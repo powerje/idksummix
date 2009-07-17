@@ -1,0 +1,3 @@
+HSAMPLE30000104	! The Short Text Record Test
+T3001F02
+E3001

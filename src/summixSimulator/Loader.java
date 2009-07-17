@@ -70,8 +70,13 @@ public class Loader {
 			System.exit(-1);	//error
 		}
 		try {
+			try {
 			this.init 	= hexstringToInt(input.subSequence(7,  11)); //programs memory begins here
 			this.length	= hexstringToInt(input.subSequence(11, 15)); //length of the segment of memory
+			} catch (StringIndexOutOfBoundsException e) {
+				System.out.println("Expected: hex value");
+				System.exit(-1);
+			}
 		} catch (NullPointerException e) {
 			System.out.println("Expected: hex value");
 			System.exit(-1); //error
@@ -84,12 +89,14 @@ public class Loader {
 		 * 
 		 * @param machine the SummiX_Machine to store data in
 		 */
+		int startPC = 0;
 		int line_counter = 2;
 		String input = this.br.readLine();
 		if (input.charAt(0) != 'T') {
 			System.out.println("Expected: T on line " + line_counter);
 			System.exit(-1);	//error
 		}		
+		try {
 		while (input.charAt(0) == 'T')	//Text Record
 		{
 			int addr = 0;
@@ -112,7 +119,7 @@ public class Loader {
 			}
 			try {
 				data = hexstringToInt(input.subSequence(5, 9));	
-			} catch (NullPointerException e) {
+			} catch (StringIndexOutOfBoundsException e) {
 				System.out.println("Expected: hex value");
 				System.exit(-1); //error
 			}
@@ -120,19 +127,27 @@ public class Loader {
 			machine.setMemory(getPage(addr), getOffset(addr), (short) data);
 			input = this.br.readLine();
 		}
+		} catch (NullPointerException e) {
+			System.out.println("Expected: hex value");
+			System.exit(-1);
+		}
 		line_counter++;
 		//all that is left is the end record which sets the PC
+		try {
 		if (input.charAt(0) != 'E') {
 			System.out.println("Expected: E on line " + line_counter);
 			System.exit(-1);	//error
 		}
-		int startPC = 0;
 		try {
 			startPC = (short) hexstringToInt(input.subSequence(1, 5));
-		} catch (NullPointerException e) {
+		} catch (StringIndexOutOfBoundsException e) {
 			System.out.println("Expected: hex value");
 			System.exit(-1); //error
-		}		
+		}	
+		} catch (NullPointerException e) {
+			System.out.println("Expected: hex value");
+			System.exit(-1);
+		}
 		machine.setPC((short)startPC);
 	}
 	

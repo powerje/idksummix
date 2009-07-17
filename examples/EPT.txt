@@ -1,0 +1,6 @@
+HSAMPLE30010104	! * The Execution Pointer Test
+T30021021   
+T30031000		
+T3004F025		
+E3000
+		

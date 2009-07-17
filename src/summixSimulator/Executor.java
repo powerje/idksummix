@@ -259,10 +259,12 @@ public class Executor {
 				if ((machine.getSimState()) == SummiX_Utilities.Simulator_State.STEP || (machine.getSimState() == SummiX_Utilities.Simulator_State.TRACE)) {
 					System.out.println("INN");
 				}
-				short input;
+				int input = 0;
+				String numericalInput;
 				System.out.print("Please enter a number between -32768 and 32767 with no commas: ");
-				input = (short) Integer.getInteger(in.next()).intValue();
-				machine.setRegister(0, input);
+				numericalInput = in.next();
+				input = Integer.parseInt(numericalInput);
+				machine.setRegister(0, (short)input);
 				break;
 			case RND:
 				if ((machine.getSimState()) == SummiX_Utilities.Simulator_State.STEP || (machine.getSimState() == SummiX_Utilities.Simulator_State.TRACE)) {

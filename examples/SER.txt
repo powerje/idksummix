@@ -1,0 +1,9 @@
+HSAMPLE30000104	! * The Short End Entry Test
+T30011021   
+
+T30021000		
+
+T3003F025		
+
+E30
+		
