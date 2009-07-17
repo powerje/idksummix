@@ -1,5 +1,8 @@
 package summixAssembler;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SymbolTable {
 	public class Symbol {
 		private String name;
@@ -21,4 +24,7 @@ public class SymbolTable {
 			this.value = value;
 		}
 	}
+	
+	private static Set<Symbol> symbols = new HashSet<Symbol>(5);
+	
 }

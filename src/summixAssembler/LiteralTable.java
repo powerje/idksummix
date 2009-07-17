@@ -1,5 +1,10 @@
 package summixAssembler;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import summixAssembler.SymbolTable.Symbol;
+
 public class LiteralTable {
 	public class Literal {
 		private String name;
@@ -21,5 +26,8 @@ public class LiteralTable {
 			this.address = address;
 		}
 	}
+	
+	private static Set<Literal> literals = new HashSet<Literal>(5);
+
 }
 
