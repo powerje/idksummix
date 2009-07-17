@@ -24,3 +24,10 @@ For this lab we are writing an assembler for our abstract machine.
   * [p1File p1File - Transitional File]
   * [p2File p2File - Object File]
   * [lFile lFile - Listing File]
+
+= How to run in Unix =
+
+the .class files need to be in a directory called summixSimulator<br>
+which is the same name as our package files<br>
+then you type<br>
+{{{java-Xms126m -Xmx256m summixSimulator/Simulator}}}
