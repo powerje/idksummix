@@ -1,7 +1,0 @@
-HSAMPLE01FF0005	! * The Page Memory Overflow Test
-T01FF1021       ! 0001 0000 0010 0001   ADD2  R0 = R0 + 1	R0 = 0x1 
-T0200F025		! 1111 0000 0010 0101   TRAP 0x25
-E01FF
-
-! This test increments the PC from [0][511] to [1][0]
-! The test produces the desired result.

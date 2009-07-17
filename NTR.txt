@@ -1,4 +1,0 @@
-HSAMPLA30000104	! This is the No Text Record Test
-E3000 			! The input file contains no Text records.
-				! The test produces the desired result.
-				! Expected: T
