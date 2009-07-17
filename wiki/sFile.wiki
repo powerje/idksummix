@@ -2,6 +2,7 @@
 #sidebar navBar
 <wiki:toc max_depth="2" />
 =Format=
+For the purposes of this assignment, you may assume a maximum of *200 source records*
 
 Record Position Meaning
   * 1-6 Label, if any, left justified
