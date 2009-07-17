@@ -22,6 +22,8 @@
 //Give Pass2 the p1File and then take the return value as p2File
 
 //Create lFile from sFile (or maybe p1File?), p2File, symbol table, and literal table
+//Use the overloaded constructor of the TextFile to do this
+//Code should look something like this TextFile lFile = new TextFile(sFile, p2File);
 
 //If -v switch is set, display p2File and lFile
 
