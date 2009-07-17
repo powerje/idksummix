@@ -1,0 +1,10 @@
+#summary Description of Symbol used in lab 2
+#sidebar navBar
+<wiki:toc max_depth="3" />
+----
+= Implementation =
+Symbol contains a String name and integer value
+== Variables ==
+== Methods ==
+=== getName ===
+=== getValue ===
