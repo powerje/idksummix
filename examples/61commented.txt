@@ -1,0 +1,33 @@
+//Display "Entry Size?"
+T00000000
+T0001456E
+T00027472
+T00037920
+T00045369
+T00057A65
+T00063F00
+T00072000
+T0008F022
+T0009F033
+T000A1220//R1 contains size
+T000B1620//R3 saves size
+
+//Loop input number, store
+T000CF033
+T000D1420//R2 contains sum
+T000E127F//R1--
+T000F020B//Loop to B if positive
+
+//Calculate average
+T001016FF//R3--
+T001198C0//negate r3
+T00122800//R4 <- 0
+
+T00131921//R4++
+T00141483//R2 <- R2 +R3
+T00150213//loop to 13 if pos
+T00161120//R0 <- R4
+//Display Average
+T0017F031
+T0018F035
+E0007

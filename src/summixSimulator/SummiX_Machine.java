@@ -168,7 +168,29 @@ public class SummiX_Machine {
 		}
 		if ((simState == Simulator_State.STEP) || (simState == Simulator_State.TRACE)) {
 			System.out.println("R" + register + " = " + SummiX_Utilities.shortToHexString(data));
+
+			System.out.print("CCR: ");
+			if (this.ccr.get(N)) {
+				System.out.print("1");
+			}
+			else {
+				System.out.print("0");
+			}
+			if (this.ccr.get(Z)) {
+				System.out.print("1");
+			}
+			else {
+				System.out.print("0");
+			}
+			if (this.ccr.get(P)) {
+				System.out.print("1");
+			}
+			else {
+				System.out.print("0");
+			}
+			System.out.println();	
 		}
+		
 	}
 	
 	public void setSubroutineReturn(short addr) {

@@ -1,0 +1,3 @@
+HSAMPLE300012345678	! * The Long Header Entry Test
+T3001F025
+E3001		

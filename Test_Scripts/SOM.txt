@@ -1,0 +1,4 @@
+HSAMPLE00000104	!* The Start of Memory Test
+T00001021       
+T0001F025		
+E0000
