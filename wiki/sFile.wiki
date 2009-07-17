@@ -44,5 +44,6 @@ Array    .BLKW   #3
          .END    Begin
 }}}
 =Usage=
+The [sFile] is implemented by making an object of type [TextFile]. The input file given from the user is then read into the [sFile] using the [TextFile] methods.
 =Origin=
 =Destination=
