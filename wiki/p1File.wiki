@@ -2,6 +2,10 @@
 #sidebar navBar
 <wiki:toc max_depth="2" />
 =Format=
+The [p1File] is implemented by making an object of type [TextFile].
 =Usage=
+
 =Origin=
+[p1File] is the object returned from [Pass1] as a [TextFile]. 
 =Destination=
+[p1File] is passed into [Pass2] as a parameter. It is also used as part of a dump between [Pass1] and [Pass2] to verify that [Pass1] is working correctly.
