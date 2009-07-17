@@ -15,6 +15,8 @@ Record Position Meaning
 Exception: A semicolon (;) in the rst record position indicates that
 the entire record is a comment.
 
+Labels may be up to 6 alphanumeric characters (e.g., they may not include blanks). The first character of a label must be alphabetic, but may not be an "R" or an "x".
+
 Example sFile given for the lab:
 {{{
 ;2345678901234567890123456890
