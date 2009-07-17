@@ -9,7 +9,7 @@ TBD
 == Methods ==
 ----
 = Input =
-Example input given for the lab:
+Input for Pass1 is the sFile.  An example sFile given for the lab:
 {{{
 ;2345678901234567890123456890
 ; Example Program
@@ -42,6 +42,7 @@ Array    .BLKW   #3
 == Error Checking ==
 ----
 = Output =
+The Pass1 output is called the p1File.  An example p1File:
 {{{
 TBD
 }}}
