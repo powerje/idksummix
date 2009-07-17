@@ -1,0 +1,10 @@
+#summary Description of Literal used in lab 2
+#sidebar navBar
+<wiki:toc max_depth="3" />
+----
+= Implementation =
+Symbol contains a String name and integer address
+== Variables ==
+== Methods ==
+=== getName ===
+=== getAddress ===
