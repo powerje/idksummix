@@ -3,6 +3,8 @@
 <wiki:toc max_depth="3" />
 ----
 = Implementation =
+For the purposes of this assignment, you may assume a *maximum of 100 symbols*
+
 TBD
 == Variables ==
 == Methods ==
