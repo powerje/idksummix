@@ -1,0 +1,17 @@
+#summary Storage class for the text objects [sFile], [p1File], [p2File], and [lFile]
+#sidebar navBar
+<wiki:toc max_depth="2" />
+
+= Implementation =
+The TextFile class is a wrapper class that contains an array of strings. The class has methods that allow users of objects made from the class to manipulate the array of strings as though it were a text file. [sFile], [p1File], [p2File] and [lFile] are all passed around the program as TextFile objects.
+
+== Variables ==
+== Methods ==
+----
+= Input =
+= Responsibilities =
+== Symbol Table ==
+== Literals Table ==
+== Error Checking ==
+----
+= Output =
