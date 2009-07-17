@@ -3,8 +3,6 @@ package summixAssembler;
 import java.util.HashSet;
 import java.util.Set;
 
-import summixAssembler.SymbolTable.Symbol;
-
 public class LiteralTable {
 	public class Literal {
 		private String name;
@@ -22,7 +20,7 @@ public class LiteralTable {
 			this.name = name;
 		}
 		
-		public void setAddress(int value) {
+		public void setAddress(int address) {
 			this.address = address;
 		}
 	}
