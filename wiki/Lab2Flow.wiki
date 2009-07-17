@@ -15,6 +15,6 @@ This image details the flow of information through lab 2 from the source file to
 = Legend =
   * Red lines are I/O
   * -v is the verbose command line arg, these only output to user when it's invoked
-  * -d is the dump command line arg, these only to user when it's invoked
+  * -d is the dump command line arg, these only output to user when it's invoked
   * Green lines are file passing
 <img src="http://i208.photobucket.com/albums/bb173/Jazzepi/Capture.jpg" border="0" alt="Photobucket">
