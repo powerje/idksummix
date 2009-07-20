@@ -6,7 +6,7 @@
 For the purposes of this assignment, you may assume a *maximum of 100 symbols*
 == Classes ==
 === Symbol ===
-The Symbol class contains a String name and an int value
+The Symbol class contains a String name, an int value and a boolean relative.
 == Variables ==
 == Methods ==
 === Display ===
