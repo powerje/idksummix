@@ -11,6 +11,9 @@
 
 //Display intro
 
+//Figure out which arguments have been passed by the user, and store them as booleans
+//Store the fileName as a string
+
 //Take fileName input from user if they haven't already submitted it as an argument
 
 //Create sFile from the user's fileName file
