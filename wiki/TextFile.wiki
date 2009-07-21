@@ -42,7 +42,7 @@ Pointer is now line 3, spot 0
 
 
 ===String getToken()===
-text getToken() - Returns a String of text that represents the next non-white space token. Then it increments the pointer to the end of that text. If it's at the end of the string, it returns "" and increments to the next line.
+text getToken() - Returns a String of text that represents the next non-white space token. Then it increments the pointer to the end of that text. If it's at the end of the string, it returns "" and increments to the next line. This method relies on the fact that all strings put into the TextFile object have had their whitespace deleted at the end. When the getToken() returns "" then you know you've reached the end of the file, and now the pointer is pointing at the next line.
 
 
 Pointer position line 0, spot 6
