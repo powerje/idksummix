@@ -8,7 +8,7 @@ TBD
 == Methods ==
 
 ===incrementAmt(short)===
-incrementAmt(amount) - Adds the amount to the [LocationCount] current address.
+incrementAmt(amount) - Adds the amount to the [LocationCounter] current address.
 
 ===set(short)===
 set(address) - Sets the [LocationCounter] to the address.
