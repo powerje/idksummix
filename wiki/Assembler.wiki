@@ -1,6 +1,6 @@
 #summary Description of the Assembler class used in lab 2
 #sidebar navBar
-<wiki:toc max_depth="2" />
+<wiki:toc max_depth="3" />
 ----
 = Implementation =
 {{{
