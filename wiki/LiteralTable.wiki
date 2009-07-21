@@ -6,9 +6,16 @@
 For the purposes of this assignment, you may assume a maximum of *50 literals*
 == Classes ==
 === Literal ===
-The Literal class contains a String name and an int address
+The Literal class contains pairs of short values and short memory addresses.
 == Variables ==
 == Methods ==
+
+===input(short, short)===
+input(memory address, value) - This method adds an entry to the [LiteralTable]. This method should be used by [Pass1] to populate the [LiteralTable].
+
+===short getAdd(short)===
+address getAdd(value) - This method uses the value of a literal as a key to the [LiteralTable] and returns the associated memory address as a short.
+
 ----
 = Responsibilities =
 ----
