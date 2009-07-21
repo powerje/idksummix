@@ -16,6 +16,8 @@ input(memory address, value) - This method adds an entry to the [LiteralTable]. 
 ===short getAdd(short)===
 address getAdd(value) - This method uses the value of a literal as a key to the [LiteralTable] and returns the associated memory address as a short.
 
+===display()===
+display() - The literal table writes itself to output.
 ----
 = Responsibilities =
 ----
