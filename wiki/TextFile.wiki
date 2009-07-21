@@ -6,10 +6,89 @@
 The TextFile class is a wrapper class that contains an array of strings. The class has methods that allow users of objects made from the class to manipulate the array of strings as though it were a text file. [sFile], [p1File], [p2File] and [lFile] are all passed around the program as TextFile objects.
 
 == Variables ==
+
+
 == Methods ==
+===input(String)===
+input(text) - Adds a String of text to the current line, and increments the pointer to the next line. Deletes all the whitespace at the end of each line of text.
+
+===String getLine()===
+text getLine() - Returns a String of text that represents the current line of the text file from the pointer's current position to the end and increments the pointer to the next line.
+
+Pointer position line 0, spot 6
+
+4 strings inside of TextFile
+
+"Hello, this is manuel."
+
+"I'm watching Burn Notice"
+
+""
+
+"It's a really great show"
+
+getLine() returns " this is manuel."
+
+Pointer is now line 1, spot 0
+
+getLine() returns "I'm watching Burn Notice"
+
+Pointer is now line 2, spot 0
+
+getLine() returns ""
+
+Pointer is now line 3, spot 0
+
+
+
+===String getToken()===
+text getToken() - Returns a String of text that represents the next non-white space token. Then it increments the pointer to the end of that text. If it's at the end of the string, it returns "" and increments to the next line.
+
+
+Pointer position line 0, spot 6
+
+4 strings inside of TextFile
+
+"Hello, this is manuel."
+
+"I'm watching Burn Notice"
+
+""
+
+"It's a really great show"
+
+getToken() returns "this"
+
+Pointer is now line 0, spot 11
+
+getToken() returns "is"
+
+Pointer is now line 0, spot 14
+
+getToken() returns "manuel."
+
+Pointer is now line 0, spot 22
+
+getToken() returns ""
+
+Pointer is now line 1, spot 0
+
+===TextFile(string)===
+TextFile(name) - Takes in a file called "name" as input and converts it into the TextFile format. Deletes all the whitespace at the end of each line.
+
+===write(String)===
+write(name) - Outputs the TextFile to a file called "name".
+
+===display()===
+display() - Outputs the TextFile to the screen.
+
+===reset()===
+reset() - Returns the pointer to line 0, spot 0
 ----
 = Input =
 = Responsibilities =
+
+
 == Symbol Table ==
 == Literals Table ==
 == Error Checking ==
