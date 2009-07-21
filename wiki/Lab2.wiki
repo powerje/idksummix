@@ -18,6 +18,7 @@ For this lab we are writing an assembler for our abstract machine.
   * [LocationCounter]
   * [LiteralTable]
   * [Assembler]
+  * [TextFile]
 
 = Files =
   * [sFile sFile - Source File]
