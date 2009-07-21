@@ -9,9 +9,15 @@ For the purposes of this assignment, you may assume a *maximum of 100 symbols*
 The Symbol class contains a String name, an int value and a boolean relative.
 == Variables ==
 == Methods ==
-=== Display ===
-==== Description ====
-Displays the contents of the Symbol Table
+
+===input(short, short, boolean)===
+input() - This method adds an entry to the [LiteralTable]. This method should be used by [Pass1] to populate the [LiteralTable].
+
+===short getAdd(short)===
+address getAdd(value) - This method uses the value of a literal as a key to the [LiteralTable] and returns the associated memory address as a short.
+
+===display()===
+display() - The literal table writes itself to output.
 ==== Example Output ====
 ----
 = Responsibilities =
