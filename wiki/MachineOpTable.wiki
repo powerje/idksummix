@@ -6,6 +6,11 @@
 TBD
 == Variables ==
 == Methods ==
+
+===short getOp(String)===
+op getOp(name) - Returns the left bit shifted operation code bits given by the mnemonic name
+===short getSize(String)===
+size getSize(name) - Returns the size of the operation given by the mnemonic name
 ----
 = Responsibilities =
 ----
