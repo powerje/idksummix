@@ -6,6 +6,8 @@
 TBD
 == Variables ==
 == Methods ==
+===TextFile Pass2(TextFile)===
+[p2File] [Pass2]([p1File]) - Takes [p1File] and produces [p2File] 
 ----
 = Input =
 Example input for Pass2 (Output of Pass1):
