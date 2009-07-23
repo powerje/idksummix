@@ -14,7 +14,7 @@ incrementAmt(amount) - Adds the amount to the [LocationCounter] current address.
 set(address) - Sets the [LocationCounter] to the address.
 
 ===short getAddress()===
-short getAddress() - Returns the current address stored in the [LocationCounter].
+address getAddress() - Returns the current address stored in the [LocationCounter].
 ----
 = Responsibilities =
 ----
