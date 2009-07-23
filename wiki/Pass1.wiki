@@ -7,6 +7,8 @@
 TBD
 == Variables ==
 == Methods ==
+===TextFile Pass1(TextFile)===
+[p1File] [Pass1]([sFile]) - Takes [sFile] and produces [p1File] 
 ----
 = Input =
 Input for Pass1 is the sFile.  An example sFile given for the lab:
