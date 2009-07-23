@@ -6,6 +6,10 @@
 TBD
 == Variables ==
 == Methods ==
+===bool isVar(String)===
+isVar isVar(opName) - isVar is true if opName has variable length. 
+===short getLength(String)===
+length getLength(opName) - returns the length associated with the opName 
 ----
 = Responsibilities =
 ----
