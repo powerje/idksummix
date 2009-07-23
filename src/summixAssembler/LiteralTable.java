@@ -1,15 +1,15 @@
 package summixAssembler;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class LiteralTable {
-	private class Literal {
-		public String name;
-		public int address;
-	}
+	Map<String, Integer> literals = new HashMap<String, Integer>();
 	
-	private static Set<Literal> literals = new HashSet<Literal>(5);
-
+	LiteralTable() {
+		
+	}
 }
 
