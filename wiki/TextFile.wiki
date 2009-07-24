@@ -10,7 +10,7 @@ The TextFile class is a wrapper class that contains an arraylist of strings. The
 
 == Methods ==
 ===input(String)===
-input(text) - Adds a String of text to the current line, and increments the pointer to the next line.
+input(text) - Adds a String of text to the last line of the text file.
 
 ===String getLine()===
 text getLine() - Returns a String of text that represents the current line of the text file from the pointer's current position to the end and increments the pointer to the next line.
