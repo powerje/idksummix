@@ -3,10 +3,10 @@
 <wiki:toc max_depth="3" />
 
 = Implementation =
-The TextFile class is a wrapper class that contains an array of strings. The class has methods that allow users of objects made from the class to manipulate the array of strings as though it were a text file. [sFile], [p1File], [p2File] and [lFile] are all passed around the program as TextFile objects.
+The TextFile class is a wrapper class that contains an arraylist of strings. The class has methods that allow users of objects made from the class to manipulate the arraylist of strings as though it were a text file. [sFile], [p1File], [p2File] and [lFile] are all passed around the program as TextFile objects.
 
 == Variables ==
-Needs to have a pointer that contains the line and the spot (position) in that line.
+
 
 == Methods ==
 ===input(String)===
@@ -76,7 +76,7 @@ getToken() returns ""
 Pointer is now line 1, spot 0
 
 ===TextFile(string)===
-TextFile(name) - Takes in a file called "name" as input and converts it into the TextFile format. Deletes all the whitespace at the end of each line.
+TextFile(name) - Takes in a file called "name" as input and converts it into the TextFile format.
 
 ===write(String)===
 write(name) - Outputs the TextFile to a file called "name".
