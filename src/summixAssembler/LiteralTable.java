@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class LiteralTable {
-	Map<Short, Short> literals = new HashMap<Short, Short>();
+	private static Map<Short, Short> literals = new HashMap<Short, Short>();
 	
 	public void input(short key, short addr) {
 		if (!literals.containsKey(key)) {
