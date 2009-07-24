@@ -1,18 +1,57 @@
 package summixAssembler;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-public class SymbolTable {
-	/*
-	private class Symbol {
-		public String name;
-		public int value;
+public class SymbolTable {	
+	
+	private static Map<String, Symbol> symbols = new HashMap<String, Symbol>();
+
+	public static void input(String key, short value, boolean relative) {
+		if (symbols.containsKey(key)) {
+			//error
+		} else {
+			symbols.put(key, new Symbol(value, relative));
+		}
 	}
 	
-	private static Set<Symbol> symbols = new HashSet<Symbol>(5);
-	*/
-	Map<String, Integer> symbols = new HashMap<String, Integer>();
+	public static void input(String key) {
+		if (symbols.containsKey(key)) {
+			//error
+		} else {
+			symbols.put(key, null);
+		}
+	}
+	
+	public static void update(String key, short value, boolean relative) {
+		if (!symbols.containsKey(key)) {
+			//error
+		} else {
+			symbols.put(key, new Symbol(value, relative));
+		}
+	}
+	
+	public static short getValue(String key) {
+		short returnVal = 0;
+		if (!symbols.containsKey(key)) {
+			//error
+		} else {
+			returnVal = symbols.get(key).value;
+		}
+		return returnVal;
+	}
+	
+	public static boolean isRelative(String key) {
+		boolean returnVal = false;
+		if (!symbols.containsKey(key)) {
+			//error
+		} else {
+			returnVal = symbols.get(key).isRelative;
+		}
+		return returnVal;
+	}
+	
+	public static void display() {
+		System.out.println(symbols.toString());
+	}
 }
