@@ -16,6 +16,18 @@ public class LiteralTable {
 		}
 	}
 	
+	public void input (String key, String addr) {
+		this.input(Short.parseShort(key),Short.parseShort(addr));
+	}
+	
+	public void input (short key, String addr) {
+		this.input(key,Short.parseShort(addr));
+	}
+	
+	public void input (String key, short addr) {
+		this.input(Short.parseShort(key),addr);
+	}
+	
 	public short getAddress(short key) {
 		short returnVal = 0;
 		if (literals.containsKey(key)) {
