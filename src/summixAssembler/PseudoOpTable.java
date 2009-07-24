@@ -4,11 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PseudoOpTable {
-	private class PseudoOp {
-		public short op;			//4 bit op code
-		public short size;			//size of the op code
-		public boolean isVariable;	//is the size dependant on the instruction code?
-	}
 	
 	private static Map<String, PseudoOp> pseudoOps = new HashMap<String, PseudoOp>();
 	
