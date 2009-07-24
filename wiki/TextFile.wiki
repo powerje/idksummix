@@ -68,33 +68,79 @@ Tokens come in five varities
 Use the isEndOfFile() to ensure that you are not at the end of file before calling this method. DO NOT CALL THIS METHOD IF isEndOfFile() returns true.
 
 
-Pointer position line 0, spot 6
+The below source code inside of TextFile
 
-4 strings inside of TextFile
+{{{
+; Example Program
+Lab2EG .ORIG x30B0
+count .FILL #4
+LD ACC,count ;R1 <- 4
+LEA R0,msg
+loop TRAP x22 ;print "hi! "
+ADD ACC,ACC,#-1 ;R1--
+BRP loop
+JMP Next
+msg .STRZ "hi! "
+Next AND R0,R0,x0 ;R0 <- 0
+NOT R0,R0 ;R0 <- xFFFF
+ST R0,Array ;M[Array] <- xFFFF
+LEA R5,Array
+LD R6,=#100 ;R6 <= #100
+STR R0,R5,#1 ;M[Array+1] <= xFFFF
+TRAP x25
+ACC .EQU #1
+; ----- Scratch Space -----
+Array .BLKW #3
+.FILL x10
+.END
+}}}
 
-"Hello, this is manuel."
 
-"I'm watching Burn Notice"
+*STARTING FROM POINTER line 0, spot 0*
 
-""
+getToken() returns "; Example Program"
 
-"It's a really great show"
-
-getToken() returns "this"
-
-Pointer is now line 0, spot 11
-
-getToken() returns "is"
-
-Pointer is now line 0, spot 14
-
-getToken() returns "manuel."
-
-Pointer is now line 0, spot 22
+Pointer is now line 0, spot 17
 
 getToken() returns ""
 
 Pointer is now line 1, spot 0
+
+getToken() returns "Lab2EG"
+
+Pointer is now line 1, spot 6
+
+getToken() returns ".ORIG"
+
+Pointer is now line 1, spot 12
+
+getToken() returns "x30B0"
+
+Pointer is now line 1, spot 18
+
+getToken() returns ""
+
+Pointer is now line 2, spot 0
+
+
+*STARTING FROM POINTER line 9, spot 0*
+
+getToken() returns "msg"
+
+Pointer is now line 9, spot 3
+
+getToken() returns ".STRZ"
+
+Pointer is now line 9, spot 9
+
+getToken() returns ""hi! ""
+
+Pointer is now line 9, spot 16
+
+getToken() returns ""
+
+Pointer is now line 10, spot 0
+
 
 ===TextFile(string)===
 TextFile(name) - Takes in a file called "name" as input and converts it into the TextFile format.
