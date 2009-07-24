@@ -88,6 +88,10 @@ display() - Outputs the TextFile to the screen.
 
 ===reset()===
 reset() - Returns the pointer to line 0, spot 0
+
+===boolean isEndOfFile()===
+end isEndOfFile() - Returns end which is true if the pointer for the TextFile object is pointing at the end of file, or if the textfile object is completely empty.
+
 ----
 = Input =
 = Responsibilities =
