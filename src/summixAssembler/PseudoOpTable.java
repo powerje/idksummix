@@ -9,9 +9,8 @@ public class PseudoOpTable {
 		public short size;
 	}
 	
-	Map<String, PseudoOp> pseudoOps = new HashMap<String, PseudoOp>();
+	private static Map<String, PseudoOp> pseudoOps = new HashMap<String, PseudoOp>();
 	
-
 	public short getOp(String name){
 		//we want this bitshifted or not?
 		short returnVal = 0;
