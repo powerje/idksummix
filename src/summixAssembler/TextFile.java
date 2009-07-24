@@ -49,7 +49,7 @@ public class TextFile {
 	{
 		String rVal = body.get(rowPointer); //Get the string out of the array located at the rowPointer
 		rVal = rVal.substring(posPointer); //Get the portion of the string to the right of the posPointer
-
+		int numOfSpaces = 0;
 		boolean haveGottenToken = false, insideQuotes = false, insideComment = false;
 		String temp, returnTok = "";
 		
@@ -87,7 +87,8 @@ public class TextFile {
 		    				insideComment = true;
 		    				returnTok = returnTok.concat(temp);
 		    				break;
-		    			case ' ': //Useless space, don't do anything with it
+		    			case ' ': //Useless space, count for pos increment
+		    				numOfSpaces++;
 		    				break;
 		    			default: //Just an alphanumeric string, we want the whole thing
 		    				haveGottenToken = true;
@@ -96,11 +97,11 @@ public class TextFile {
 		    	}
 	    	}
 
-	    	System.out.println("Token extracted:" + temp); //Debugging code, REMOVEME
-	    	System.out.println("Token built:" + returnTok); //Debugging code, REMOVEME
+//	    	System.out.println("Token extracted:" + temp); //Debugging code, REMOVEME
+//	    	System.out.println("Token built:" + returnTok); //Debugging code, REMOVEME
 	    	}
 		
-		System.out.print("Token to be returned:" + returnTok); //Debugging code, REMOVEME
+//		System.out.print("Token to be returned:" + returnTok); //Debugging code, REMOVEME
 		
 		if (body.get(rowPointer).substring(posPointer).isEmpty()) //If at end of a line, go down to the next line with the pos pointer
 		{
@@ -109,7 +110,7 @@ public class TextFile {
 		}
 		else //You're not at the end of a line, so you have to update the pos pointer based on the size of the token extracted 
 		{
-			posPointer += returnTok.length();
+			posPointer += returnTok.length() + numOfSpaces;
 		}
 		
 		return returnTok;
@@ -168,7 +169,7 @@ public class TextFile {
 		{
 			return true;
 		}
-		else if(body.size() - 1 == rowPointer && body.get(rowPointer).length() - 1 == posPointer) //If the file isn't empty, is the marker at the last spot? 
+		else if(body.size() - 1 < rowPointer) //If the file isn't empty, is the horizontal marker too far?
 		{
 			return true;
 		}
