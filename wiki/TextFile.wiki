@@ -13,9 +13,9 @@ The TextFile class is a wrapper class that contains an arraylist of strings. The
 input(text) - Adds a String of text to the last line of the text file.
 
 ===String getLine()===
-text getLine() - Returns a String of text that represents the current line of the text file from the pointer's current position to the end and increments the pointer to the next line.
+text getLine() - Returns a String of text that represents the current line of the text file from the pointer's current position to the end and increments the pointer to the next line. This call can be mixed with getToken(), but if a getToken() call was made earlier getLine() will only return what is left on the current line.
 
-Use the isEndOfFile() to ensure that you are not at the end of file before calling this method.
+Use the isEndOfFile() to ensure that you are not at the end of file before calling this method. DO NOT CALL THIS METHOD IF isEndOfFile() returns true.
 
 Pointer position line 0, spot 6
 
@@ -46,7 +46,26 @@ Pointer is now line 3, spot 0
 ===String getToken()===
 text getToken() - Returns a String of text that represents the next non-white space token. Then it increments the pointer to the end of that text. If it's at the end of the string, it returns "" and increments to the next line.
 
-Use the isEndOfFile() to ensure that you are not at the end of file before calling this method.
+Tokens come in five varities
+ * Quotation Tokens
+   * Any string encapsulated within quotation marks. It will include the quotation marks with the string. *{{{"hi! "}}}* is an example of a quotation token. Be careful with this type of token, *{{{"hi!  ;print "}}}* is an example of a quotation token that is well formed, by syntactically incorrect. The writer of the source code meant to close off the original " but did not.
+ * Malformed Quotation Tokens
+   * Any string with a leading " that is not terminated by a following quotation mark somewhere else on the line. Whomever is handling this token should emit an error if they get a token with a leading " with no ending ". Examples:
+     * "hi!       ;print hi!
+ * Alphanumeric Tokens
+   * Any string without a leading " or ;. Examples:
+     * HALT
+     * ACC,count
+     * R0,R0,x0
+ * Comment Tokens
+   * Any string with a leading ;. Examples:
+     * ;print "hi! "
+     * ; Example Program
+     * ;M[Array] <- xFFFF
+ * End of Line Tokens
+   * An empty string. Should be used to check to see if you've gotten out the last token.
+
+Use the isEndOfFile() to ensure that you are not at the end of file before calling this method. DO NOT CALL THIS METHOD IF isEndOfFile() returns true.
 
 
 Pointer position line 0, spot 6
