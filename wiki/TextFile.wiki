@@ -15,6 +15,8 @@ input(text) - Adds a String of text to the last line of the text file.
 ===String getLine()===
 text getLine() - Returns a String of text that represents the current line of the text file from the pointer's current position to the end and increments the pointer to the next line.
 
+Use the isEndOfFile() to ensure that you are not at the end of file before calling this method.
+
 Pointer position line 0, spot 6
 
 4 strings inside of TextFile
@@ -42,9 +44,9 @@ Pointer is now line 3, spot 0
 
 
 ===String getToken()===
-text getToken() - Returns a String of text that represents the next non-white space token. Then it increments the pointer to the end of that text. If it's at the end of the string, it returns "" and increments to the next line. When the getToken() returns "" then you know you've reached the end of the file, and now the pointer is pointing at the next line.
+text getToken() - Returns a String of text that represents the next non-white space token. Then it increments the pointer to the end of that text. If it's at the end of the string, it returns "" and increments to the next line.
 
-When the tokenizer returns "\0" then you know that you've reached the end of file. The tokenzier will continue to return "\0" until you reset it.
+Use the isEndOfFile() to ensure that you are not at the end of file before calling this method.
 
 
 Pointer position line 0, spot 6
