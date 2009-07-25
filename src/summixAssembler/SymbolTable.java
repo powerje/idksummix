@@ -29,7 +29,7 @@ public class SymbolTable {
 		}
 	}
 	
-	public static void input(String key) {
+	public void input(String key) {
 		if (symbols.containsKey(key)) {
 			//error
 		} else {
@@ -37,7 +37,7 @@ public class SymbolTable {
 		}
 	}
 	
-	public static void update(String key, short value, boolean relative) {
+	public void update(String key, short value, boolean relative) {
 		if (!symbols.containsKey(key)) {
 			//error
 		} else {
@@ -45,7 +45,7 @@ public class SymbolTable {
 		}
 	}
 	
-	public static short getValue(String key) {
+	public short getValue(String key) {
 		short returnVal = 0;
 		if (!symbols.containsKey(key)) {
 			//error
@@ -55,7 +55,7 @@ public class SymbolTable {
 		return returnVal;
 	}
 	
-	public static boolean isRelative(String key) {
+	public boolean isRelative(String key) {
 		boolean returnVal = false;
 		if (!symbols.containsKey(key)) {
 			//error
@@ -65,7 +65,7 @@ public class SymbolTable {
 		return returnVal;
 	}
 	
-	public static void display() {
+	public void display() {
 		System.out.println(symbols.toString());
 	}
 }
