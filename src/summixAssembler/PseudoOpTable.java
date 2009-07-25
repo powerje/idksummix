@@ -22,16 +22,15 @@ public class PseudoOpTable {
 	private static Map<String, PseudoOp> pseudoOps = new HashMap<String, PseudoOp>();
 	
 	public void initialize() {
+		//format:	Mnemonic, size, relativity
 		pseudoOps.put(".ORIG", new PseudoOp(0, false));
 		pseudoOps.put(".END",  new PseudoOp(0, false));
 		pseudoOps.put(".EQU",  new PseudoOp(0, false));
 		pseudoOps.put(".FILL", new PseudoOp(1, false));
 		pseudoOps.put(".STRZ", new PseudoOp(0, true));
 		pseudoOps.put(".BLKW", new PseudoOp(0, true));
-
 	}
 	
-
 	public boolean isVariable(String name) {
 		boolean returnVal = false;
 		
