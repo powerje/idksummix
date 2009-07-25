@@ -53,7 +53,7 @@ public class TextFile {
 		boolean haveGottenToken = false, insideQuotes = false, insideComment = false;
 		String temp, returnTok = "";
 		
-		StringTokenizer st = new StringTokenizer(rVal,"; \"",true);
+		StringTokenizer st = new StringTokenizer(rVal,"; \t\"",true);
 	    
 		while (!haveGottenToken && st.hasMoreTokens()) //Until a well formed token is ready, or we run out of tokens, keep taking them out
 		{
