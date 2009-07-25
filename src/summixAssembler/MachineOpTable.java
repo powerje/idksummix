@@ -44,7 +44,13 @@ public class MachineOpTable {
 		machineOps.put("JMPR", 	new MachineOp(12, 1));
 		machineOps.put("RET", 	new MachineOp(13, 1));
 		machineOps.put("LEA", 	new MachineOp(14, 1));
-		machineOps.put("TRAP", 	new MachineOp(15, 1));
+		machineOps.put("OUT", 	new MachineOp(0xF021, 1));	//traps here and below
+		machineOps.put("PUTS", 	new MachineOp(0xF022, 1));
+		machineOps.put("IN", 	new MachineOp(0xF023, 1));
+		machineOps.put("HALT", 	new MachineOp(0xF025, 1));
+		machineOps.put("OUTN", 	new MachineOp(0xF031, 1));
+		machineOps.put("INN", 	new MachineOp(0xF033, 1));
+		machineOps.put("RND", 	new MachineOp(0xF043, 1));
 	}
 
 	public short getOp(String name){
