@@ -5,9 +5,23 @@ import java.util.Map;
 
 public class SymbolTable {	
 	
+	public class Symbol {
+		Symbol(short value, boolean relative) {
+			this.value = value;
+			this.isRelative = relative;
+		}
+		
+		public String toString() {
+			return "(" + this.value + ", " + this.isRelative + ")";
+		}
+		
+		public short value;
+		public boolean isRelative;
+	}
+
 	private static Map<String, Symbol> symbols = new HashMap<String, Symbol>();
 
-	public static void input(String key, short value, boolean relative) {
+	public void input(String key, short value, boolean relative) {
 		if (symbols.containsKey(key)) {
 			//error
 		} else {
