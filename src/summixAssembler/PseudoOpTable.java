@@ -51,4 +51,9 @@ public class PseudoOpTable {
 		
 	}
 
+	public void display() {
+		System.out.println( "Pseudo Op Table:\n" +
+						 	"Format: Mnemonic (size, variable size)");
+		System.out.println(pseudoOps.toString());
+	}
 }
