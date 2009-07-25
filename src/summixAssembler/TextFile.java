@@ -90,6 +90,9 @@ public class TextFile {
 		    			case ' ': //Useless space, count for pos increment
 		    				numOfSpaces++;
 		    				break;
+		    			case '\t': //Useless tab, count for pos increment
+		    				numOfSpaces++;
+		    				break;
 		    			default: //Just an alphanumeric string, we want the whole thing
 		    				haveGottenToken = true;
 		    				returnTok = returnTok.concat(temp);
