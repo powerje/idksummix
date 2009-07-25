@@ -37,6 +37,8 @@ public class LiteralTable {
 	}
 	
 	public void display() {
+		System.out.println( "Literal Table:\n" +
+						 	"Format: key (address)");
 		System.out.println(literals.toString());
 	}
 	

@@ -66,6 +66,8 @@ public class SymbolTable {
 	}
 	
 	public void display() {
+		System.out.println( "Symbol Table:\n" +
+						 	"Format: Mnemonic (value, isRelative)");
 		System.out.println(symbols.toString());
 	}
 }
