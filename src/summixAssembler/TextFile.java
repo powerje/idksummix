@@ -45,6 +45,13 @@ public class TextFile {
 		in.close();
 	}
 	
+	public TextFile()
+	{
+		body = new ArrayList<String>();
+		posPointer = 0;
+		rowPointer = 0;
+	}
+	
 	public String getToken()
 	{
 		String rVal = body.get(rowPointer); //Get the string out of the array located at the rowPointer
