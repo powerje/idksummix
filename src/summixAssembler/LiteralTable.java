@@ -6,7 +6,7 @@ import java.util.Map;
 public class LiteralTable {
 	private static Map<Short, Short> literals = new HashMap<Short, Short>();
 	
-	public void input(short key, short addr) {
+	public static void input(short key, short addr) {
 		if (!literals.containsKey(key)) {
 			literals.put(key, addr);
 		} else {
@@ -14,19 +14,19 @@ public class LiteralTable {
 		}
 	}
 	
-	public void input (String key, String addr) {
-		this.input(Short.parseShort(key),Short.parseShort(addr));
+	public static void input (String key, String addr) {
+		input(Short.parseShort(key),Short.parseShort(addr));
 	}
 	
-	public void input (short key, String addr) {
-		this.input(key,Short.parseShort(addr));
+	public static void input (short key, String addr) {
+		input(key,Short.parseShort(addr));
 	}
 	
-	public void input (String key, short addr) {
-		this.input(Short.parseShort(key),addr);
+	public static void input (String key, short addr) {
+		input(Short.parseShort(key),addr);
 	}
 	
-	public short getAddress(short key) {
+	public static short getAddress(short key) {
 		short returnVal = 0;
 		if (literals.containsKey(key)) {
 			returnVal = literals.get(key).shortValue();
@@ -36,7 +36,7 @@ public class LiteralTable {
 		return returnVal;
 	}
 	
-	public void display() {
+	public static void display() {
 		System.out.println( "Literal Table:\n" +
 						 	"Format: key (address)");
 		System.out.println(literals.toString());
