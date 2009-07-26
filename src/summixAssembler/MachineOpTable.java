@@ -3,16 +3,34 @@ package summixAssembler;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 
+ * @author Jim
+ *
+ */
 public class MachineOpTable {
+	/**
+	 * 
+	 * @author Jim
+	 * 
+	 */
 	private static class MachineOp {
 		public short op;			//4 bit op code
 		public short size;			//size of the op code
-
+		
+		/**
+		 * 
+		 * @param op the op code of the machine op
+		 * @param size the size (in words of memory) of the machine op
+		 */
 		MachineOp(int op, int size) {
 			this.op = (short) op;
 			this.size = (short) size;
 		}
 
+		/**
+		 * Returns a String object representing the specified machine op.  
+		 */
 		public String toString() {
 			return "(" + this.op + ", " + this.size + ")";
 		}
@@ -20,7 +38,11 @@ public class MachineOpTable {
 
 	private static Map<String, MachineOp> machineOps = new HashMap<String, MachineOp>();
 
+	/**
+	 * Initialize the MachineOpTable
+	 */
 	public static void initialize() {
+		machineOps.put("BR", 	new MachineOp(0, 1));
 		machineOps.put("BRA", 	new MachineOp(0, 1));
 		machineOps.put("BRN", 	new MachineOp(0, 1));
 		machineOps.put("BRZ", 	new MachineOp(0, 1));
@@ -28,6 +50,7 @@ public class MachineOpTable {
 		machineOps.put("BRNZ", 	new MachineOp(0, 1));
 		machineOps.put("BRNP", 	new MachineOp(0, 1));
 		machineOps.put("BRZP", 	new MachineOp(0, 1));
+		machineOps.put("BRNZP", new MachineOp(0, 1));
 		machineOps.put("ADD", 	new MachineOp(1, 1));
 		machineOps.put("LD",	new MachineOp(2, 1));
 		machineOps.put("ST", 	new MachineOp(3, 1));
@@ -53,6 +76,11 @@ public class MachineOpTable {
 		machineOps.put("RND", 	new MachineOp(0xF043, 1));
 	}
 
+	/**
+	 * 
+	 * @param name the key to be found
+	 * @return the op code of the machine op given by key of name shifted into its position in an instruction code
+	 */
 	public static short getOp(String name){
 		//we want this bitshifted or not?
 		short returnVal = 0;
@@ -64,6 +92,11 @@ public class MachineOpTable {
 		return returnVal;
 	}
 
+	/**
+	 * 
+	 * @param name the key to be found
+	 * @return the size of the MachineOp with the given key of name
+	 */
 	public static int getSize(String name){
 		int returnVal = 0;
 		if (machineOps.containsKey(name)) {
@@ -72,6 +105,9 @@ public class MachineOpTable {
 		return returnVal;		
 	}
 
+	/**
+	 * Prints the machine op table to the display
+	 */
 	public static void display() {
 		System.out.println( "Machine Op Table:\n" +
 						 	"Format: Mnemonic (op, size)");
