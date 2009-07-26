@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MachineOpTable {
-	public class MachineOp {
+	private static class MachineOp {
 		public short op;			//4 bit op code
 		public short size;			//size of the op code
 
@@ -20,7 +20,7 @@ public class MachineOpTable {
 
 	private static Map<String, MachineOp> machineOps = new HashMap<String, MachineOp>();
 
-	public void initialize() {
+	public static void initialize() {
 		machineOps.put("BRA", 	new MachineOp(0, 1));
 		machineOps.put("BRN", 	new MachineOp(0, 1));
 		machineOps.put("BRZ", 	new MachineOp(0, 1));
@@ -53,7 +53,7 @@ public class MachineOpTable {
 		machineOps.put("RND", 	new MachineOp(0xF043, 1));
 	}
 
-	public short getOp(String name){
+	public static short getOp(String name){
 		//we want this bitshifted or not?
 		short returnVal = 0;
 		if (machineOps.containsKey(name)) {
@@ -64,7 +64,7 @@ public class MachineOpTable {
 		return returnVal;
 	}
 
-	public int getSize(String name){
+	public static int getSize(String name){
 		int returnVal = 0;
 		if (machineOps.containsKey(name)) {
 			returnVal = machineOps.get(name).size;
@@ -72,7 +72,7 @@ public class MachineOpTable {
 		return returnVal;		
 	}
 
-	public void display() {
+	public static void display() {
 		System.out.println( "Machine Op Table:\n" +
 						 	"Format: Mnemonic (op, size)");
 		System.out.println(machineOps.toString());

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class PseudoOpTable {
 
-	public class PseudoOp {
+	private static class PseudoOp {
 		public short size;			//size of the op code
 		public boolean isVariable;	//is the size dependant on the instruction code?
 		
@@ -21,7 +21,7 @@ public class PseudoOpTable {
 	
 	private static Map<String, PseudoOp> pseudoOps = new HashMap<String, PseudoOp>();
 	
-	public void initialize() {
+	public static void initialize() {
 		//format:	Mnemonic, size, relativity
 		pseudoOps.put(".ORIG", new PseudoOp(0, false));
 		pseudoOps.put(".END",  new PseudoOp(0, false));
@@ -31,7 +31,7 @@ public class PseudoOpTable {
 		pseudoOps.put(".BLKW", new PseudoOp(0, true));
 	}
 	
-	public boolean isVariable(String name) {
+	public static boolean isVariable(String name) {
 		boolean returnVal = false;
 		
 		if (pseudoOps.containsKey(name)) {
@@ -42,7 +42,7 @@ public class PseudoOpTable {
 		return returnVal;
 	}
 	
-	public short getSize(String name){
+	public static short getSize(String name){
 		short returnVal = 0;
 		if (pseudoOps.containsKey(name)) {
 			returnVal = pseudoOps.get(name).size;
@@ -51,7 +51,7 @@ public class PseudoOpTable {
 		
 	}
 
-	public void display() {
+	public static void display() {
 		System.out.println( "Pseudo Op Table:\n" +
 						 	"Format: Mnemonic (size, variable size)");
 		System.out.println(pseudoOps.toString());

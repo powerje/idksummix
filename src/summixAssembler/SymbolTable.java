@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class SymbolTable {	
 	
-	public class Symbol {
+	private static class Symbol {
 		Symbol(short value, boolean relative) {
 			this.value = value;
 			this.isRelative = relative;
@@ -21,7 +21,7 @@ public class SymbolTable {
 
 	private static Map<String, Symbol> symbols = new HashMap<String, Symbol>();
 
-	public void input(String key, short value, boolean relative) {
+	public static void input(String key, short value, boolean relative) {
 		if (symbols.containsKey(key)) {
 			//error
 		} else {
@@ -29,7 +29,7 @@ public class SymbolTable {
 		}
 	}
 	
-	public void input(String key) {
+	public static void input(String key) {
 		if (symbols.containsKey(key)) {
 			//error
 		} else {
@@ -37,7 +37,7 @@ public class SymbolTable {
 		}
 	}
 	
-	public void update(String key, short value, boolean relative) {
+	public static void update(String key, short value, boolean relative) {
 		if (!symbols.containsKey(key)) {
 			//error
 		} else {
@@ -45,7 +45,7 @@ public class SymbolTable {
 		}
 	}
 	
-	public short getValue(String key) {
+	public static short getValue(String key) {
 		short returnVal = 0;
 		if (!symbols.containsKey(key)) {
 			//error
@@ -55,7 +55,7 @@ public class SymbolTable {
 		return returnVal;
 	}
 	
-	public boolean isRelative(String key) {
+	public static boolean isRelative(String key) {
 		boolean returnVal = false;
 		if (!symbols.containsKey(key)) {
 			//error
@@ -65,7 +65,7 @@ public class SymbolTable {
 		return returnVal;
 	}
 	
-	public void display() {
+	public static void display() {
 		System.out.println( "Symbol Table:\n" +
 						 	"Format: Mnemonic (value, isRelative)");
 		System.out.println(symbols.toString());
