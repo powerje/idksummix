@@ -3,14 +3,31 @@
 <wiki:toc max_depth="3" />
 ----
 = Implementation =
-TBD
+The machine op table is implemented with a HashMap of key String and value of MachineOp.
+== Classes ==
+=== MachineOp ===
+====Implementation====
+The MachineOp is an object containing an op code and size of a machine operation.  It is implemented with two public variables to represent that data, op and size.
+====Variables====
+=====short op=====
+op is the op code of the machine op
+=====short size=====
+size is the size (in words) of the machine op
+====Methods====
+=====MachineOp(int, int)=====
+constructor MachineOp(op, size) - creates a machine op with given op code and size
+====String toString()====
+toString toString - creates a string representation of a machine op
 == Variables ==
 == Methods ==
-
+===initialize()===
+void initialize() - adds all SummiX machine ops to the MachineOpTable
 ===short getOp(String)===
 op getOp(name) - Returns the left bit shifted operation code bits given by the mnemonic name
 ===short getSize(String)===
 size getSize(name) - Returns the size of the operation given by the mnemonic name
+===display()===
+void display() - prints the machine op table to the console
 ----
 = Responsibilities =
 ----
