@@ -4,9 +4,6 @@
 ----
 = Implementation =
 For the purposes of this assignment, you may assume a maximum of *50 literals*
-== Classes ==
-=== Literal ===
-The Literal class contains pairs of short values and short memory addresses.
 == Variables ==
 == Methods ==
 
