@@ -19,8 +19,6 @@ public class LiteralTable {
 	public static void input(short key, short addr) {
 		if (!literals.containsKey(key)) {
 			literals.put(key, addr);
-		} else {
-			//error
 		}
 	}
 	
@@ -61,9 +59,29 @@ public class LiteralTable {
 		if (literals.containsKey(key)) {
 			returnVal = literals.get(key).shortValue();
 		} else {
-			//error
+			System.out.println("ERROR: Literal " + key + " is undefined in the literal table. The value 0 has been used in its place.");
 		}
 		return returnVal;
+	}
+	
+	/**
+	 * 
+	 * @param key the key to search for
+	 * @return the address of the literal given by key
+	 */
+	public static short getAddress(String key)
+	{
+		return getAddress(Short.parseShort(key));
+	}
+	
+	/**
+	 * 
+	 * @param key the key to search for
+	 * @return the address of the literal given by key
+	 */
+	public static short getAddress(int key)
+	{
+		return getAddress((short)key);
 	}
 	
 	/**

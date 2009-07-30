@@ -28,7 +28,7 @@ public class SymbolTable {
 		 * Returns a String object representing the specified symbol. 
 		 */
 		public String toString() {
-			return "(" + this.value + ", " + this.isRelative + ")";
+			return "(" + this.value + ", " + this.isRelative + ")\n";
 		}
 		
 		public short value;
@@ -45,7 +45,7 @@ public class SymbolTable {
 	 */
 	public static void input(String key, short value, boolean relative) {
 		if (symbols.containsKey(key)) {
-			//error
+			System.out.println("ERROR: Symbol " + key + " defined multiple times.");
 		} else {
 			symbols.put(key, new Symbol(value, relative));
 		}
@@ -55,13 +55,11 @@ public class SymbolTable {
 	 * 
 	 * @param key the key for the symbol
 	 */
+	/*
 	public static void input(String key) {
-		if (symbols.containsKey(key)) {
-			//error
-		} else {
 			symbols.put(key, null);
-		}
 	}
+	*/
 	
 	/**
 	 * 
@@ -69,13 +67,11 @@ public class SymbolTable {
 	 * @param value the value of the symbol
 	 * @param relative whether or not this symbols value is relative to its location in memory
 	 */
+	/*
 	public static void update(String key, short value, boolean relative) {
-		if (!symbols.containsKey(key)) {
-			//error
-		} else {
 			symbols.put(key, new Symbol(value, relative));
-		}
 	}
+	*/
 	
 	/**
 	 * 
@@ -85,7 +81,7 @@ public class SymbolTable {
 	public static short getValue(String key) {
 		short returnVal = 0;
 		if (!symbols.containsKey(key)) {
-			//error
+			System.out.println("ERROR: The value of symbol " + key + " is undefined in symbol table. The value 0 has been used in its place.");
 		} else {
 			returnVal = symbols.get(key).value;
 		}
@@ -98,13 +94,16 @@ public class SymbolTable {
 	 * @return the relativity of the symbol denoted by key
 	 */
 	public static boolean isRelative(String key) {
-		boolean returnVal = false;
-		if (!symbols.containsKey(key)) {
-			//error
-		} else {
-			returnVal = symbols.get(key).isRelative;
-		}
-		return returnVal;
+		return symbols.get(key).isRelative;
+	}
+	
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public static boolean isDefined(String key) {
+		return symbols.containsKey(key);
 	}
 	
 	/**
