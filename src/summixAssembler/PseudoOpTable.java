@@ -33,7 +33,7 @@ public class PseudoOpTable {
 		 * Returns a String object representing the specified pseudo op. 
 		 */
 		public String toString() {
-			return "(" + this.size + ", " + this.isVariable + ")";
+			return "(" + this.size + ", " + this.isVariable + ")\n";
 		}
 	}
 	
@@ -43,13 +43,13 @@ public class PseudoOpTable {
 	 * Initializes the pseudo op table.
 	 */
 	public static void initialize() {
-		//format:	Mnemonic, size, relativity
+		//format:	Mnemonic, size, variability of puesdop size
 		pseudoOps.put(".ORIG", new PseudoOp(0, false));
 		pseudoOps.put(".END",  new PseudoOp(0, false));
 		pseudoOps.put(".EQU",  new PseudoOp(0, false));
 		pseudoOps.put(".FILL", new PseudoOp(1, false));
-		pseudoOps.put(".STRZ", new PseudoOp(0, true));
-		pseudoOps.put(".BLKW", new PseudoOp(0, true));
+		pseudoOps.put(".STRZ", new PseudoOp(-1, true));
+		pseudoOps.put(".BLKW", new PseudoOp(-1, true));
 	}
 	
 	/**
@@ -58,14 +58,16 @@ public class PseudoOpTable {
 	 * @return whether or not the pseudo op is of variable size
 	 */
 	public static boolean isVariable(String name) {
-		boolean returnVal = false;
-		
-		if (pseudoOps.containsKey(name)) {
-			returnVal = pseudoOps.get(name).isVariable;
-		} else {
-			//error
-		}
-		return returnVal;
+		return pseudoOps.get(name).isVariable;
+	}
+	
+	/**
+	 * 
+	 * @param name the key to search for the pseudo op
+	 * @return whether or not the given string is a pseudoOp
+	 */
+	public static boolean isPseudoOp(String name) {
+		return pseudoOps.containsKey(name);
 	}
 	
 	/**
@@ -74,18 +76,11 @@ public class PseudoOpTable {
 	 * @return the size of the pseudo op
 	 */
 	public static short getSize(String name){
-		short returnVal = 0;
-		if (pseudoOps.containsKey(name)) {
-			returnVal = pseudoOps.get(name).size;
-		} else {
-			//error
-		}
-		return returnVal;
-		
+		return pseudoOps.get(name).size;
 	}
 
 	/**
-	 * Display the pseudo op table to the console.
+	 * Display the pseudo op table to the console. Useless method.
 	 */
 	public static void display() {
 		System.out.println( "Pseudo Op Table:\n" +
