@@ -14,6 +14,8 @@
     * [PseudoOpTable]
     * [SymbolTable]
     * [TextFile]
+    * [Token]
+    * [TokenType]
   * Files
     * [lFile]
     * [p1File]
