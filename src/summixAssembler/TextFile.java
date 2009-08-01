@@ -129,11 +129,11 @@ public class TextFile {
 		{
 			tempType = TokenType.EOL;
 		}
-		else if(returnTok.startsWith("\"") && returnTok.endsWith("\""))
+		else if(returnTok.startsWith("\"") && returnTok.endsWith("\"") && (returnTok.length() != 1))
 		{
 			tempType = TokenType.QUOTE;
 		}
-		else if(returnTok.startsWith("\"") && !returnTok.endsWith("\""))
+		else if((returnTok.startsWith("\"") && !returnTok.endsWith("\"")) || returnTok.equalsIgnoreCase("\""))
 		{
 			tempType = TokenType.ERROR;
 		}
