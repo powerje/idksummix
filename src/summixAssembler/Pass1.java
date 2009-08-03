@@ -35,8 +35,20 @@ public class Pass1 {
 			// where n = 6 - (num_of_spaces(tokenText))
 			// }
 
+			// processOrig
 		
-			// getToken(token)
+			// Boolean isRelative
+		
+			// incomingSource.getToken(token)
+		
+			// if (token.getText() = .ORIG){
+				// incomingSource.getToken(token)
+				// if (token.getType() == HEX){
+					// LocationCounter.set(token.getText(), isRelative)
+				// }
+				// else if (token.getType() == COMMENT){
+					// 	
+			// }
 		
 		
 		// set Location Counter
