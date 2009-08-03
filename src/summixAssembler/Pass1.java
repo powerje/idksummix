@@ -2,6 +2,7 @@ package summixAssembler;
 
 public class Pass1 {
 
+	Token[] token_array = new Token[5]; 
 	TextFile body, line, p1file;
 	String headerRecord;
 	String strLine;
@@ -10,6 +11,18 @@ public class Pass1 {
 	public Pass1(TextFile incomingSource)
 	{
 		body = incomingSource;
+	}
+	public int getTokens()
+	{
+		int count = 0;
+		int num_params = 0;
+		while(count < 5)
+		{
+			token_array[count] = body.getToken();
+			count++;
+			num_params++;
+		}
+		return num_params;
 	}
 	
 	public String processHeader(){
@@ -33,7 +46,7 @@ public class Pass1 {
 		// Process isRelative
 		token = line.getToken();
 		
-		if((token.getType() != EOL) || (token.getType() != COMMENT))
+		if((token.getType() != TokenType.EOL) || (token.getType() != TokenType.COMMENT))
 		{
 			isRelative = false;
 			headerRecord += token.getText();
@@ -42,10 +55,10 @@ public class Pass1 {
 		{
 			isRelative = true;
 		}
-		
+		/*!  NEED TO PARSE HEX TO INT USE SUMMIX_UTILITIES 
 		int addr = Integer.parseInt(token.getText());
 		LocationCounter.set(addr, isRelative);
-		
+		!*/
 	
 		
 		return headerRecord;
