@@ -2,59 +2,65 @@ package summixAssembler;
 
 public class Pass1 {
 
-	TextFile body;
+	TextFile body, line, p1file;
+	String headerRecord;
+	String strLine;
+	Token token;
 	
 	public Pass1(TextFile incomingSource)
 	{
 		body = incomingSource;
 	}
 	
+	public String processHeader(){
+		
+		String progName;
+		
+		Boolean isRelative = false;
+		strLine = body.getLine();
+		line.input(strLine);
+		token = line.getToken();
+		
+		// Process ProgName
+		headerRecord += token.getText();
+		headerRecord += " ";
+		
+		// Process .ORIG
+		token = line.getToken();
+		headerRecord += token.getText();
+		headerRecord += " ";
+		
+		// Process isRelative
+		token = line.getToken();
+		
+		if((token.getType() != EOL) || (token.getType() != COMMENT))
+		{
+			isRelative = false;
+			headerRecord += token.getText();
+		}
+		else
+		{
+			isRelative = true;
+		}
+		
+		int addr = Integer.parseInt(token.getText());
+		LocationCounter.set(addr, isRelative);
+		
+	
+		
+		return headerRecord;
+	}
+	
 	public TextFile processFile()
 	{
-		// processHeaderRecord
-		
-			// while (!incomingSource.isEndOfFile()){
-		
-			// processProgName
-		
-				// incomingSource.getToken(token)	
-		
-				// while (token.getType != ALPHA or QUOTE){
-		
-				// if token.getType == ERROR{
-					// error message
-				// }
-		
-				// else if (token.getType == COMMENT or EOL) and
-				// (!incomingSource.isEndOfFile()){
-					// incomingSource.getToken(token)
-					// }
-			// }
-		
-			// progName = ((token.getText()) + (n)spaces) 
-			// where n = 6 - (num_of_spaces(tokenText))
-			// }
-
-			// processOrig
-		
-			// Boolean isRelative
-		
-			// incomingSource.getToken(token)
-		
-			// if (token.getText() = .ORIG){
-				// incomingSource.getToken(token)
-				// if (token.getType() == HEX){
-					// LocationCounter.set(token.getText(), isRelative)
-				// }
-				// else if (token.getType() == COMMENT){
-					// 	
-			// }
+		body.processHeader();
+		p1file.input(headerRecord);
 		
 		
 		// set Location Counter
 		// store initial LC for later calculation of segment size
 		
 		
-		return body;
+		return p1file;
 	}
 }
