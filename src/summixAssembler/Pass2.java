@@ -10,7 +10,13 @@ public class Pass2 {
 	
 	public TextFile processFile()
 	{
-		//This is where all the work has to be done. This is just temp code to make the complier happy for the assembler main() class
+		//get header record
+		//write header record to p2File
+		
+		
+		
 		return body;
 	}
+	
+	
 }
