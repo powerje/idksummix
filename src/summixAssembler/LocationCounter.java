@@ -10,6 +10,9 @@ public class LocationCounter {
 	
 	static int curAddr;
 	
+	public static boolean relative;
+	
+	
 	/**
 	 * Incrementer for the Location Counter
 	 * 
@@ -33,12 +36,14 @@ public class LocationCounter {
 	
 	public static void set(int address, boolean isRelative){
 	
-		if (!isRelative){
+		relative = isRelative;
+		if (!relative){
 		curAddr = address;
 		}
 		else{
 		curAddr = 0;
 		}
+		
 	}
 	
 	/**
