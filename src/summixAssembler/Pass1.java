@@ -2,7 +2,8 @@ package summixAssembler;
 
 public class Pass1 {
 
-	Token[] token_array = new Token[5]; 
+	Token[] token_array = new Token[5];
+	String[] record_string = new String[100];
 	TextFile body, line, p1file;
 	String headerRecord;
 	String strLine;
@@ -19,56 +20,95 @@ public class Pass1 {
 		while(count < 5)
 		{
 			token_array[count] = body.getToken();
+			if(token_array[count].getType() == TokenType.EOL)
+			{
+				count = 5;
+			}
 			count++;
 			num_params++;
 		}
 		return num_params;
-	}
+	}	
 	
-	public String processHeader(){
-		
+	public String processHeader()
+	{
 		String progName;
-		
-		Boolean isRelative = false;
-		strLine = body.getLine();
-		line.input(strLine);
-		token = line.getToken();
-		
-		// Process ProgName
-		headerRecord += token.getText();
-		headerRecord += " ";
-		
-		// Process .ORIG
-		token = line.getToken();
-		headerRecord += token.getText();
-		headerRecord += " ";
-		
-		// Process isRelative
-		token = line.getToken();
-		
-		if((token.getType() != TokenType.EOL) || (token.getType() != TokenType.COMMENT))
+		boolean isRelative;
+		if(token_array[0].getType() == TokenType.ALPHA)
 		{
-			isRelative = false;
-			headerRecord += token.getText();
+			progName = token_array[0].getText();
 		}
 		else
 		{
-			isRelative = true;
+			//print error regarding program name
 		}
-		/*!  NEED TO PARSE HEX TO INT USE SUMMIX_UTILITIES 
-		int addr = Integer.parseInt(token.getText());
-		LocationCounter.set(addr, isRelative);
-		!*/
+		
+		if(!(token_array[2].getType() == TokenType.ALPHA))
+		{
+			isRelative = true;	
+		}
+		//LocationCounter.set(token, isRelative);
+		int token_array_size = token_array.length;
+		int i = 0;
+		while(i < token_array_size)
+		{
+			headerRecord += token_array[i];
+			headerRecord += " ";
+			i++;
+		}
+		return headerRecord;
+	}
 	
+	public String processText()
+	{
+		
+
+		
+		return headerRecord;
+	}
+	
+	public String processEnd()
+	{
+		if(token_array[1].getText() == ".END")
+		{
+		
+		}
+		else if(token_array[0].getText() == ".END")
+		{
+			
+		
+		}
+
 		
 		return headerRecord;
 	}
 	
 	public TextFile processFile()
 	{
-		body.processHeader();
-		p1file.input(headerRecord);
+		while(!body.isEndOfFile())
+		{
+			int num_params = getTokens();
+			
+			while((token_array[0].getType() == TokenType.COMMENT) || (token_array[0].getType() == TokenType.EOL))
+			{
+				num_params = getTokens();
+			}
+			if(token_array[1].getText() == ".ORIG")
+			{
+				processHeader();
+			}
+			else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())) ||
+					(PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
+			{
+				processText();
+			}
+			else if((token_array[0].getText() == ".END") || (token_array[1].getText() == ".END"))
+			{
+				processEnd();
+			}
 		
+		}
+	
 		
 		// set Location Counter
 		// store initial LC for later calculation of segment size
