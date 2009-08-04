@@ -42,6 +42,7 @@ public class Pass1 {
 	{
 		int count = 0;
 		num_params = 0;
+		
 		while(count < 4)
 		{
 			token_array[count] = body.getToken();
@@ -53,10 +54,77 @@ public class Pass1 {
 			num_params++;
 		}
 	}
+	
+	private boolean isMachineOp(Token op)
+	{
+		boolean opFlag = false;
+		
+		if(MachineOpTable.isOp(op.getText()))
+		{
+			opFlag = true;
+		}
+		
+		return opFlag;
+	}
+		
+	
+	
+	private boolean isPseudoOp(Token op)
+	{
+		boolean opFlag = false;
+		
+		if(PseudoOpTable.isPseudoOp(op.getText()))
+		{
+			opFlag = true;
+		}
+		
+		return opFlag;
+	}
+	
+	private boolean isVarPseudoOp(Token op)
+	{
+		boolean opFlag = false;
+		
+		if(op.getText() == ".BLKW" || op.getText() == ".STRZ")
+		{
+			opFlag = true;
+		}
+		
+		return opFlag;
+	}
+	
+	private boolean isNotVarPseudoOp(Token op)
+	{
+		boolean opFlag = false;
+		
+		if(op.getText() == ".FILL")
+		{
+			opFlag = true;
+		}
+		
+		return opFlag;
+	}
+	
+	private int getVarAmount(Token arg)
+	{
+		
+	}
+	
+	private boolean isOp(Token op)
+	{
+		boolean opFlag = false;
+		
+		if(PseudoOpTable.isPseudoOp(op.getText()) || (MachineOpTable.isOp(op.getText())))
+		{
+			opFlag = true;
+		}
+		
+		return opFlag;
+	}
+	
 	private boolean isLiteral(Token arg)
 	{
 		boolean literal = false;
-		int i = 0;
 		String strToken;
 		strToken = arg.getText();
 		int index = strToken.indexOf('=');
@@ -207,14 +275,10 @@ public class Pass1 {
 				processText();
 			}
 			
-		
-		}
-	
-		
-		// set Location Counter
-		// store initial LC for later calculation of segment size
+
 		
 		
 		return p1file;
 	}
 }
+
