@@ -52,6 +52,34 @@ public class TextFile {
 		rowPointer = 0;
 	}
 	
+	public void stripComments()
+	{
+		int tempRow = posPointer;
+		int tempPos = rowPointer;
+		ArrayList<String> tmpBody = new ArrayList<String>();
+		posPointer = 0;
+		rowPointer = 0;
+		int line = 0;
+		while(!isEndOfFile())
+		{
+			String original = body.get(line);
+			String commentFree;
+			int pos = original.indexOf(';');
+			if (pos > -1) {
+				commentFree = original.substring(0, pos);
+				tmpBody.add(commentFree);
+			} else {
+				tmpBody.add(original);
+			}
+			line++;
+			posPointer++;
+			rowPointer++;
+		}
+		body = tmpBody;
+		posPointer = tempPos;
+		rowPointer = tempRow;
+	}
+	
 	public void insertLine(int row, String input)
 	{
 		body.add(row, input);
