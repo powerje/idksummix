@@ -13,6 +13,7 @@ public class Pass1 {
 	String headerRecord, endRecord, textRecord;
 	String strLine;
 	Token token;
+	int num_params;
 	private static Set<Short> literals = new HashSet<Short>();
 	
 	private short hexstringToShort(CharSequence input) {
@@ -37,10 +38,10 @@ public class Pass1 {
 	{
 		body = incomingSource;
 	}
-	private int getTokens()
+	private void getTokens()
 	{
 		int count = 0;
-		int num_params = 0;
+		num_params = 0;
 		while(count < 4)
 		{
 			token_array[count] = body.getToken();
@@ -51,11 +52,10 @@ public class Pass1 {
 			count++;
 			num_params++;
 		}
-		return num_params;
 	}
-	private Boolean isLiteral(Token arg)
+	private boolean isLiteral(Token arg)
 	{
-		Boolean literal = false;
+		boolean literal = false;
 		int i = 0;
 		String strToken;
 		strToken = arg.getText();
@@ -75,12 +75,17 @@ public class Pass1 {
 	{
 		short literal = 0;
 		String strToken = arg.getText();
-		String strLiteral = null;
-		
-		int index = strToken.indexOf('=');
-		strLiteral.substring(index+2);
-		
-		literal = Short.parseShort(strLiteral);  //error checking regarding the parsing?
+		String strLiteral = arg.getText();
+
+		int index = strToken.indexOf('x');
+		if (index == -1) // not hex? must be decimal
+		{
+			index = strToken.indexOf('#');
+			literal = Short.parseShort(strLiteral.substring(index+1));  //error checking regarding the parsing?
+		}
+		else { //hex value
+			literal = hexstringToShort(strLiteral.subSequence(index + 1, strLiteral.length()));
+		}
 		
 		return literal;
 		
@@ -122,26 +127,27 @@ public class Pass1 {
 	{
 		if((PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
 		{
-			if(token_array[0].getType() == TokenType.ALPHA)
+			if(token_array[0].getType() == TokenType.ALPHA && num_params == 4 )
 			{
-				Boolean isLiteral;
 				SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
-				if(isLiteral = isLiteral(token_array[2]))
+				
+				if (isLiteral(token_array[2]))
 				{
-					short literal = getLiteral(token_array[2]);
-					literals.add(literal);
+					literals.add(getLiteral(token_array[2]));
 				}
-			}
-			else
-			{
-				//error
 			}
 		}
 		else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())))
 		{
-			
-		}
-
+			if(num_params == 3 )
+			{
+				SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
+				
+				if (isLiteral(token_array[2]))
+				{
+					literals.add(getLiteral(token_array[2]));
+				}
+			}
 		
 		return textRecord;
 	}
@@ -181,11 +187,11 @@ public class Pass1 {
 	{
 		while(!body.isEndOfFile())
 		{
-			int num_params = getTokens();
+			getTokens();
 			
 			while((token_array[0].getType() == TokenType.EOL))
 			{
-				num_params = getTokens();
+				getTokens();
 			}
 			if(token_array[1].getText() == ".ORIG")
 			{
