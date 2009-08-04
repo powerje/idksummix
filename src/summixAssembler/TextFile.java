@@ -51,6 +51,12 @@ public class TextFile {
 		posPointer = 0;
 		rowPointer = 0;
 	}
+	
+	public void insertLine(int row, String input)
+	{
+		body.add(row, input);
+		rowPointer += 1;
+	}
 
 	public Token getToken()
 	{
