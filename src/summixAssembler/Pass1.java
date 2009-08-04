@@ -105,8 +105,12 @@ public class Pass1 {
 		return opFlag;
 	}
 	
-	private int getVarAmount(Token arg)
+	private int getVarAmount(Token op, Token arg)
 	{
+		if(op.getText() == ".BLKW")
+		{
+			
+		}
 		
 	}
 	
@@ -204,18 +208,51 @@ public class Pass1 {
 					literals.add(getLiteral(token_array[2]));
 				}
 			}
+			
 		}
 		else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())))
 		{
 			if(num_params == 3 )
-			{
-				SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
-				
+			{	
 				if (isLiteral(token_array[2]))
 				{
 					literals.add(getLiteral(token_array[2]));
 				}
 			}
+			
+		}
+		
+		if(isPseudoOp(token_array[1]))
+		{
+			if(token_array[1].getText() == ".FILL")
+			{
+				LocationCounter.incrementAmt(1);
+			}
+			else if(isVarPseudoOp(token_array[1]))
+			{
+				if (token_array[1].getText() == ".BLKW")
+				{
+					
+				}
+				else if (token_array[1].getText() == ".STRZ")
+				{
+					if(token_array[2].getType() == TokenType.QUOTE)
+					{
+						String arg = token_array[2].getText();
+						int length = token_array[2].getText().length();
+						length -= 2; //get rid of quotes
+						length += 1; //add null
+						
+						LocationCounter.incrementAmt(length);
+					}
+					else if (token_array[2].getType() == TokenType.ERROR)
+					{
+						//error
+					}
+				}
+			}
+		}
+		
 		
 		return textRecord;
 	}
