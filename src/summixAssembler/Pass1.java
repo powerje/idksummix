@@ -2,6 +2,7 @@ package summixAssembler;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -262,7 +263,7 @@ public class Pass1 {
 
 	private String processText()
 	{
-		if((PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
+		if(isOp(token_array[1]))
 		{
 			if(token_array[0].getType() == TokenType.ALPHA && num_tokens == 4 )
 			{
@@ -282,80 +283,143 @@ public class Pass1 {
 					}
 					if (index1 == -1 && index2 == -1) //symbol table
 					{
-						short arg = SymbolTable.getValue(token_array[2].getText());
-						SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
+						if(!(SymbolTable.isDefined(token_array[2].getText())))
+						{
+							System.out.println("ERROR: Symbol used for .EQU operand was not previously defined.");
+						}
+						else
+						{
+							short arg = SymbolTable.getValue(token_array[2].getText());
+							SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
+						}
 					}
 				}
-				else
+				else if(isPseudoOp(token_array[1]) && (!(token_array[1].getText() == "EQU")))
 				{
-					SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
+					if(token_array[1].getText() == ".FILL")
+					{
+						LocationCounter.incrementAmt(1);
+					}
+					else if(isVarPseudoOp(token_array[1]))
+					{
+						if (token_array[1].getText() == ".BLKW")
+						{
+							int index1 = token_array[2].getText().indexOf('x');
+							if (index1 != -1) //hex
+							{
+								short arg = hexstringToShort(token_array[2].getText().subSequence(index1 + 1, token_array[2].getText().length()));
+								LocationCounter.incrementAmt((int) arg);
+							}
+							int index2 = token_array[2].getText().indexOf('#');
+							if (index2 != -1) //decimal
+							{
+								short arg = Short.parseShort(token_array[2].getText().substring(index2+1));
+								LocationCounter.incrementAmt((int) arg);
+							}
+							if (index1 == -1 && index2 == -1) //symbol table
+							{
+								if(!(SymbolTable.isDefined(token_array[2].getText())))
+								{
+									System.out.println("ERROR: Symbol used for .BLKW operand was not previously defined.");
+								}
+								
+								short arg = SymbolTable.getValue(token_array[2].getText());
+								LocationCounter.incrementAmt((int) arg);
+							}
+						}
+						else if (token_array[1].getText() == ".STRZ")
+						{
+							if(token_array[2].getType() == TokenType.QUOTE)
+							{
+								String arg = token_array[2].getText();
+								int length = token_array[2].getText().length();
+								length -= 2; //get rid of quotes
+								length += 1; //add null
+								
+								LocationCounter.incrementAmt(length);
+							}
+							else if (token_array[2].getType() == TokenType.ERROR)
+							{
+								System.out.println("ERROR: Arguments and / or operand for .STRZ is malformed.");
+							}
+						}
+					}
+					else
+					{
+						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
+					}
+					if (isLiteral(token_array[2]))
+					{
+						literals.add(getLiteral(token_array[2]));
+					}
 				}
-				if (isLiteral(token_array[2]))
-				{
-					literals.add(getLiteral(token_array[2]));
-				}
-			}
 			
-		}
-		else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())))
-		{
-			if(num_tokens == 3 )
-			{	
-				if (isLiteral(token_array[2]))
+			}
+			else if(isOp(token_array[0]))
+			{
+				if(isPseudoOp(token_array[0]))
 				{
-					literals.add(getLiteral(token_array[2]));
+					if(token_array[0].getText() == ".FILL")
+					{
+						LocationCounter.incrementAmt(1);
+					}
+					else if(isVarPseudoOp(token_array[0]))
+					{
+						if (token_array[0].getText() == ".BLKW")
+						{
+							int index1 = token_array[1].getText().indexOf('x');
+							if (index1 != -1) //hex
+							{
+								short arg = hexstringToShort(token_array[1].getText().subSequence(index1 + 1, token_array[1].getText().length()));
+								LocationCounter.incrementAmt((int) arg);
+							}
+							int index2 = token_array[1].getText().indexOf('#');
+							if (index2 != -1) //decimal
+							{
+								short arg = Short.parseShort(token_array[1].getText().substring(index2+1));
+								LocationCounter.incrementAmt((int) arg);
+							}
+							if (index1 == -1 && index2 == -1) //symbol table
+							{
+								if(!(SymbolTable.isDefined(token_array[1].getText())))
+								{
+									System.out.println("ERROR: Symbol used for .BLKW operand was not previously defined.");
+								}
+							
+								short arg = SymbolTable.getValue(token_array[1].getText());
+								LocationCounter.incrementAmt((int) arg);
+							}
+						}
+						else if (token_array[0].getText() == ".STRZ")
+						{
+							if(token_array[1].getType() == TokenType.QUOTE)
+							{
+								String arg = token_array[1].getText();
+								int length = token_array[1].getText().length();
+								length -= 2; //get rid of quotes
+								length += 1; //add null
+							
+								LocationCounter.incrementAmt(length);
+							}
+							else if (token_array[1].getType() == TokenType.ERROR)
+							{
+								System.out.println("ERROR: Arguments and / or operand for .STRZ is malformed.");
+							}
+						}
+					}
+					if(num_tokens == 3 )
+					{	
+						if (isLiteral(token_array[2]))
+						{
+							literals.add(getLiteral(token_array[2]));
+						}
+					}
 				}
 			}
+		}
+
+		
 			
-		}
-		
-		if(isPseudoOp(token_array[1]))
-		{
-			if(token_array[1].getText() == ".FILL")
-			{
-				LocationCounter.incrementAmt(1);
-			}
-			else if(isVarPseudoOp(token_array[1]))
-			{
-				if (token_array[1].getText() == ".BLKW")
-				{
-					int index1 = token_array[2].getText().indexOf('x');
-					if (index1 != -1) //hex
-					{
-						short arg = hexstringToShort(token_array[2].getText().subSequence(index1 + 1, token_array[2].getText().length()));
-						LocationCounter.incrementAmt((int) arg);
-					}
-					int index2 = token_array[2].getText().indexOf('#');
-					if (index2 != -1) //decimal
-					{
-						short arg = Short.parseShort(token_array[2].getText().substring(index2+1));
-						LocationCounter.incrementAmt((int) arg);
-					}
-					if (index1 == -1 && index2 == -1) //symbol table
-					{
-						short arg = SymbolTable.getValue(token_array[2].getText());
-						LocationCounter.incrementAmt((int) arg);
-					}
-				}
-				else if (token_array[1].getText() == ".STRZ")
-				{
-					if(token_array[2].getType() == TokenType.QUOTE)
-					{
-						String arg = token_array[2].getText();
-						int length = token_array[2].getText().length();
-						length -= 2; //get rid of quotes
-						length += 1; //add null
-						
-						LocationCounter.incrementAmt(length);
-					}
-					else if (token_array[2].getType() == TokenType.ERROR)
-					{
-						//error
-					}
-				}
-			}
-		}
-		
 		int token_array_size = token_array.length;
 		int i = 0;
 		while(i < token_array_size)
@@ -370,6 +434,7 @@ public class Pass1 {
 		
 		return textRecord;
 	}
+	
 	
 	private String processEnd()
 	{
@@ -495,9 +560,15 @@ public class Pass1 {
 			System.out.println("ERROR: The program contains NO end recorder.");
 		}
 
-		// Increment the Location Counter for all of the Literals
+		// Add Lits to Literal Table and increment the Location Counter for all of the Literals
+		Iterator literal = literals.iterator();
 		
-		LocationCounter.incrementAfterLiteral(LiteralTable.size()); 
+		while (literal.hasNext())
+		{
+			Short lit = (Short) literal.next();
+			LiteralTable.input(lit.shortValue(), LocationCounter.getAddress());
+			LocationCounter.incrementAfterLiteral(1);
+		}
 		
 		// Construct and Insert the Header Recorder
 		
