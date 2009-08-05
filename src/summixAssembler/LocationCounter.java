@@ -49,6 +49,7 @@ public class LocationCounter {
 	public static void set(int address, boolean isRelative){
 	
 		relative = isRelative;
+		
 		if (!relative){
 		curAddr = address;
 		}
