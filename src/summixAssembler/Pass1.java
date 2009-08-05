@@ -196,7 +196,7 @@ public class Pass1 {
 		}
 		else
 		{
-			//print error regarding program name
+			System.out.println("ERROR: Invalid or Malformed Program Name exists!");
 		}
 		
 		// Set the Location Counter
@@ -215,17 +215,17 @@ public class Pass1 {
 				start = hexstringToShort(strStartAddr.subSequence(index + 1, strStartAddr.length())); // should be error checking here?
 				if(start > 65535)
 				{
-					//error origin address exceeds the max addressable memory location
+					System.out.println("ERROR: The origin address exceeds the max addressable memory location!");
 				}
 			}
 				else
 			{
-				// error expected hex value for start of segment memory location
+				System.out.println("ERROR: Expected hex value for start of segment memory location!");
 			}
 		}
 		else
 		{
-			// error expected hex value for start of segment memory location
+			System.out.println("ERROR: Expected hex value for start of segment memory location!");
 		}
 		
 		LocationCounter.set((int)(start), isRelative);
@@ -367,7 +367,7 @@ public class Pass1 {
 				{
 					if(!(SymbolTable.isDefined(token_array[2].getText())))
 					{
-						// error symbol for start of execution was not previously defined
+						System.out.println("ERROR: Symbol for start of execution was not previously defined.");
 					}
 				}
 				if(token_array[0].getType() == TokenType.ALPHA)
@@ -379,7 +379,7 @@ public class Pass1 {
 				}
 				else
 				{
-					//error malformed label
+					System.out.println("ERROR: Invalid or Malformed Label!");
 				}
 		}
 		else if(token_array[0].getText() == ".END")
@@ -388,7 +388,7 @@ public class Pass1 {
 			{
 				if(!(SymbolTable.isDefined(token_array[1].getText())))
 				{
-					// error symbol for start of execution was not previously defined
+					System.out.println("ERROR: Symbol for start of execution was not previously defined.");
 				}
 			}		
 		}
@@ -438,10 +438,10 @@ public class Pass1 {
 			
 		}
 
-		LocationCounter.incrementAfterLiteral(LiteralTable.size());  // Jim can I have a size...Thanks
+		LocationCounter.incrementAfterLiteral(LiteralTable.size()); 
 		
 		short size = (short) (LocationCounter.getAddress() - start); // needs to be a hex string 
-		String sizeStr;
+		String sizeStr = null;
 		String headerFinal = "H";
 		headerFinal.concat(headerRecord);
 		headerRecord = headerFinal.concat(sizeStr);	
