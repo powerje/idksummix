@@ -464,16 +464,21 @@ public class Pass1 {
 			
 		}
 		
+		// Print error messages if no Header or End record, also if not at least one text record present.
+		
+		// Check for a header recorder
 		if (origFlag == false)
 		{
 			System.out.println("ERROR: The program contains NO end recorder.");
 		}
 		
+		// Check for at least one text record
 		if (textFlag == false)
 		{
 			System.out.println("ERROR: The program does not contains at least ONE text record.");
 		}
 		
+		// Check for an end recorder
 		if (endFlag == false)
 		{
 			System.out.println("ERROR: The program contains NO end recorder.");
@@ -485,12 +490,20 @@ public class Pass1 {
 		
 		// Construct and Insert the Header Recorder
 		
+		// Calculate the Program segment size
 		short size = (short) (LocationCounter.getAddress() - start);
 		String sizeStr = shortToHexString(size);
+		
+		// Add an "H" to the beginning of header record
 		String headerFinal = "H";
 		headerFinal.concat(headerRecord);
+		
+		// Add the segment size to the end of the header record
 		headerRecord = headerFinal.concat(sizeStr);	
+		
+		// Insert the header record at the top of the p1file
 		p1file.insertLine(0, headerRecord);
+		
 		return p1file;
 	}
 }
