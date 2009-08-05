@@ -14,6 +14,7 @@ public class Pass1 {
 	String strLine;
 	Token token;
 	int num_params;
+	short start;
 	private static Set<Short> literals = new HashSet<Short>();
 	
 	private short hexstringToShort(CharSequence input) {
@@ -105,14 +106,6 @@ public class Pass1 {
 		return opFlag;
 	}
 	
-	private int getVarAmount(Token op, Token arg)
-	{
-		if(op.getText() == ".BLKW")
-		{
-			
-		}
-		
-	}
 	
 	private boolean isOp(Token op)
 	{
@@ -153,7 +146,7 @@ public class Pass1 {
 		if (index == -1) // not hex? must be decimal
 		{
 			index = strToken.indexOf('#');
-			literal = Short.parseShort(strLiteral.substring(index+1));  //error checking regarding the parsing?
+			literal = Short.parseShort(strLiteral.substring(index+1));  
 		}
 		else { //hex value
 			literal = hexstringToShort(strLiteral.subSequence(index + 1, strLiteral.length()));
@@ -165,8 +158,9 @@ public class Pass1 {
 	
 	private String processHeader()
 	{
-		String progName;
-		boolean isRelative;
+		String progName, strStart = token_array[2].getText();
+		boolean isRelative = false;	
+		
 		if(token_array[0].getType() == TokenType.ALPHA)
 		{
 			progName = token_array[0].getText();
@@ -180,15 +174,35 @@ public class Pass1 {
 		{
 			isRelative = true;	
 		}
-		//LocationCounter.set(token, isRelative);
+		
+		int index = strStart.indexOf('x');
+		start = hexstringToShort(strStart.subSequence(index + 1, strStart.length()));
+
+		LocationCounter.set((int)(start), isRelative);
+		//make sure that Prog name has 6 characters
+		int extraNeeded = 6 - token_array[0].getText().length();
+		String prog_name = null;
+		if (token_array[0].getText().length() < 6)
+		{
+			for(int i=0; i<extraNeeded; i++)
+			{
+				prog_name = token_array[0].getText().concat(" ");
+			}
+		}
+		else
+		{
+			prog_name = token_array[0].getText();
+		}
+		
+		
 		int token_array_size = token_array.length;
-		int i = 0;
+		int i = 1;
+		headerRecord += prog_name;
 		while(i < token_array_size)
 		{
 			if((token_array[i].getType() != TokenType.EOL))
 			{
 				headerRecord += token_array[i];
-				headerRecord += " ";
 			}
 			i++;
 		}
@@ -201,8 +215,30 @@ public class Pass1 {
 		{
 			if(token_array[0].getType() == TokenType.ALPHA && num_params == 4 )
 			{
-				SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
-				
+				if(token_array[1].getText() == ".EQU")
+				{
+					int index1 = token_array[2].getText().indexOf('x');
+					if (index1 != -1) //hex
+					{
+						short arg = hexstringToShort(token_array[2].getText().subSequence(index1 + 1, token_array[2].getText().length()));
+						SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
+					}
+					int index2 = token_array[2].getText().indexOf('#');
+					if (index2 != -1) //decimal
+					{
+						short arg = Short.parseShort(token_array[2].getText().substring(index2+1));
+						SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
+					}
+					if (index1 == -1 && index2 == -1) //symbol table
+					{
+						short arg = SymbolTable.getValue(token_array[2].getText());
+						SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
+					}
+				}
+				else
+				{
+					SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
+				}
 				if (isLiteral(token_array[2]))
 				{
 					literals.add(getLiteral(token_array[2]));
@@ -232,7 +268,23 @@ public class Pass1 {
 			{
 				if (token_array[1].getText() == ".BLKW")
 				{
-					
+					int index1 = token_array[2].getText().indexOf('x');
+					if (index1 != -1) //hex
+					{
+						short arg = hexstringToShort(token_array[2].getText().subSequence(index1 + 1, token_array[2].getText().length()));
+						LocationCounter.incrementAmt((int) arg);
+					}
+					int index2 = token_array[2].getText().indexOf('#');
+					if (index2 != -1) //decimal
+					{
+						short arg = Short.parseShort(token_array[2].getText().substring(index2+1));
+						LocationCounter.incrementAmt((int) arg);
+					}
+					if (index1 == -1 && index2 == -1) //symbol table
+					{
+						short arg = SymbolTable.getValue(token_array[2].getText());
+						LocationCounter.incrementAmt((int) arg);
+					}
 				}
 				else if (token_array[1].getText() == ".STRZ")
 				{
@@ -253,6 +305,17 @@ public class Pass1 {
 			}
 		}
 		
+		int token_array_size = token_array.length;
+		int i = 0;
+		while(i < token_array_size)
+		{
+			if((token_array[i].getType() != TokenType.EOL))
+			{
+				textRecord += token_array[i];
+				textRecord += " ";
+			}
+			i++;
+		}
 		
 		return textRecord;
 	}
@@ -300,21 +363,32 @@ public class Pass1 {
 			}
 			if(token_array[1].getText() == ".ORIG")
 			{
-				processHeader();
+				String headerRecord = processHeader();
+				
 			}
 			if((token_array[0].getText() == ".END") || (token_array[1].getText() == ".END"))
 			{
-				processEnd();
+				String endRecord = processEnd();
+				p1file.input(endRecord);
 			}
 			else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())) ||
 					(PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
 			{
-				processText();
+				String textRecord = processText();
+				p1file.input(textRecord);
 			}
 			
+		}
 
+		LocationCounter.incrementAfterLiteral(LiteralTable.size());  // Jim can I have a size...Thanks
 		
+		short size = (short) (LocationCounter.getAddress() - start); // needs to be a hex string 
+		String sizeStr;
+		String headerFinal = "H";
+		headerFinal.concat(headerRecord);
+		headerRecord = headerFinal.concat(sizeStr);	
 		
+		p1file.insertLine(0, headerRecord);
 		return p1file;
 	}
 }
