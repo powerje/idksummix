@@ -93,5 +93,9 @@ public class LiteralTable {
 		System.out.println(literals.toString());
 	}
 	
+	public static int size() {
+		return 1;	//here's your size Dan!
+	}
+	
 }
 
