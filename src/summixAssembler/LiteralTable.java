@@ -10,7 +10,8 @@ import java.util.Map;
  */
 public class LiteralTable {
 	private static Map<Short, Short> literals = new HashMap<Short, Short>();
-
+	private static int size = 0;
+	
 	/**
 	 * 
 	 * @param key the key to add
@@ -19,6 +20,7 @@ public class LiteralTable {
 	public static void input(short key, short addr) {
 		if (!literals.containsKey(key)) {
 			literals.put(key, addr);
+			size++;
 		}
 	}
 	
@@ -94,7 +96,7 @@ public class LiteralTable {
 	}
 	
 	public static int size() {
-		return 1;	//here's your size Dan!
+		return size;	//here's your size Dan!
 	}
 	
 }
