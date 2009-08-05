@@ -4,6 +4,7 @@ import java.util.StringTokenizer;
 
 public class Pass2 {
 	
+	int counter = 1;
 	TextFile body;
 	Token[] token_array = new Token[4];
 	int numberOfTokens;
@@ -36,14 +37,13 @@ public class Pass2 {
 	public TextFile processFile()
 	{
 		boolean foundEndLine = false;
-		int counter = 1;
+
 		//get header record from first line, place into the body file
 		p2File.input(body.getLine());
 		//while(not end record or end of file) {output text records}
 		while(!body.isEndOfFile() && !foundEndLine)
 		{
-			foundEndLine = processAnyLine(counter);
-			
+			foundEndLine = processAnyLine();
 			if (!foundEndLine)
 				{
 					counter ++;
@@ -52,7 +52,7 @@ public class Pass2 {
 		
 		if (foundEndLine)
 		{
-			processEndLine(counter);
+			processEndLine();
 			counter++;
 		}
 		else
@@ -64,7 +64,7 @@ public class Pass2 {
 		return body;
 	}
 	
-	private void processEndLine(int counter)
+	private void processEndLine()
 	{
 		getTokens();
 		if(true)
@@ -73,7 +73,7 @@ public class Pass2 {
 		}
 	}
 	
-	private boolean processAnyLine(int counter)
+	private boolean processAnyLine()
 	{
 		getTokens();
 		
@@ -94,13 +94,13 @@ public class Pass2 {
 		}
 		else
 		{
-			processTextLine(counter);
+			processTextLine();
 		}
 		
 		return foundEnd;
 	}
 	
-	private void processTextLine(int counter)
+	private void processTextLine()
 	{
 		if (isAnOp(token_array[0].getText()) && (numberOfTokens == 3 || numberOfTokens == 2)) //<op><maybe arg>
 		{
@@ -156,24 +156,88 @@ public class Pass2 {
 		}
 	}
 	
-	private boolean isValReg(String register, Boolean canBeRelative)
+	private boolean isValReg(String register)
 	{
 		boolean flag = false;
-		if (register != null && register.matches("^R[0-7]$"))
+		if (register != null && register.matches("^R[0-7]$")) //Is a regular register
 		{
 			flag = true;
 		}
-		else if(register != null && )
+		//Is an absolute symbol that exists in the table and is in the correct range for a register
+		else if(register != null && SymbolTable.isDefined(register) && !SymbolTable.isRelative(register)
+				&& (SymbolTable.getValue(register) <= 7 & SymbolTable.getValue(register) >= 0)) 
+		{
+			flag = true;
+		}
 		return flag;
 	}
 
+	private boolean isValAddr(String address)
+	{
+		boolean flag = false;
+		if ()
+		{
+			
+		}
+		return flag;
+	}
+	
+	private boolean isValIndex(String address)
+	{
+		boolean flag = false;
+		if ()
+		{
+			
+		}
+		return flag;
+	}
+	
+	private boolean isValTrapVect(String address)
+	{
+		boolean flag = false;
+		if ()
+		{
+			
+		}
+		return flag;
+	}
+	
 	private boolean isValImm(String immediate)
 	{
 		boolean flag = false;
-		if (immediate != null && immediate.matches("^R[0-7]$"))
+
+		if (immediate != null)
 		{
-			flag = true;
+			if (immediate.startsWith("#"))
+			{
+				try{
+					//Is a decimal value in the proper range for an immediate value
+					if (Integer.parseInt(immediate.substring(1)) >= -16 && Integer.parseInt(immediate.substring(1)) <= 15 )
+					{
+						flag = true;
+					}
+				}
+				catch(NumberFormatException e){}
+			}
+			else if (immediate.startsWith("x"))
+			{
+				try{
+					//Is a hex value in the proper range for an immediate value
+					if (Integer.parseInt(immediate.substring(1), 16) >= -16 && Integer.parseInt(immediate.substring(1), 16) <= 15)
+					{
+						flag = true;
+					}	
+				}
+				catch(NumberFormatException e){}
+			}
+			//Is an absolute symbol in the table that is in the proper range for an immediate value
+			else if (SymbolTable.isDefined(immediate) && !SymbolTable.isRelative(immediate)
+					&& SymbolTable.getValue(immediate) >= -16 && SymbolTable.getValue(immediate) <= 15)
+			{
+				flag = true;
+			}
 		}
+
 		return flag;
 	}
 	
@@ -183,22 +247,28 @@ public class Pass2 {
 		boolean badArg = false;
 		StringTokenizer st = new StringTokenizer(arg, ",");
 		String input = new String("T");
-
+		short finalOp;
 		
 		
 		//Figure out which op you have
 		if (op.equals("ADD"))
 		{
+			finalOp = MachineOpTable.getOp("ADD");
 			getArgTokens(3, st);
-			if (isValReg(argTokArray[0], false) && isValReg(argTokArray[1], false) && isValReg(argTokArray[2], false)) //Valid regs 
+			//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
+			if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
+					&& isValReg(argTokArray[2]) && !SymbolTable.isDefined(argTokArray[2]))
 			{
-				
+				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is SR2
+				//Don't forget to set the link bit to 0
 			}
-			else if (isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) //Valid reg + immediate value
+			//Valid reg + immediate value; DR,SR1,IMM5
+			else if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
 			{
-				
+				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
+				//Don't forget to set the link bit to 1
 			}
-			else
+			else //regs are invalid, something's screwed up with the tokens, maybe you have too many, maybe the IMM5 value is a # followed by letters
 			{
 				badArg = true;
 			}
@@ -251,9 +321,14 @@ public class Pass2 {
 		{
 			
 		}
-		else //Op is a branch op
+		else//Op is a branch op
 		{
 			
+		}
+		
+		if (badArg)
+		{
+			System.out.print("ERROR: Improperly formed arguements at line" + counter);
 		}
 		
 	}
