@@ -42,6 +42,20 @@ public class Pass1 {
 		return (short) returnVal;
 	}
 	
+	public static String shortToHexString(short data) {
+		String returnVal = Integer.toHexString((int) data);
+		if (returnVal.length() > 4) 
+		{
+			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
+		}
+		while (returnVal.length() < 4) 
+		{
+			returnVal = "0" + returnVal;
+		}
+		return returnVal.toUpperCase();
+		}
+
+	
 	public Pass1(TextFile incomingSource)
 	{
 		body = incomingSource;
@@ -411,6 +425,8 @@ public class Pass1 {
 	
 	public TextFile processFile()
 	{
+		boolean endFlag = false, origFlag = false, textFlag = false;
+		
 		while(!body.isEndOfFile())
 		{
 			getTokens();
@@ -421,31 +437,59 @@ public class Pass1 {
 			}
 			if(token_array[1].getText() == ".ORIG")
 			{
+				if (origFlag == true)
+				{
+					System.out.println("ERROR: The program contains MULTIPLE header recorders.");
+				}
 				String headerRecord = processHeader();
-				
+				origFlag = true;
 			}
 			if((token_array[0].getText() == ".END") || (token_array[1].getText() == ".END"))
 			{
+				if (endFlag == true)
+				{
+					System.out.println("ERROR: The program contains MULTIPLE end recorders.");
+				}
 				String endRecord = processEnd();
+				endFlag = true;
 				p1file.input(endRecord);
 			}
 			else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())) ||
 					(PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
 			{
 				String textRecord = processText();
+				textFlag = true;
 				p1file.input(textRecord);
 			}
 			
 		}
+		
+		if (origFlag == false)
+		{
+			System.out.println("ERROR: The program contains NO end recorder.");
+		}
+		
+		if (textFlag == false)
+		{
+			System.out.println("ERROR: The program does not contains at least ONE text record.");
+		}
+		
+		if (endFlag == false)
+		{
+			System.out.println("ERROR: The program contains NO end recorder.");
+		}
 
+		// Increment the Location Counter for all of the Literals
+		
 		LocationCounter.incrementAfterLiteral(LiteralTable.size()); 
 		
-		short size = (short) (LocationCounter.getAddress() - start); // needs to be a hex string 
-		String sizeStr = null;
+		// Construct and Insert the Header Recorder
+		
+		short size = (short) (LocationCounter.getAddress() - start);
+		String sizeStr = shortToHexString(size);
 		String headerFinal = "H";
 		headerFinal.concat(headerRecord);
 		headerRecord = headerFinal.concat(sizeStr);	
-		
 		p1file.insertLine(0, headerRecord);
 		return p1file;
 	}
