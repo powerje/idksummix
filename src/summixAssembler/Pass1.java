@@ -225,14 +225,13 @@ public class Pass1 {
 			int index = strStartAddr.indexOf('x');
 			if (index != -1)
 			{
-	
 				start = hexstringToShort(strStartAddr.subSequence(index + 1, strStartAddr.length())); // should be error checking here?
 				if(start > 65535)
 				{
 					System.out.println("ERROR: The origin address exceeds the max addressable memory location!");
 				}
 			}
-				else
+			else
 			{
 				System.out.println("ERROR: Expected hex value for start of segment memory location!");
 			}
@@ -375,11 +374,23 @@ public class Pass1 {
 	private String processEnd()
 	{
 		boolean relative = false;
+		String strEndAddr = token_array[2].getText();
+		short end;
+		
 		if(token_array[1].getText() == ".END")
 		{
 				if((num_tokens == 4) && (token_array[2].getType() == TokenType.ALPHA))
 				{
-					if(!(SymbolTable.isDefined(token_array[2].getText())))
+					int index = strEndAddr.indexOf('x');
+					if (index != -1)
+					{
+						end = hexstringToShort(strEndAddr.subSequence(index + 1, strEndAddr.length())); // should be error checking here?
+						if(((int)(end)) > 65535)
+						{
+							System.out.println("ERROR: The end address exceeds the max addressable memory location!");
+						}
+					}
+					else if(!(SymbolTable.isDefined(token_array[2].getText())))
 					{
 						System.out.println("ERROR: Symbol for start of execution was not previously defined.");
 					}
