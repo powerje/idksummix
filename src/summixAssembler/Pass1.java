@@ -5,6 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 
+ * @author Dan Stottlemire
+ * @author Mike Irwin
+ *
+ */
+
 public class Pass1 {
 
 	Token[] token_array = new Token[4];
@@ -13,19 +20,19 @@ public class Pass1 {
 	String headerRecord, endRecord, textRecord;
 	String strLine;
 	Token token;
-	int num_params;
+	int num_tokens;
 	short start;
 	private static Set<Short> literals = new HashSet<Short>();
 	
+	/**
+	 * hexstringToShort -
+	 * Takes a CharSequence that is a hex number and converts it to a short.
+	 * 
+	 * @param input CharSequence to be converted into an int of its hex value
+	 */
+	
 	private short hexstringToShort(CharSequence input) {
 		int returnVal = 0; // needs initialized in the case an exception is caught
-		/**
-		 * Takes a CharSequence that is a hex number and converts it to a short.
-		 * 
-		 * @param input CharSequence to be converted into an int of its hex value
-		 */
-		//there is a lot of crappy looking casting going on here, is there a better way?
-		//should probably check for anything other than hex digits in these CharSequence
 		try {
 			returnVal = Integer.valueOf((String) input, 16).intValue();
 		} catch (NumberFormatException e)	{
@@ -39,10 +46,19 @@ public class Pass1 {
 	{
 		body = incomingSource;
 	}
+	
+	/**
+	 * getTokens -
+	 * The method takes no parameters and returns nothing. 
+	 * It fills a token array with all the tokens in a line of a TextFile and 
+	 * sets the global variable num_tokens to the number of tokens place into the array.
+	 * 0 < num_tokens < 5
+	 */
+	
 	private void getTokens()
 	{
 		int count = 0;
-		num_params = 0;
+		num_tokens = 0;
 		
 		while(count < 4)
 		{
@@ -52,7 +68,7 @@ public class Pass1 {
 				count = 4;
 			}
 			count++;
-			num_params++;
+			num_tokens++;
 		}
 	}
 	
@@ -158,49 +174,71 @@ public class Pass1 {
 	
 	private String processHeader()
 	{
-		String progName, strStart = token_array[2].getText();
+		String progName = null, strStartAddr = null;
 		boolean isRelative = false;	
 		
+		// process the Program Name
 		if(token_array[0].getType() == TokenType.ALPHA)
 		{
-			progName = token_array[0].getText();
+			//make sure that Program Name has 6 characters
+			int extraNeeded = 6 - (token_array[0].getText().length());
+			if (extraNeeded > 0)
+			{
+				for(int i=0; i < extraNeeded; i++)
+				{
+					progName = token_array[0].getText().concat(" ");
+				}
+			}
+			else
+			{
+				progName = token_array[0].getText();
+			}
 		}
 		else
 		{
 			//print error regarding program name
 		}
 		
-		if(!(token_array[2].getType() == TokenType.ALPHA))
+		// Set the Location Counter
+		
+		if(token_array[2].getType() == TokenType.EOL)
 		{
 			isRelative = true;	
 		}
-		
-		int index = strStart.indexOf('x');
-		start = hexstringToShort(strStart.subSequence(index + 1, strStart.length()));
-
-		LocationCounter.set((int)(start), isRelative);
-		//make sure that Prog name has 6 characters
-		int extraNeeded = 6 - token_array[0].getText().length();
-		String prog_name = null;
-		if (token_array[0].getText().length() < 6)
+		else if(token_array[2].getType() == TokenType.ALPHA)
 		{
-			for(int i=0; i<extraNeeded; i++)
+			strStartAddr = token_array[2].getText();
+			int index = strStartAddr.indexOf('x');
+			if (index != -1)
 			{
-				prog_name = token_array[0].getText().concat(" ");
+	
+				start = hexstringToShort(strStartAddr.subSequence(index + 1, strStartAddr.length())); // should be error checking here?
+				if(start > 65535)
+				{
+					//error origin address exceeds the max addressable memory location
+				}
+			}
+				else
+			{
+				// error expected hex value for start of segment memory location
 			}
 		}
 		else
 		{
-			prog_name = token_array[0].getText();
+			// error expected hex value for start of segment memory location
 		}
 		
+		LocationCounter.set((int)(start), isRelative);
+		
+		// Construct the header record string
+		
+		headerRecord += progName;
 		
 		int token_array_size = token_array.length;
 		int i = 1;
-		headerRecord += prog_name;
 		while(i < token_array_size)
 		{
-			if((token_array[i].getType() != TokenType.EOL))
+			if(token_array[i].getType() != TokenType.EOL)
 			{
 				headerRecord += token_array[i];
 			}
@@ -208,12 +246,12 @@ public class Pass1 {
 		}
 		return headerRecord;
 	}
-	
+
 	private String processText()
 	{
 		if((PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
 		{
-			if(token_array[0].getType() == TokenType.ALPHA && num_params == 4 )
+			if(token_array[0].getType() == TokenType.ALPHA && num_tokens == 4 )
 			{
 				if(token_array[1].getText() == ".EQU")
 				{
@@ -248,7 +286,7 @@ public class Pass1 {
 		}
 		else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())))
 		{
-			if(num_params == 3 )
+			if(num_tokens == 3 )
 			{	
 				if (isLiteral(token_array[2]))
 				{
@@ -322,18 +360,37 @@ public class Pass1 {
 	
 	private String processEnd()
 	{
+		boolean relative = false;
 		if(token_array[1].getText() == ".END")
 		{
-			if(token_array[0].getType() == TokenType.ALPHA)
-			{
-				//add to symbol table
-			}
-
+				if((num_tokens == 4) && (token_array[2].getType() == TokenType.ALPHA))
+				{
+					if(!(SymbolTable.isDefined(token_array[2].getText())))
+					{
+						// error symbol for start of execution was not previously defined
+					}
+				}
+				if(token_array[0].getType() == TokenType.ALPHA)
+				{
+					if(!(SymbolTable.isDefined(token_array[0].getText())))
+					{
+						 SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), relative);
+					}
+				}
+				else
+				{
+					//error malformed label
+				}
 		}
 		else if(token_array[0].getText() == ".END")
 		{
-			//we do not need to do anything?
-		
+			if((num_tokens == 3) && (token_array[1].getType() == TokenType.ALPHA))
+			{
+				if(!(SymbolTable.isDefined(token_array[1].getText())))
+				{
+					// error symbol for start of execution was not previously defined
+				}
+			}		
 		}
 
 		int token_array_size = token_array.length;
@@ -343,6 +400,7 @@ public class Pass1 {
 			if((token_array[i].getType() != TokenType.EOL))
 			{
 				endRecord += token_array[i];
+	
 				endRecord += " ";
 			}
 			i++;
