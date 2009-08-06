@@ -194,6 +194,7 @@ public class Pass1 {
 	if(token_array[2].getType() == TokenType.EOL)
 	{
 		isRelative = true; 
+		strStartAddr = "0000";
 	}
 	else if(token_array[2].getType() == TokenType.ALPHA)
 	{
@@ -511,12 +512,16 @@ public class Pass1 {
 			{
 				if (endFlag == true)
 				{
-					System.out.println("ERROR: The program contains MULTIPLE end recorders.");
+					System.out.println("ERROR: The program contains MULTIPLE end records.");
 				}
 				endRecord = processEnd();
 				endFlag = true;
 				p1file.input(endRecord);
-			}		
+			}
+			//increment location counter
+			if (MachineOpTable.isOp(token_array[1].getText())) {
+				LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[1].getText()));
+			}
 		}
 		
 		// Print error messages if no Header or End record, also if not at least one text record present.
@@ -524,7 +529,7 @@ public class Pass1 {
 		// Check for a header recorder
 		if (origFlag == false)
 		{
-			System.out.println("ERROR: The program contains NO header recorder.");
+			System.out.println("ERROR: The program contains NO header record.");
 		}
 		
 		// Check for at least one text record
@@ -554,7 +559,7 @@ public class Pass1 {
 		// Calculate the Program segment size
 		short size = (short) (LocationCounter.getAddress() - start);
 		String sizeStr = shortToHexString(size);
-		
+		System.out.println(size + " lc: " + LocationCounter.getAddress() + " start: " + start);
 		// Add an "H" to the beginning of header record
 		String headerFinal = "H";
 		headerFinal += headerRecord;
