@@ -408,13 +408,14 @@ public class Pass1 {
 	private String processEnd()
 	{
 		boolean relative = false;
-		String strEndAddr = token_array[2].getText();
+		String strEndAddr = "No_End_Addr";
 		short end;
 		
 		if(token_array[1].getText().equals(".END"))
 		{
 				if((num_tokens == 4) && (token_array[2].getType() == TokenType.ALPHA))
 				{
+					strEndAddr = token_array[2].getText();
 					int index = strEndAddr.indexOf('x');
 					if (index != -1)
 					{
@@ -445,7 +446,17 @@ public class Pass1 {
 		{
 			if((num_tokens == 3) && (token_array[1].getType() == TokenType.ALPHA))
 			{
-				if(!(SymbolTable.isDefined(token_array[1].getText())))
+				strEndAddr = token_array[1].getText();
+				int index = strEndAddr.indexOf('x');
+				if (index != -1)
+				{
+					end = hexstringToShort(strEndAddr.subSequence(index + 1, strEndAddr.length())); // should be error checking here?
+					if(((int)(end)) > 65535)
+					{
+						System.out.println("ERROR: The end address exceeds the max addressable memory location!");
+					}
+				}
+				else if(!(SymbolTable.isDefined(token_array[1].getText())))
 				{
 					System.out.println("ERROR: Symbol for start of execution was not previously defined.");
 				}
@@ -488,7 +499,6 @@ public class Pass1 {
 				}
 				headerRecord = processHeader();
 				origFlag = true;
-				System.out.println(headerRecord);
 			}
 			else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())) ||
 					(PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
@@ -530,7 +540,7 @@ public class Pass1 {
 		}
 
 		// Add Lits to Literal Table and increment the Location Counter for all of the Literals
-		Iterator literal = literals.iterator();
+		Iterator<Short> literal = literals.iterator();
 		
 		while (literal.hasNext())
 		{
@@ -550,9 +560,6 @@ public class Pass1 {
 		headerFinal += headerRecord;
 		headerFinal += sizeStr;
 		headerRecord = headerFinal;
-		
-		 System.out.println(headerRecord);
-
 		
 		// Insert the header record at the top of the p1file
 		p1file.insertLine(0, headerRecord);
