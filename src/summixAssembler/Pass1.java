@@ -238,6 +238,9 @@ public class Pass1 {
 		{
 			if(token_array[0].getType() == TokenType.ALPHA && num_tokens == 4 )
 			{
+				if(token_array[1].getText().equals(".FILL")) {
+					LocationCounter.incrementAmt(1);
+				}
 				if(token_array[1].getText().equals(".EQU"))
 				{
 					int index1 = token_array[2].getText().indexOf('x');
@@ -267,10 +270,11 @@ public class Pass1 {
 				}
 				else if(isPseudoOp(token_array[1]) && (!(token_array[1].getText().equals("EQU"))))
 				{
-					if(token_array[1].getText().equals(".FILL"))
+					if(token_array[1].getText().equals(".FILL") || token_array[0].getText().equals(".FILL"))
 					{
 						LocationCounter.incrementAmt(1);
 					}
+					
 					else if(isVarPseudoOp(token_array[1]))
 					{
 						if (token_array[1].getText().equals(".BLKW"))
@@ -303,7 +307,7 @@ public class Pass1 {
 							if(token_array[2].getType() == TokenType.QUOTE)
 							{
 								String arg = token_array[2].getText();
-								int length = token_array[2].getText().length();
+								int length = arg.length();
 								length -= 2; //get rid of quotes
 								length += 1; //add null
 								
