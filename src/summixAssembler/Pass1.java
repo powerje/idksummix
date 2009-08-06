@@ -553,8 +553,6 @@ public class Pass1 {
 		headerFinal += sizeStr;
 		headerRecord = headerFinal;
 		
-		// Add the segment size to the end of the header record
-		headerRecord = headerFinal.concat(sizeStr);	
 		// System.out.println(headerRecord);
 
 		
