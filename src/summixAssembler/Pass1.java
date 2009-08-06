@@ -237,8 +237,10 @@ public class Pass1 {
 	{
 		if(isOp(token_array[1]))
 		{
-			if(token_array[0].getType() == TokenType.ALPHA && num_tokens == 4 )
+			if(token_array[0].getType() == TokenType.ALPHA && num_tokens == 4 ) //this means the line has a label for sure right?
 			{
+				//because im working under the above assumption i am adding the label to the symbol table
+				SymbolTable.input(token_array[0].getText(), (short)LocationCounter.curAddr, true);
 				if(token_array[1].getText().equals(".FILL")) {
 					LocationCounter.incrementAmt(1);
 				}
