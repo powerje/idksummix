@@ -68,5 +68,9 @@ public class LocationCounter {
 		
 		return (short) curAddr;
 	}
+	
+	public static boolean isRelative() {
+		return relative;
+	}
 }
 
