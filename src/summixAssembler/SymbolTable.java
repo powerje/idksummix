@@ -28,7 +28,7 @@ public class SymbolTable {
 		 * Returns a String object representing the specified symbol. 
 		 */
 		public String toString() {
-			return "(" + this.value + ", " + this.isRelative + ")\n";
+			return "(" + this.value + ", " + this.isRelative + ") ";
 		}
 		
 		public short value;
