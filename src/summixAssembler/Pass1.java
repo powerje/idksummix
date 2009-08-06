@@ -490,7 +490,14 @@ public class Pass1 {
 				origFlag = true;
 				System.out.println(headerRecord);
 			}
-			if((token_array[0].getText().equals(".END")) || (token_array[1].getText().equals(".END")))
+			else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())) ||
+					(PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
+			{
+				textRecord = processText();
+				textFlag = true;
+				p1file.input(textRecord);
+			}
+			else if((token_array[0].getText().equals(".END")) || (token_array[1].getText().equals(".END")))
 			{
 				if (endFlag == true)
 				{
@@ -499,15 +506,7 @@ public class Pass1 {
 				endRecord = processEnd();
 				endFlag = true;
 				p1file.input(endRecord);
-			}
-			else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())) ||
-					(PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
-			{
-				textRecord = processText();
-				textFlag = true;
-				p1file.input(textRecord);
-			}
-			
+			}		
 		}
 		
 		// Print error messages if no Header or End record, also if not at least one text record present.
