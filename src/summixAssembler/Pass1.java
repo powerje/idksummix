@@ -161,76 +161,66 @@ public class Pass1 {
 	
 	private String processHeader()
 	{
-		String progName, strStartAddr;
-		boolean isRelative = false;	
-		
-		// process the Program Name
-		if(token_array[0].getType() == TokenType.ALPHA)
+	String progName = "ERROR", strStartAddr = "ERROR";
+	boolean isRelative = false; 
+
+	// process the Program Name
+	if(token_array[0].getType() == TokenType.ALPHA)
+	{
+		progName = token_array[0].getText();
+
+		//make sure that Program Name has 6 characters
+		int extraNeeded = 6 - progName.length();
+		while (extraNeeded > 0)
 		{
-			//make sure that Program Name has 6 characters
-			int extraNeeded = 6 - (token_array[0].getText().length());
-			if (extraNeeded > 0)
-			{
-				for(int i=0; i < extraNeeded; i++)
-				{
-					progName = token_array[0].getText().concat("_");
-				}
-			}
-			else
-			{
-				progName = token_array[0].getText();
-			}
+			progName.concat("_");
+			extraNeeded--;
 		}
-		else
+	}
+	else
+	{
+		System.out.println("ERROR: Invalid or malformed program name exists!");
+	}
+
+	// Set the Location Counter
+
+	if(token_array[2].getType() == TokenType.EOL)
+	{
+		isRelative = true; 
+	}
+	else if(token_array[2].getType() == TokenType.ALPHA)
+	{
+		strStartAddr = token_array[2].getText();
+		int index = strStartAddr.indexOf('x');
+		if (index != -1)
 		{
-			System.out.println("ERROR: Invalid or Malformed Program Name exists!");
-		}
-		
-		// Set the Location Counter
-		
-		if(token_array[2].getType() == TokenType.EOL)
-		{
-			isRelative = true;	
-		}
-		else if(token_array[2].getType() == TokenType.ALPHA)
-		{
-			strStartAddr = token_array[2].getText();
-			int index = strStartAddr.indexOf('x');
-			if (index != -1)
+			start = hexstringToShort(strStartAddr.subSequence(index + 1, strStartAddr.length())); // should be error checking here?
+			strStartAddr = strStartAddr.substring(index + 1);
+			if(start > 65535)
 			{
-				start = hexstringToShort(strStartAddr.subSequence(index + 1, strStartAddr.length())); // should be error checking here?
-				if(start > 65535)
-				{
-					System.out.println("ERROR: The origin address exceeds the max addressable memory location!");
-				}
-			}
-			else
-			{
-				System.out.println("ERROR: Expected hex value for start of segment memory location!");
+				System.out.println("ERROR: The origin address exceeds the max addressable memory location!");
 			}
 		}
 		else
 		{
 			System.out.println("ERROR: Expected hex value for start of segment memory location!");
 		}
-		
-		LocationCounter.set((int)(start), isRelative);
-		
-		// Construct the header record string
-		
-		headerRecord += progName;
-		
-		int token_array_size = token_array.length;
-		int i = 1;
-		while(i < token_array_size)
-		{
-			if(token_array[i].getType() != TokenType.EOL)
-			{
-				headerRecord += token_array[i];
-			}
-			i++;
-		}
-		return headerRecord;
+	}
+	else
+	{
+		System.out.println("ERROR: Expected hex value for start of segment memory location!");
+	}
+
+	LocationCounter.set((int)(start), isRelative);
+
+	// Construct the header record string
+	try {
+	headerRecord = headerRecord + progName + strStartAddr; 
+	}
+	catch (NullPointerException e) {}
+
+
+	return headerRecord;
 	}
 
 	private String processText()
