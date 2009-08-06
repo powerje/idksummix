@@ -33,7 +33,10 @@ public class Assembler {
 		TextFile lFile = new TextFile();
 		int i = 0;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+		
+		//init tables
+		PseudoOpTable.initialize();
+		MachineOpTable.initialize();
 		
 		//Figure out which arguments have been passed by the user, and store them as booleans Store the fileName as a string
 		while (i < args.length)
