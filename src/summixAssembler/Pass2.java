@@ -4,7 +4,7 @@ import java.util.StringTokenizer;
 
 public class Pass2 {
 	
-	int counter = 1;
+	int counter = 2;
 	TextFile body;
 	Token[] token_array = new Token[4];
 	int numberOfTokens;
@@ -17,7 +17,7 @@ public class Pass2 {
 		body.reset();
 	}
 	
-	private int getTokens()
+	private void getTokens()
 	{
 		int count = 0;
 		numberOfTokens = 0;
@@ -31,7 +31,6 @@ public class Pass2 {
 			count++;
 			numberOfTokens++;
 		}
-		return numberOfTokens;
 	}
 	
 	public TextFile processFile()
@@ -241,6 +240,20 @@ public class Pass2 {
 		return flag;
 	}
 	
+	//can be symbol, number, or Rx
+	private short regVal(String reg) {
+		short returnVal = 0;
+		
+		if (reg.charAt(0)=='R' || reg.charAt(0)=='x') {
+			returnVal = Short.parseShort(reg.substring(1));
+		} else if (SymbolTable.isDefined(reg)) { //symbol
+			returnVal = SymbolTable.getValue(reg);
+		} else { // number
+			returnVal = Short.parseShort(reg.substring(0));
+		}
+		return returnVal;
+	}
+
 	private void processWrite(String op, String arg) //Write op with arguments to p2File
 	{
 		short DR, SR1, SR2, imm5, pgoffset9, index6, BaseR, n, z, p, L, SR, trapvect8;
@@ -261,6 +274,8 @@ public class Pass2 {
 			{
 				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is SR2
 				//Don't forget to set the link bit to 0
+				DR = regVal(argTokArray[0]);
+				SR1 = regVal(argTokArray[1]);
 			}
 			//Valid reg + immediate value; DR,SR1,IMM5
 			else if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
