@@ -240,7 +240,10 @@ public class Pass1 {
 			if(token_array[0].getType() == TokenType.ALPHA && num_tokens == 4 ) //this means the line has a label for sure right?
 			{
 				//because im working under the above assumption i am adding the label to the symbol table
-				SymbolTable.input(token_array[0].getText(), (short)LocationCounter.curAddr, true);
+				//oops assumption wrong for .EQU, so added if statement
+				if (!token_array[1].getText().equals(".EQU")) {
+					SymbolTable.input(token_array[0].getText(), (short)LocationCounter.curAddr, true);
+				}
 				if(token_array[1].getText().equals(".FILL")) {
 					LocationCounter.incrementAmt(1);
 				}
@@ -255,7 +258,7 @@ public class Pass1 {
 					int index2 = token_array[2].getText().indexOf('#');
 					if (index2 != -1) //decimal
 					{
-						short arg = Short.parseShort(token_array[2].getText().substring(index2+1));
+						short arg = Short.parseShort(token_array[2].getText().substring(1));
 						SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
 					}
 					if (index1 == -1 && index2 == -1) //symbol table
