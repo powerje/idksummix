@@ -174,7 +174,7 @@ public class Pass2 {
 	private boolean isValAddr(String address)
 	{
 		boolean flag = false;
-		if ()
+		if (true)
 		{
 			
 		}
@@ -184,7 +184,7 @@ public class Pass2 {
 	private boolean isValIndex(String address)
 	{
 		boolean flag = false;
-		if ()
+		if (true)
 		{
 			
 		}
@@ -194,7 +194,7 @@ public class Pass2 {
 	private boolean isValTrapVect(String address)
 	{
 		boolean flag = false;
-		if ()
+		if (true)
 		{
 			
 		}
@@ -240,16 +240,21 @@ public class Pass2 {
 		return flag;
 	}
 	
+	//an immut5 is either a 
+	private short immVal(String key) {
+		return Short.parseShort(key);
+	}
+	
 	//can be symbol, number, or Rx
-	private short regVal(String reg) {
+	private short regVal(String key) {
 		short returnVal = 0;
 		
-		if (reg.charAt(0)=='R' || reg.charAt(0)=='x') {
-			returnVal = Short.parseShort(reg.substring(1));
-		} else if (SymbolTable.isDefined(reg)) { //symbol
-			returnVal = SymbolTable.getValue(reg);
+		if (key.charAt(0)=='R' || key.charAt(0)=='x') {
+			returnVal = Short.parseShort(key.substring(1));
+		} else if (SymbolTable.isDefined(key)) { //symbol
+			returnVal = SymbolTable.getValue(key);
 		} else { // number
-			returnVal = Short.parseShort(reg.substring(0));
+			returnVal = Short.parseShort(key.substring(0));
 		}
 		return returnVal;
 	}
