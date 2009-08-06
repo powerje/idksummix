@@ -171,12 +171,17 @@ public class Pass1 {
 	{
 		progName = token_array[0].getText();
 
-		//make sure that Program Name has 6 characters
+		//make sure that Program Name has 6 characters and ONLY 6 characters
 		int extraNeeded = 6 - progName.length();
 		while (extraNeeded > 0)
 		{
-			progName.concat("_");
+			progName += "_";
 			extraNeeded--;
+		}
+		
+		if (progName.length() > 6)
+		{
+			progName = (String) progName.subSequence(0, 6);
 		}
 	}
 	else
@@ -217,7 +222,7 @@ public class Pass1 {
 
 	// Construct the header record string
 	try {
-	headerRecord = headerRecord + progName + strStartAddr; 
+	headerRecord = progName + strStartAddr; 
 	}
 	catch (NullPointerException e) {}
 
@@ -470,8 +475,7 @@ public class Pass1 {
 		while(!body.isEndOfFile())
 		{
 			getTokens();
-			System.out.println(token_array[0].getText());
-
+			
 			while((token_array[0].getType() == TokenType.EOL))
 			{
 				getTokens();
@@ -484,6 +488,7 @@ public class Pass1 {
 				}
 				headerRecord = processHeader();
 				origFlag = true;
+				System.out.println(headerRecord);
 			}
 			if((token_array[0].getText().equals(".END")) || (token_array[1].getText().equals(".END")))
 			{
@@ -547,7 +552,7 @@ public class Pass1 {
 		headerFinal += sizeStr;
 		headerRecord = headerFinal;
 		
-		// System.out.println(headerRecord);
+		 System.out.println(headerRecord);
 
 		
 		// Insert the header record at the top of the p1file
