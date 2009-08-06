@@ -24,6 +24,7 @@ public class Pass1 {
 	int num_tokens;
 	short start;
 	private static Set<Short> literals = new HashSet<Short>();
+	boolean errorLineFlag = false;
 	
 	/**
 	 * hexstringToShort -
@@ -86,6 +87,12 @@ public class Pass1 {
 			}
 			count++;
 			num_tokens++;
+		}
+		
+		if (num_tokens == 4 && token_array[num_tokens - 1].getType() != TokenType.EOL)
+		{
+			errorLineFlag = true;
+			System.out.println("ERROR: Too many tokens.");
 		}
 	}
 		
@@ -165,8 +172,8 @@ public class Pass1 {
 	
 	private String processHeader()
 	{
-	String progName = "ERROR", strStartAddr = "ERROR";
-	boolean isRelative = false; 
+	String progName = "ERROR ", strStartAddr = "FFFF";
+	boolean isRelative = false;
 
 	// process the Program Name
 	if(token_array[0].getType() == TokenType.ALPHA)
@@ -506,31 +513,44 @@ public class Pass1 {
 		
 		return endRecord;
 	}
-	
+
 	public TextFile processFile()
 	{
 		boolean endFlag = false, origFlag = false, textFlag = false;
-				
+		
 		while(!body.isEndOfFile())
 		{
 			getTokens();
 			
-			while((token_array[0].getType() == TokenType.EOL))
+			if (num_tokens > 4)
+			{
+				errorLineFlag = true;
+			} 
+		
+			//While (You don't have an empty AND you aren't at the end of file, get more tokens)
+			while((token_array[0].getType() == TokenType.EOL) && !body.isEndOfFile())
 			{
 				getTokens();
 			}
+			
+			//MUST at least have <token>eolTok
 			if(token_array[1].getText().equals(".ORIG"))
 			{
 				if (origFlag == true)
 				{
 					System.out.println("ERROR: The program contains MULTIPLE header recorders.");
 				}
-				headerRecord = processHeader();
-				origFlag = true;
-			}
-			else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())) ||
-					(PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
-			{
+				else
+				{
+					headerRecord = processHeader();
+					origFlag = true;
+				}
+				
+			} //At least <token>eolTok and 2nd token isn't .ORIG
+			else if(!(token_array[0].getText().equals(".ORIG") || token_array[0].getText().equals(".END") || token_array[1].getText().equals(".END"))
+					&& (isOp(token_array[0]) || isOp(token_array[1])))
+					
+			{//<op><token> or <token><op> but <op> is not .end or .orig 
 				textRecord = processText();
 				textFlag = true;
 				p1file.input(textRecord);
