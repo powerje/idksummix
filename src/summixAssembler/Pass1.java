@@ -15,7 +15,7 @@ public class Pass1 {
 
 	Token[] token_array = new Token[4];
 	String[] record_string = new String[100];
-	TextFile body;
+	TextFile body, orig;
 	TextFile line = new TextFile();
 	TextFile p1file = new TextFile();
 	String headerRecord="", endRecord="", textRecord="";
@@ -61,6 +61,7 @@ public class Pass1 {
 	{
 		body = incomingSource;
 		body.stripComments();
+		orig = body;
 	}
 	
 	/**
@@ -559,17 +560,16 @@ public class Pass1 {
 		// Calculate the Program segment size
 		short size = (short) (LocationCounter.getAddress() - start);
 		String sizeStr = shortToHexString(size);
-		System.out.println(size + " lc: " + LocationCounter.getAddress() + " start: " + start);
 		// Add an "H" to the beginning of header record
 		String headerFinal = "H";
 		headerFinal += headerRecord;
 		headerFinal += sizeStr;
 		headerRecord = headerFinal;
 		
-		// Insert the header record at the top of the p1file
-		p1file.insertLine(0, headerRecord);
+		// for some reason p1File was completely messed up so I hacked this on, not sure what the heck was going on with p1file, but didn't want to try to figure it out
+		orig.insertLine(0, headerRecord);
 		
-		return p1file;
+		return orig;
 	}
 }
 
