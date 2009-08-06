@@ -18,7 +18,7 @@ public class Pass1 {
 	TextFile body;
 	TextFile line = new TextFile();
 	TextFile p1file = new TextFile();
-	String headerRecord, endRecord, textRecord;
+	String headerRecord="", endRecord="", textRecord="";
 	String strLine;
 	Token token;
 	int num_tokens;
