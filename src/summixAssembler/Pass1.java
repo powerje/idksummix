@@ -269,7 +269,7 @@ public class Pass1 {
 						}
 					}
 				}
-				else if(isPseudoOp(token_array[1]) && (!(token_array[1].getText().equals("EQU"))))
+				else if(isPseudoOp(token_array[1]) && (!(token_array[1].getText().equals("EQU")))) //how could the second boolean ever be true?
 				{
 					if(token_array[1].getText().equals(".FILL") || token_array[0].getText().equals(".FILL"))
 					{
@@ -324,12 +324,18 @@ public class Pass1 {
 					{
 						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
 					}
+					//this may work for literals inside pseudoOps... I suppose .BLKW could use a literal, and .FILL...how machineOps?
+					/*
 					if (isLiteral(token_array[2]))
 					{
 						literals.add(getLiteral(token_array[2]));
-					}
+					}*/				
 				}
-			
+				//I think this place means machineOp? also can take care of literals used with pseudoOps here
+				if (isLiteral(token_array[2]))
+				{
+					literals.add(getLiteral(token_array[2]));
+				}
 			}
 			else if(isOp(token_array[0]))
 			{
@@ -383,8 +389,11 @@ public class Pass1 {
 							}
 						}
 					}
-					if(num_tokens == 3 )
+					//actually we never even get to this statement, ever, this if is never checked
+					if(num_tokens == 3)
 					{	
+						//this never happens in c.txt
+						System.out.println("never gets here? " + token_array[2].getText());
 						if (isLiteral(token_array[2]))
 						{
 							literals.add(getLiteral(token_array[2]));
