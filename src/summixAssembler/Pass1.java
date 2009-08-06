@@ -58,6 +58,7 @@ public class Pass1 {
 	public Pass1(TextFile incomingSource)
 	{
 		body = incomingSource;
+		body.stripComments();
 	}
 	
 	/**
@@ -172,7 +173,7 @@ public class Pass1 {
 			{
 				for(int i=0; i < extraNeeded; i++)
 				{
-					progName = token_array[0].getText().concat(" ");
+					progName = token_array[0].getText().concat("_");
 				}
 			}
 			else
@@ -477,7 +478,8 @@ public class Pass1 {
 		while(!body.isEndOfFile())
 		{
 			getTokens();
-			
+			System.out.println(token_array[0].getText());
+
 			while((token_array[0].getType() == TokenType.EOL))
 			{
 				getTokens();
