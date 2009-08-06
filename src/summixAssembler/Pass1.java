@@ -127,6 +127,7 @@ public class Pass1 {
 	
 	private boolean isLiteral(Token arg)
 	{
+		System.out.println("IS CALLED on: " + arg.getText());
 		boolean literal = false;
 		String strToken;
 		strToken = arg.getText();
