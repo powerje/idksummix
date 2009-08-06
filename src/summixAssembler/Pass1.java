@@ -389,6 +389,13 @@ public class Pass1 {
 			}
 		}
 
+		if (MachineOpTable.isOp(token_array[0].getText())) {
+			LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[0].getText()));
+		}	
+		if (MachineOpTable.isOp(token_array[1].getText())) {
+			LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[1].getText()));
+		}	
+	
 		
 			
 		int token_array_size = token_array.length;
