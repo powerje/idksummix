@@ -1,9 +1,7 @@
 package summixAssembler;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -86,21 +84,7 @@ public class Pass1 {
 			num_tokens++;
 		}
 	}
-	
-	private boolean isMachineOp(Token op)
-	{
-		boolean opFlag = false;
 		
-		if(MachineOpTable.isOp(op.getText()))
-		{
-			opFlag = true;
-		}
-		
-		return opFlag;
-	}
-		
-	
-	
 	private boolean isPseudoOp(Token op)
 	{
 		boolean opFlag = false;
@@ -124,19 +108,6 @@ public class Pass1 {
 		
 		return opFlag;
 	}
-	
-	private boolean isNotVarPseudoOp(Token op)
-	{
-		boolean opFlag = false;
-		
-		if(op.getText() == ".FILL")
-		{
-			opFlag = true;
-		}
-		
-		return opFlag;
-	}
-	
 	
 	private boolean isOp(Token op)
 	{
@@ -502,7 +473,7 @@ public class Pass1 {
 	public TextFile processFile()
 	{
 		boolean endFlag = false, origFlag = false, textFlag = false;
-		
+				
 		while(!body.isEndOfFile())
 		{
 			getTokens();
@@ -545,7 +516,7 @@ public class Pass1 {
 		// Check for a header recorder
 		if (origFlag == false)
 		{
-			System.out.println("ERROR: The program contains NO end recorder.");
+			System.out.println("ERROR: The program contains NO header recorder.");
 		}
 		
 		// Check for at least one text record
@@ -578,10 +549,14 @@ public class Pass1 {
 		
 		// Add an "H" to the beginning of header record
 		String headerFinal = "H";
-		headerFinal.concat(headerRecord);
+		headerFinal += headerRecord;
+		headerFinal += sizeStr;
+		headerRecord = headerFinal;
 		
 		// Add the segment size to the end of the header record
 		headerRecord = headerFinal.concat(sizeStr);	
+		// System.out.println(headerRecord);
+
 		
 		// Insert the header record at the top of the p1file
 		p1file.insertLine(0, headerRecord);
