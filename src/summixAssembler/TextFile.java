@@ -67,7 +67,9 @@ public class TextFile {
 			int pos = original.indexOf(';');
 			if (pos > -1) {
 				commentFree = original.substring(0, pos);
-				tmpBody.add(commentFree);
+				if (commentFree.length() > 0) {
+					tmpBody.add(commentFree);
+				}
 			} else {
 				tmpBody.add(original);
 			}
