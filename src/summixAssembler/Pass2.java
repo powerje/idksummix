@@ -240,7 +240,7 @@ public class Pass2 {
 		return flag;
 	}
 	
-	//an immut5 is either a 
+	//an immut5 is either a string in the form #(decimal value) x(hex value) or a symbol
 	private short immVal(String key) {
 		return Short.parseShort(key);
 	}
