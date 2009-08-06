@@ -526,10 +526,7 @@ public class Pass1 {
 				endFlag = true;
 				p1file.input(endRecord);
 			}
-			//increment location counter
-			if (MachineOpTable.isOp(token_array[1].getText())) {
-				LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[1].getText()));
-			}
+
 		}
 		
 		// Print error messages if no Header or End record, also if not at least one text record present.
@@ -557,7 +554,7 @@ public class Pass1 {
 		
 		while (literal.hasNext())
 		{
-			Short lit = (Short) literal.next();
+			Short lit = literal.next();
 			LiteralTable.input(lit.shortValue(), LocationCounter.getAddress());
 			LocationCounter.incrementAfterLiteral(1);
 		}
@@ -567,6 +564,7 @@ public class Pass1 {
 		// Calculate the Program segment size
 		short size = (short) (LocationCounter.getAddress() - start);
 		String sizeStr = shortToHexString(size);
+		System.out.println(size);
 		// Add an "H" to the beginning of header record
 		String headerFinal = "H";
 		headerFinal += headerRecord;
