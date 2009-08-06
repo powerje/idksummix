@@ -15,7 +15,9 @@ public class Pass1 {
 
 	Token[] token_array = new Token[4];
 	String[] record_string = new String[100];
-	TextFile body, line, p1file;
+	TextFile body;
+	TextFile line = new TextFile();
+	TextFile p1file = new TextFile();
 	String headerRecord, endRecord, textRecord;
 	String strLine;
 	Token token;
