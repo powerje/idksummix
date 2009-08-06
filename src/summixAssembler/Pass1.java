@@ -242,7 +242,7 @@ public class Pass1 {
 				//because im working under the above assumption i am adding the label to the symbol table
 				//oops assumption wrong for .EQU, so added if statement
 				if (!token_array[1].getText().equals(".EQU")) {
-					SymbolTable.input(token_array[0].getText(), (short)LocationCounter.curAddr, true);
+					SymbolTable.input(token_array[0].getText(), (short)LocationCounter.curAddr, LocationCounter.isRelative());
 				}
 				if(token_array[1].getText().equals(".FILL")) {
 					LocationCounter.incrementAmt(1);
