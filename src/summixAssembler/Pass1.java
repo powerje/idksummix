@@ -102,7 +102,7 @@ public class Pass1 {
 	{
 		boolean opFlag = false;
 		
-		if(op.getText() == ".BLKW" || op.getText() == ".STRZ")
+		if(op.getText().equals(".BLKW") || op.getText().equals(".STRZ"))
 		{
 			opFlag = true;
 		}
@@ -161,7 +161,7 @@ public class Pass1 {
 	
 	private String processHeader()
 	{
-		String progName = null, strStartAddr = null;
+		String progName, strStartAddr;
 		boolean isRelative = false;	
 		
 		// process the Program Name
@@ -239,7 +239,7 @@ public class Pass1 {
 		{
 			if(token_array[0].getType() == TokenType.ALPHA && num_tokens == 4 )
 			{
-				if(token_array[1].getText() == ".EQU")
+				if(token_array[1].getText().equals(".EQU"))
 				{
 					int index1 = token_array[2].getText().indexOf('x');
 					if (index1 != -1) //hex
@@ -266,15 +266,15 @@ public class Pass1 {
 						}
 					}
 				}
-				else if(isPseudoOp(token_array[1]) && (!(token_array[1].getText() == "EQU")))
+				else if(isPseudoOp(token_array[1]) && (!(token_array[1].getText().equals("EQU"))))
 				{
-					if(token_array[1].getText() == ".FILL")
+					if(token_array[1].getText().equals(".FILL"))
 					{
 						LocationCounter.incrementAmt(1);
 					}
 					else if(isVarPseudoOp(token_array[1]))
 					{
-						if (token_array[1].getText() == ".BLKW")
+						if (token_array[1].getText().equals(".BLKW"))
 						{
 							int index1 = token_array[2].getText().indexOf('x');
 							if (index1 != -1) //hex
@@ -299,7 +299,7 @@ public class Pass1 {
 								LocationCounter.incrementAmt((int) arg);
 							}
 						}
-						else if (token_array[1].getText() == ".STRZ")
+						else if (token_array[1].getText().equals(".STRZ"))
 						{
 							if(token_array[2].getType() == TokenType.QUOTE)
 							{
@@ -331,13 +331,13 @@ public class Pass1 {
 			{
 				if(isPseudoOp(token_array[0]))
 				{
-					if(token_array[0].getText() == ".FILL")
+					if(token_array[0].getText().equals(".FILL"))
 					{
 						LocationCounter.incrementAmt(1);
 					}
 					else if(isVarPseudoOp(token_array[0]))
 					{
-						if (token_array[0].getText() == ".BLKW")
+						if (token_array[0].getText().equals(".BLKW"))
 						{
 							int index1 = token_array[1].getText().indexOf('x');
 							if (index1 != -1) //hex
@@ -362,7 +362,7 @@ public class Pass1 {
 								LocationCounter.incrementAmt((int) arg);
 							}
 						}
-						else if (token_array[0].getText() == ".STRZ")
+						else if (token_array[0].getText().equals(".STRZ"))
 						{
 							if(token_array[1].getType() == TokenType.QUOTE)
 							{
@@ -414,7 +414,7 @@ public class Pass1 {
 		String strEndAddr = token_array[2].getText();
 		short end;
 		
-		if(token_array[1].getText() == ".END")
+		if(token_array[1].getText().equals(".END"))
 		{
 				if((num_tokens == 4) && (token_array[2].getType() == TokenType.ALPHA))
 				{
@@ -444,7 +444,7 @@ public class Pass1 {
 					System.out.println("ERROR: Invalid or Malformed Label!");
 				}
 		}
-		else if(token_array[0].getText() == ".END")
+		else if(token_array[0].getText().equals(".END"))
 		{
 			if((num_tokens == 3) && (token_array[1].getType() == TokenType.ALPHA))
 			{
@@ -484,29 +484,29 @@ public class Pass1 {
 			{
 				getTokens();
 			}
-			if(token_array[1].getText() == ".ORIG")
+			if(token_array[1].getText().equals(".ORIG"))
 			{
 				if (origFlag == true)
 				{
 					System.out.println("ERROR: The program contains MULTIPLE header recorders.");
 				}
-				String headerRecord = processHeader();
+				headerRecord = processHeader();
 				origFlag = true;
 			}
-			if((token_array[0].getText() == ".END") || (token_array[1].getText() == ".END"))
+			if((token_array[0].getText().equals(".END")) || (token_array[1].getText().equals(".END")))
 			{
 				if (endFlag == true)
 				{
 					System.out.println("ERROR: The program contains MULTIPLE end recorders.");
 				}
-				String endRecord = processEnd();
+				endRecord = processEnd();
 				endFlag = true;
 				p1file.input(endRecord);
 			}
 			else if((PseudoOpTable.isPseudoOp(token_array[0].getText())) || (MachineOpTable.isOp(token_array[0].getText())) ||
 					(PseudoOpTable.isPseudoOp(token_array[1].getText())) || (MachineOpTable.isOp(token_array[1].getText())))
 			{
-				String textRecord = processText();
+				textRecord = processText();
 				textFlag = true;
 				p1file.input(textRecord);
 			}
