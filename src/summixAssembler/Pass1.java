@@ -267,83 +267,26 @@ public class Pass1 {
 					}
 					if (index1 == -1 && index2 == -1) //symbol table
 					{
-						if(!(SymbolTable.isDefined(token_array[2].getText())))
-						{
-							System.out.println("ERROR: Symbol used for .EQU operand was not previously defined.");
-						}
-						else
-						{
 							short arg = SymbolTable.getValue(token_array[2].getText());
 							SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
-						}
 					}
 				}
-				else if(isPseudoOp(token_array[1]) && (!(token_array[1].getText().equals("EQU")))) //how could the second boolean ever be true?
+				else if(isPseudoOp(token_array[1])) 
 				{
-					if(token_array[1].getText().equals(".FILL") || token_array[0].getText().equals(".FILL"))
+					if(token_array[1].getText().equals(".FILL"))
 					{
 						LocationCounter.incrementAmt(1);
 					}
 					
 					else if(isVarPseudoOp(token_array[1]))
 					{
-						LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);
-						
-						/*
-						if (token_array[1].getText().equals(".BLKW"))
-						{
-							int index1 = token_array[2].getText().indexOf('x');
-							if (index1 != -1) //hex
-							{
-								short arg = hexstringToShort(token_array[2].getText().subSequence(index1 + 1, token_array[2].getText().length()));
-								LocationCounter.incrementAmt((int) arg);
-							}
-							int index2 = token_array[2].getText().indexOf('#');
-							if (index2 != -1) //decimal
-							{
-								short arg = Short.parseShort(token_array[2].getText().substring(index2+1));
-								LocationCounter.incrementAmt((int) arg);
-							}
-							if (index1 == -1 && index2 == -1) //symbol table
-							{
-								if(!(SymbolTable.isDefined(token_array[2].getText())))
-								{
-									System.out.println("ERROR: Symbol used for .BLKW operand was not previously defined.");
-								}
-								
-								short arg = SymbolTable.getValue(token_array[2].getText());
-								LocationCounter.incrementAmt((int) arg);
-							}
-						}
-						else if (token_array[1].getText().equals(".STRZ"))
-						{
-							if(token_array[2].getType() == TokenType.QUOTE)
-							{
-								String arg = token_array[2].getText();
-								int length = arg.length();
-								length -= 2; //get rid of quotes
-								length += 1; //add null
-								
-								LocationCounter.incrementAmt(length);
-							}
-							else if (token_array[2].getType() == TokenType.ERROR)
-							{
-								System.out.println("ERROR: Arguments and / or operand for .STRZ is malformed.");
-							}
-						}
-						*/
+						LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);	
 					}
 					
 					else
 					{
 						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
-					}
-					//this may work for literals inside pseudoOps... I suppose .BLKW could use a literal, and .FILL...how machineOps?
-					/*
-					if (isLiteral(token_array[2]))
-					{
-						literals.add(getLiteral(token_array[2]));
-					}*/				
+					}			
 				}
 				//I think this place means machineOp? also can take care of literals used with pseudoOps here
 				if (isLiteral(token_array[2]))
@@ -363,62 +306,7 @@ public class Pass1 {
 					{
 						LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);
 
-					}
-						/*
-						if (token_array[0].getText().equals(".BLKW"))
-						{
-							int index1 = token_array[1].getText().indexOf('x');
-							if (index1 != -1) //hex
-							{
-								short arg = hexstringToShort(token_array[1].getText().subSequence(index1 + 1, token_array[1].getText().length()));
-								LocationCounter.incrementAmt((int) arg);
-							}
-							int index2 = token_array[1].getText().indexOf('#');
-							if (index2 != -1) //decimal
-							{
-								short arg = Short.parseShort(token_array[1].getText().substring(index2+1));
-								LocationCounter.incrementAmt((int) arg);
-							}
-							if (index1 == -1 && index2 == -1) //symbol table
-							{
-								if(!(SymbolTable.isDefined(token_array[1].getText())))
-								{
-									System.out.println("ERROR: Symbol used for .BLKW operand was not previously defined.");
-								}
-							
-								short arg = SymbolTable.getValue(token_array[1].getText());
-								LocationCounter.incrementAmt((int) arg);
-							}
-						}
-						else if (token_array[0].getText().equals(".STRZ"))
-						{
-							if(token_array[1].getType() == TokenType.QUOTE)
-							{
-								String arg = token_array[1].getText();
-								int length = token_array[1].getText().length();
-								length -= 2; //get rid of quotes
-								length += 1; //add null
-							
-								LocationCounter.incrementAmt(length);
-							}
-							else if (token_array[1].getType() == TokenType.ERROR)
-							{
-								System.out.println("ERROR: Arguments and / or operand for .STRZ is malformed.");
-							}
-						}
-					}
-					
-					//actually we never even get to this statement, ever, this if is never checked
-					if(num_tokens == 3)
-					{	
-						//this never happens in c.txt
-						System.out.println("never gets here? " + token_array[2].getText());
-						if (isLiteral(token_array[2]))
-						{
-							literals.add(getLiteral(token_array[2]));
-						}
-					}	
-					*/				
+					}			
 				}
 			}
 		}
