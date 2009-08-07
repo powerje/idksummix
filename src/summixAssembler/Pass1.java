@@ -14,12 +14,11 @@ import java.util.Set;
 public class Pass1 {
 
 	Token[] token_array = new Token[4];
-	String[] record_string = new String[100];
 	TextFile body, orig;
 	TextFile line = new TextFile();
 	TextFile p1file = new TextFile();
 	String headerRecord="", endRecord="", textRecord="";
-	String strLine;
+	String strLine,progName = "ERROR ", strStartAddr = "FFFF";
 	Token token;
 	int num_tokens;
 	short start;
@@ -44,19 +43,40 @@ public class Pass1 {
 		return (short) returnVal;
 	}
 	
-	private void constructEndRecord(){
+	private void constructRecord(String recordType){
 		
-		int token_array_size = token_array.length;
-		int i = 0;
-		while(i < token_array_size)
-		{
-			if((token_array[i].getType() != TokenType.EOL))
+		if(recordType.equals("end")){
+			int token_array_size = token_array.length;
+			int i = 0;
+			while(i < token_array_size)
 			{
-				endRecord += token_array[i];
-	
-				endRecord += " ";
+				if((token_array[i].getType() != TokenType.EOL))
+				{
+					endRecord += token_array[i];
+					endRecord += " ";
+				}
+				i++;
 			}
-			i++;
+		}
+		else if(recordType.equals("text")){
+			int token_array_size = token_array.length;
+			int i = 0;
+			while(i < token_array_size)
+			{
+				if((token_array[i].getType() != TokenType.EOL))
+				{
+					textRecord += token_array[i];
+					textRecord += " ";
+				}
+				i++;
+			}
+		}
+		else if(recordType.equals("header")){
+			// Construct the header record string
+			try {
+			headerRecord = progName + strStartAddr; 
+			}
+			catch (NullPointerException e) {}
 		}
 	}
 	
@@ -212,7 +232,6 @@ public class Pass1 {
 	}
  	private String processHeader()
 	{
-	String progName = "ERROR ", strStartAddr = "FFFF";
 	boolean isRelative = false;
 
 	// process the Program Name
@@ -270,11 +289,8 @@ public class Pass1 {
 
 	LocationCounter.set((int)(start), isRelative);
 
-	// Construct the header record string
-	try {
-	headerRecord = progName + strStartAddr; 
-	}
-	catch (NullPointerException e) {}
+	constructRecord("header");
+
 
 
 	return headerRecord;
@@ -354,19 +370,7 @@ public class Pass1 {
 			LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[0].getText()));
 		}	
 	
-		
-			
-		int token_array_size = token_array.length;
-		int i = 0;
-		while(i < token_array_size)
-		{
-			if((token_array[i].getType() != TokenType.EOL))
-			{
-				textRecord += token_array[i];
-				textRecord += " ";
-			}
-			i++;
-		}
+		constructRecord("text");
 		
 		return textRecord;
 	}
@@ -430,7 +434,7 @@ public class Pass1 {
 			}		
 		}
 		
-		constructEndRecord();
+		constructRecord("end");
 
 		return endRecord;
 	}
