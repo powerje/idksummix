@@ -8,7 +8,7 @@ loop     TRAP    x22             ;print "hi! "
          ADD     ACC,ACC,#-1     ;R1--
          BRP     loop
          JMP     Next
-msg      .STRZ   "hi;! "
+msg      .STRZ   "hi! "
 Next     AND     R0,R0,x0        ;R0 <- 0
          NOT     R0,R0           ;R0 <- xFFFF
          ST      R0,Array        ;M[Array] <- xFFFF
