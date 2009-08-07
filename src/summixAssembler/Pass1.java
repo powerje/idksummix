@@ -614,6 +614,9 @@ public class Pass1 {
 		String headerFinal = "H";
 		headerFinal += headerRecord;
 		headerFinal += sizeStr;
+		if (LocationCounter.relative) {
+			headerFinal += "R";
+		}
 		headerRecord = headerFinal;
 		
 		// for some reason p1File was completely messed up so I hacked this on, not sure what the heck was going on with p1file, but didn't want to try to figure it out
