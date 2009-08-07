@@ -134,7 +134,7 @@ public class Pass1 {
 	
 	private boolean isLiteral(Token arg)
 	{
-		System.out.println("IS CALLED on: " + arg.getText());
+		System.out.println("isLiteral CALLED on: " + arg.getText());
 		boolean literal = false;
 		String strToken;
 		strToken = arg.getText();
@@ -410,16 +410,27 @@ public class Pass1 {
 						{
 							literals.add(getLiteral(token_array[2]));
 						}
-					}
+					}					
 				}
 			}
 		}
+		//added this to get literals 
 
+		if (num_tokens > 1) {
+			if (isLiteral(token_array[1]))
+			{
+				literals.add(getLiteral(token_array[1]));
+			}
+			if (isLiteral(token_array[2]))
+			{
+				literals.add(getLiteral(token_array[2]));
+			}
+			if (MachineOpTable.isOp(token_array[1].getText())) {
+				LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[1].getText()));
+			}	
+		}
 		if (MachineOpTable.isOp(token_array[0].getText())) {
 			LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[0].getText()));
-		}	
-		if (MachineOpTable.isOp(token_array[1].getText())) {
-			LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[1].getText()));
 		}	
 	
 		
