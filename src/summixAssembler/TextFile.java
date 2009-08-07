@@ -67,10 +67,23 @@ public class TextFile {
 		int line = 0;
 		while(!isEndOfFile())
 		{
+			boolean withinStrz = false;
 			String original = body.get(line);
 			String commentFree;
 			int pos = original.indexOf(';');
-			if (pos > -1) {
+			
+			if (original.contains(".STRZ")) {		//check for semicolons withing STRZ
+				pos = original.lastIndexOf(';');
+				System.out.println("Orignl: " + original);
+				if (pos < original.indexOf("\"", original.indexOf("\"") + 1))
+				{
+				
+					//this means the semicolon is within the STRZ
+					withinStrz = true;
+				}
+			}
+			
+			if ((pos > -1) && !withinStrz) {
 				commentFree = original.substring(0, pos);
 				if (commentFree.length() > 0) {
 					tmpBody.add(commentFree);
