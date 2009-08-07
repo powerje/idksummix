@@ -287,6 +287,9 @@ public class Pass1 {
 					
 					else if(isVarPseudoOp(token_array[1]))
 					{
+						LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);
+						
+						/*
 						if (token_array[1].getText().equals(".BLKW"))
 						{
 							int index1 = token_array[2].getText().indexOf('x');
@@ -328,7 +331,9 @@ public class Pass1 {
 								System.out.println("ERROR: Arguments and / or operand for .STRZ is malformed.");
 							}
 						}
+						*/
 					}
+					
 					else
 					{
 						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
@@ -356,6 +361,10 @@ public class Pass1 {
 					}
 					else if(isVarPseudoOp(token_array[0]))
 					{
+						LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);
+
+					}
+						/*
 						if (token_array[0].getText().equals(".BLKW"))
 						{
 							int index1 = token_array[1].getText().indexOf('x');
@@ -398,6 +407,7 @@ public class Pass1 {
 							}
 						}
 					}
+					
 					//actually we never even get to this statement, ever, this if is never checked
 					if(num_tokens == 3)
 					{	
@@ -407,7 +417,8 @@ public class Pass1 {
 						{
 							literals.add(getLiteral(token_array[2]));
 						}
-					}					
+					}	
+					*/				
 				}
 			}
 		}
