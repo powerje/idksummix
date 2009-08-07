@@ -44,6 +44,22 @@ public class Pass1 {
 		return (short) returnVal;
 	}
 	
+	private void constructEndRecord(){
+		
+		int token_array_size = token_array.length;
+		int i = 0;
+		while(i < token_array_size)
+		{
+			if((token_array[i].getType() != TokenType.EOL))
+			{
+				endRecord += token_array[i];
+	
+				endRecord += " ";
+			}
+			i++;
+		}
+	}
+	
 	public static String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
@@ -100,7 +116,7 @@ public class Pass1 {
 	{
 		boolean opFlag = false;
 		
-		if(PseudoOpTable.isPseudoOp(op.getText()))
+		if(PseudoOpTable.isPseudoOp(op.getText()) && !op.getText().equals(".END") && !op.getText().equals(".ORIG"))
 		{
 			opFlag = true;
 		}
@@ -169,7 +185,32 @@ public class Pass1 {
 		
 	}
 	
-	private String processHeader()
+	private void processEQU()
+	{
+		Token label = token_array[0], op = token_array[1], arg = token_array[2];
+		
+		if(op.getText().equals(".EQU"))
+		{
+			int index1 = op.getText().indexOf('x');
+			if (index1 != -1) //hex
+			{
+				short argVal = hexstringToShort(arg.getText().subSequence(index1 + 1, arg.getText().length()));
+				SymbolTable.input(label.getText(), argVal, LocationCounter.relative);
+			}
+			int index2 = arg.getText().indexOf('#');
+			if (index2 != -1) //decimal
+			{
+				short argVal = Short.parseShort(arg.getText().substring(1));
+				SymbolTable.input(label.getText(), argVal, LocationCounter.relative);
+			}
+			if (index1 == -1 && index2 == -1) //symbol table
+			{
+					short argVal = SymbolTable.getValue(arg.getText());
+					SymbolTable.input(label.getText(), argVal, LocationCounter.relative);
+			}
+		}
+	}
+ 	private String processHeader()
 	{
 	String progName = "ERROR ", strStartAddr = "FFFF";
 	boolean isRelative = false;
@@ -253,23 +294,7 @@ public class Pass1 {
 
 				if(token_array[1].getText().equals(".EQU"))
 				{
-					int index1 = token_array[2].getText().indexOf('x');
-					if (index1 != -1) //hex
-					{
-						short arg = hexstringToShort(token_array[2].getText().subSequence(index1 + 1, token_array[2].getText().length()));
-						SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
-					}
-					int index2 = token_array[2].getText().indexOf('#');
-					if (index2 != -1) //decimal
-					{
-						short arg = Short.parseShort(token_array[2].getText().substring(1));
-						SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
-					}
-					if (index1 == -1 && index2 == -1) //symbol table
-					{
-							short arg = SymbolTable.getValue(token_array[2].getText());
-							SymbolTable.input(token_array[0].getText(), arg, LocationCounter.relative);
-					}
+						processEQU();
 				}
 				else if(isPseudoOp(token_array[1])) 
 				{
@@ -404,20 +429,9 @@ public class Pass1 {
 				}
 			}		
 		}
-
-		int token_array_size = token_array.length;
-		int i = 0;
-		while(i < token_array_size)
-		{
-			if((token_array[i].getType() != TokenType.EOL))
-			{
-				endRecord += token_array[i];
-	
-				endRecord += " ";
-			}
-			i++;
-		}
 		
+		constructEndRecord();
+
 		return endRecord;
 	}
 
