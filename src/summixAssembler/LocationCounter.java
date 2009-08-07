@@ -56,13 +56,7 @@ public class LocationCounter {
 			int index1 = args.getText().indexOf('x');
 			if (index1 != -1) //arg is a hex value
 			{
-				short argAmt = 0;
-				
-			try{
-				argAmt = hexstringToShort(args.getText().subSequence(index1 + 1, args.getText().length()));
-			}
-			catch(NumberFormatException e)	{}
-			
+				short argAmt = hexstringToShort(args.getText().subSequence(index1 + 1, args.getText().length()));			
 				LocationCounter.incrementAmt((int) argAmt);
 			}
 		
