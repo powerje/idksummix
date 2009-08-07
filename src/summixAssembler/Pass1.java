@@ -250,9 +250,7 @@ public class Pass1 {
 				if (!token_array[1].getText().equals(".EQU")) {
 					SymbolTable.input(token_array[0].getText(), (short)LocationCounter.curAddr, LocationCounter.isRelative());
 				}
-				if(token_array[1].getText().equals(".FILL")) {
-					LocationCounter.incrementAmt(1);
-				}
+
 				if(token_array[1].getText().equals(".EQU"))
 				{
 					int index1 = token_array[2].getText().indexOf('x');
@@ -607,11 +605,10 @@ public class Pass1 {
 			LiteralTable.input(lit.shortValue(), LocationCounter.getAddress());
 			LocationCounter.incrementAfterLiteral(1);
 		}
-		
 		// Construct and Insert the Header Recorder
 		
 		// Calculate the Program segment size
-		short size = (short) (LocationCounter.getAddress() - start);
+		short size = (short) ((LocationCounter.getAddress() + 1) - start);
 		String sizeStr = shortToHexString(size);
 		// Add an "H" to the beginning of header record
 		String headerFinal = "H";
