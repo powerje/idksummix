@@ -321,7 +321,7 @@ public class Pass1 {
 					
 					else if(isVarPseudoOp(token_array[1]))
 					{
-						LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);	
+						LocationCounter.incrementAfterVarOp(token_array[1], token_array[2]);	
 					}
 					
 					else
