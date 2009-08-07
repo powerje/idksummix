@@ -76,10 +76,44 @@ public class ListFile {
 	}
 	
 	
-	public String CreateListFile(TextFile p1, TextFile p2)
+	public String CreateListFile(TextFile source, TextFile p2)
 	{
 		String listFile = null;
+		String sourceLine = null;
+		String p2Line = null;
+		int progCount = 1;
 		
+		while(!source.isEndOfFile() && !p2.isEndOfFile())
+		{
+			sourceLine = ProcessLineSource(source);  //get first line
+			
+			while(commentSource)
+			{
+				System.out.print("( " + progCount + " )\t");
+				System.out.println(sourceLine);
+				progCount++;
+				sourceLine = ProcessLineSource(source);
+			}
+			
+			//print header record
+			System.out.print("( " + progCount + " )\t");
+			System.out.println(sourceLine);
+			progCount++;
+			
+			//dump header record of p2
+			p2Line = p2.getLine();
+			//print 1 line p2 file
+			String lineOp = ProcessLineP2Op(p2);
+			System.out.print("( " + ProcessLineP2Address(p2) + " ) " + lineOp + " " + OutputBinaryP2(lineOp)); 
+			
+			//print count
+			System.out.print("( " + progCount + " )\t");
+			progCount++;
+			
+			//print 1 line source file
+			sourceLine = ProcessLineSource(source);
+			System.out.println(sourceLine);
+		}
 		
 		return listFile;
 	}
