@@ -291,8 +291,6 @@ public class Pass1 {
 
 	constructRecord("header");
 
-
-
 	return headerRecord;
 	}
 
