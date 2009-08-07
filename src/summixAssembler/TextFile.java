@@ -74,7 +74,6 @@ public class TextFile {
 			
 			if (original.contains(".STRZ")) {		//check for semicolons withing STRZ
 				pos = original.lastIndexOf(';');
-				System.out.println("Orignl: " + original);
 				if (pos < original.indexOf("\"", original.indexOf("\"") + 1))
 				{
 				
