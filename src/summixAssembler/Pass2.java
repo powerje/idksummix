@@ -4,7 +4,7 @@ import java.util.StringTokenizer;
 
 public class Pass2 {
 	
-	int counter = 2;
+	//int counter = 2;
 	TextFile body;
 	Token[] token_array = new Token[4];
 	int numberOfTokens;
@@ -19,16 +19,10 @@ public class Pass2 {
 	
 	private void getTokens()
 	{
-		int count = 0;
 		numberOfTokens = 0;
-		while(count < 4)
+		while(token_array[numberOfTokens].getType() != TokenType.EOL)
 		{
-			token_array[count] = body.getToken();
-			if(token_array[count].getType() == TokenType.EOL)
-			{
-				count = 4;
-			}
-			count++;
+			token_array[numberOfTokens] = body.getToken();
 			numberOfTokens++;
 		}
 	}
@@ -38,25 +32,26 @@ public class Pass2 {
 		boolean foundEndLine = false;
 
 		//get header record from first line, place into the body file
+		//Are header records relocatable?
 		p2File.input(body.getLine());
 		//while(not end record or end of file) {output text records}
 		while(!body.isEndOfFile() && !foundEndLine)
 		{
 			foundEndLine = processAnyLine();
-			if (!foundEndLine)
+/*			if (!foundEndLine)
 				{
 					counter ++;
-				}
+				}*/
 		}
 		
 		if (foundEndLine)
 		{
 			processEndLine();
-			counter++;
+//			counter++;
 		}
 		else
 		{
-			System.out.println("ERROR: No end of line record present in sourecode. Expected at line " + counter);
+			System.out.println("ERROR: No end of line record present in sourecode. Expected at line " + body.getReport());
 		}
 		
 		body.reset();
@@ -78,9 +73,9 @@ public class Pass2 {
 		
 		boolean foundEnd = false;
 		
-		if (numberOfTokens > 4 || numberOfTokens < 1) //If you haven't gotten any tokens, or you got too many tokens
+		if (numberOfTokens > 4) //You got too many tokens
 		{
-			System.out.println("ERROR: Oversized sourecode at line " + counter);
+			System.out.println("ERROR: Oversized sourecode at line " + body.getReport());
 		}
 		else if (token_array[0].getText() == ".END" || token_array[1].getText() == ".END") //If the line is an end line, stop processing and return true
 		{
@@ -88,7 +83,6 @@ public class Pass2 {
 		}
 		else if (numberOfTokens == 1) //Must be an EoL token by itself
 		{
-			counter++;
 			p2File.input("");
 		}
 		else
@@ -127,7 +121,7 @@ public class Pass2 {
 		}
 		else
 		{
-			System.out.print("ERROR: Malformed sourcecode at line " + counter);
+			System.out.print("ERROR: Malformed sourcecode at line " + body.getReport());
 		}
 	}
 	
@@ -148,7 +142,7 @@ public class Pass2 {
 	private void getArgTokens(int amount, StringTokenizer st)
 	{
 		int counter = 0;
-		while (counter < amount && st.hasMoreTokens())
+		while (counter < amount && st.hasMoreTokens()) //Get the tokens you want
 		{
 			argTokArray[counter] = st.nextToken();
 			counter++;
@@ -174,29 +168,111 @@ public class Pass2 {
 	private boolean isValAddr(String address)
 	{
 		boolean flag = false;
-		if (true)
+		if (address != null)
 		{
-			
+			if (address.startsWith("#"))
+			{
+				try{
+					//Is a decimal value in the proper range for an address value
+					if (Integer.parseInt(address.substring(1)) >= 0 && Integer.parseInt(address.substring(1)) <= 0xFFFF )
+					{
+						flag = true;
+					}
+				}
+				catch(NumberFormatException e){}
+			}
+			else if (address.startsWith("x"))
+			{
+				try{
+					//Is a hex value in the proper range for an immediate value
+					if (Integer.parseInt(address.substring(1), 16) >= 0 && Integer.parseInt(address.substring(1), 16) <= 0xFFFF)
+					{
+						flag = true;
+					}	
+				}
+				catch(NumberFormatException e){}
+			}
+			//Is an absolute symbol in the table that is in the proper range for an immediate value
+			else if (SymbolTable.isDefined(address) && SymbolTable.getValue(address) >= 0 && SymbolTable.getValue(address) <= 0xFFFF)
+			{
+				flag = true;
+			}
 		}
+		
 		return flag;
 	}
 	
-	private boolean isValIndex(String address)
+	private boolean isValIndex(String index)
 	{
 		boolean flag = false;
-		if (true)
+		
+		if (index != null)
 		{
-			
+			if (index.startsWith("#"))
+			{
+				try{
+					//Is a decimal value in the proper range for an index6 value
+					if (Integer.parseInt(index.substring(1)) >= 0 && Integer.parseInt(index.substring(1)) <= 63 )
+					{
+						flag = true;
+					}
+				}
+				catch(NumberFormatException e){}
+			}
+			else if (index.startsWith("x"))
+			{
+				try{
+					//Is a hex value in the proper range for an index6 value
+					if (Integer.parseInt(index.substring(1), 16) >= 0 && Integer.parseInt(index.substring(1), 16) <= 63)
+					{
+						flag = true;
+					}	
+				}
+				catch(NumberFormatException e){}
+			}
+			//Is an absolute symbol in the table that is in the proper range for an index6 value
+			else if (SymbolTable.isDefined(index) && !SymbolTable.isRelative(index)
+					&& SymbolTable.getValue(index) >= 0 && SymbolTable.getValue(index) <= 63)
+				{
+				flag = true;
+				}
 		}
 		return flag;
 	}
-	
-	private boolean isValTrapVect(String address)
+		
+	private boolean isValTrapVect(String trap)
 	{
 		boolean flag = false;
-		if (true)
+		if (trap != null)
 		{
-			
+			if (trap.startsWith("#"))
+			{
+				try{
+					//Is a decimal value in the proper range for an trapvector value
+					if (Integer.parseInt(trap.substring(1)) >= 0 && Integer.parseInt(trap.substring(1)) <= 0xFF )
+					{
+						flag = true;
+					}
+				}
+				catch(NumberFormatException e){}
+			}
+			else if (trap.startsWith("x"))
+			{
+				try{
+					//Is a hex value in the proper range for an trapvector value
+					if (Integer.parseInt(trap.substring(1), 16) >= 0 && Integer.parseInt(trap.substring(1), 16) <= 0xFF)
+					{
+						flag = true;
+					}	
+				}
+				catch(NumberFormatException e){}
+			}
+			//Is an absolute symbol in the table that is in the proper range for an index6 value
+			else if (SymbolTable.isDefined(trap) && !SymbolTable.isRelative(trap)
+					&& SymbolTable.getValue(trap) >= 0 && SymbolTable.getValue(trap) <= 63)
+				{
+				flag = true;
+				}
 		}
 		return flag;
 	}
@@ -242,11 +318,25 @@ public class Pass2 {
 	
 	//an immut5 is either a string in the form #(decimal value) x(hex value) or a symbol
 	private short immVal(String key) {
-		return Short.parseShort(key);
+		short returnVal = 0;
+		if(SymbolTable.isDefined(key)) //Symbol
+		{
+			returnVal = SymbolTable.getValue(key);
+		}
+		else if(key.charAt(0) == '#') //Decimal number
+		{
+			returnVal = Short.parseShort(key.substring(1));
+		}
+		else //Must be hex
+		{
+			returnVal = Short.parseShort(key.substring(1), 16);
+		}
+		return returnVal;
 	}
 	
 	//can be symbol, number, or Rx
 	private short regVal(String key) {
+
 		short returnVal = 0;
 		
 		if (key.charAt(0)=='R' || key.charAt(0)=='x') {
@@ -259,19 +349,73 @@ public class Pass2 {
 		return returnVal;
 	}
 
+	private int addrVal(String key)
+	{
+		int returnVal = 0;
+		if(SymbolTable.isDefined(key)) //Symbol
+		{
+			returnVal = SymbolTable.getValue(key);
+		}
+		else if(key.charAt(0) == '#') //Decimal number
+		{
+			returnVal = Integer.parseInt(key.substring(1));
+		}
+		else //Must be hex
+		{
+			returnVal = Integer.parseInt(key.substring(1), 16);
+		}
+		
+		returnVal &= 0x1FF; //keep the lower right 9 bits
+		
+		return returnVal;
+	}
+	
+	private short indexVal(String key)
+	{
+		short returnVal = 0;
+		
+		if (key.charAt(0)=='x')
+		{
+			returnVal = Short.parseShort(key.substring(1));
+		}
+		else if (SymbolTable.isDefined(key))
+		{ //symbol
+			returnVal = SymbolTable.getValue(key);
+		}
+		else
+		{ // number
+			returnVal = Short.parseShort(key.substring(0));
+		}
+		return returnVal;
+	}
+	
+	private short trapVal(String key){
+		short returnVal = 0;
+		
+		if (key.charAt(0)=='x') {
+			returnVal = Short.parseShort(key.substring(1));
+		} else if (SymbolTable.isDefined(key)) { //symbol
+			returnVal = SymbolTable.getValue(key);
+		} else { // number
+			returnVal = Short.parseShort(key.substring(0));
+		}
+		return returnVal;
+	}
+	
 	private void processWrite(String op, String arg) //Write op with arguments to p2File
 	{
-		short DR, SR1, SR2, imm5, pgoffset9, index6, BaseR, n, z, p, L, SR, trapvect8;
+		short DR, SR1, SR2, imm5, pgoffset9, index6, BaseR, n, z, p, SR, trapvect8;
+		int addr;
 		boolean badArg = false;
 		StringTokenizer st = new StringTokenizer(arg, ",");
 		String input = new String("T");
 		short finalOp;
 		
+		finalOp = MachineOpTable.getOp(op);
 		
 		//Figure out which op you have
 		if (op.equals("ADD"))
 		{
-			finalOp = MachineOpTable.getOp("ADD");
 			getArgTokens(3, st);
 			//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
 			if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
@@ -281,12 +425,25 @@ public class Pass2 {
 				//Don't forget to set the link bit to 0
 				DR = regVal(argTokArray[0]);
 				SR1 = regVal(argTokArray[1]);
+				SR2 = regVal(argTokArray[2]);
+				
+				finalOp |= SR2;
+				finalOp |= (SR1 << 6);
+				finalOp |= (DR << 9);
+
 			}
 			//Valid reg + immediate value; DR,SR1,IMM5
 			else if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
 			{
 				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
 				//Don't forget to set the link bit to 1
+				DR = regVal(argTokArray[0]);
+				SR1 = regVal(argTokArray[1]);
+				imm5 = immVal(argTokArray[2]);
+				finalOp |= (SR1 << 6);
+				finalOp |= (DR << 9);
+				finalOp |= imm5;
+				finalOp |= (1 << 5);
 			}
 			else //regs are invalid, something's screwed up with the tokens, maybe you have too many, maybe the IMM5 value is a # followed by letters
 			{
@@ -295,64 +452,260 @@ public class Pass2 {
 		}
 		else if (op.equals("AND"))
 		{
+			getArgTokens(3, st);
 			
+			//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
+			if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
+					&& isValReg(argTokArray[2]) && !SymbolTable.isDefined(argTokArray[2]))
+			{
+				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is SR2
+				//Don't forget to set the link bit to 0
+				DR = regVal(argTokArray[0]);
+				SR1 = regVal(argTokArray[1]);
+				SR2 = regVal(argTokArray[2]);
+				
+				finalOp |= SR2;
+				finalOp |= (SR1 << 6);
+				finalOp |= (DR << 9);
+
+			}
+			//Valid reg + immediate value; DR,SR1,IMM5
+			else if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
+			{
+				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
+				//Don't forget to set the link bit to 1
+				DR = regVal(argTokArray[0]);
+				SR1 = regVal(argTokArray[1]);
+				imm5 = immVal(argTokArray[2]);
+				finalOp |= (SR1 << 6);
+				finalOp |= (DR << 9);
+				finalOp |= imm5;
+				finalOp |= (1 << 5);
+			}
+			else //regs are invalid, something's screwed up with the tokens, maybe you have too many, maybe the IMM5 value is a # followed by letters
+			{
+				badArg = true;
+			}
 		}
 		else if (op.equals("JSR"))
 		{
+			getArgTokens(1, st);
+			if(!st.hasMoreTokens() && isValAddr(argTokArray[0]))
+			{
+				addr = addrVal(argTokArray[0]);
+				finalOp |= addr;
+				//No link bit set
+			}
+			else
+			{
+				badArg = true;
+			}
 			
 		}		
+		else if(op.equals("JMP"))
+		{
+			getArgTokens(1, st);
+			if(!st.hasMoreTokens() && isValAddr(argTokArray[0]))
+			{
+				addr = addrVal(argTokArray[0]);
+				finalOp |= addr;
+				finalOp |= 1 << 11; //Link bit set
+			}
+			else
+			{
+				badArg = true;
+			}	
+		}
 		else if (op.equals("JSRR"))
 		{
-			
+			getArgTokens(2, st);
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
+			{
+				BaseR = regVal(argTokArray[0]);
+				index6 = indexVal(argTokArray[1]);
+				finalOp |= BaseR << 6;
+				finalOp |= index6;
+				//No link bit set
+			}
+			else
+			{
+				badArg = true;
+			}
+		}
+		else if (op.equals("JMPR"))
+		{
+			getArgTokens(2, st);
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
+			{
+				BaseR = regVal(argTokArray[0]);
+				index6 = indexVal(argTokArray[1]);
+				finalOp |= BaseR << 6;
+				finalOp |= index6;
+				finalOp |= 1 << 11; //Link bit set
+			}
+			else
+			{
+				badArg = true;
+			}
 		}
 		else if (op.equals("LD"))
 		{
-			
+			getArgTokens(2, st);
+			//CAN HAVE LITERAL.  DO SOME SPECIAL SHIT
 		}
 		else if (op.equals("LDI"))
 		{
+			getArgTokens(2, st);
 			
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+			{
+				DR = regVal(argTokArray[0]);
+				addr = addrVal(argTokArray[1]);
+				finalOp |= DR << 9;
+				finalOp |= addr;
+			}
+			else
+			{
+				badArg = true;
+			}
 		}
 		else if (op.equals("LDR"))
 		{
+			getArgTokens(3, st);
 			
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
+			{
+				DR = regVal(argTokArray[0]);
+				BaseR = regVal(argTokArray[1]);
+				index6 = indexVal(argTokArray[2]);
+				
+				finalOp |= DR << 9;
+				finalOp |= BaseR << 6;
+				finalOp |= index6;
+			}
+			else
+			{
+				badArg = true;
+			}
 		}
 		else if (op.equals("LEA"))
 		{
+			getArgTokens(2, st);
 			
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+			{
+				DR = regVal(argTokArray[0]);
+				addr = regVal(argTokArray[1]);
+
+				finalOp |= DR << 9;
+				finalOp |= addr;
+			}
+			else
+			{
+				badArg = true;
+			}			
 		}
 		else if (op.equals("NOT"))
 		{
+			getArgTokens(2, st);
 			
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]))
+			{
+				DR = regVal(argTokArray[0]);
+				SR = regVal(argTokArray[1]);
+				
+				finalOp |= DR << 9;
+				finalOp |= SR << 6;
+			}
+			else
+			{
+				badArg = true;
+			}
 		}
 		else if (op.equals("ST"))
 		{
+			getArgTokens(2, st);
 			
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+			{
+				SR = regVal(argTokArray[0]);
+				pgoffset9 = (short) addrVal(argTokArray[1]);
+				
+				finalOp |= SR << 9;
+				finalOp |= pgoffset9;
+			}
+			else
+			{
+				badArg = true;
+			}
 		}
 		else if (op.equals("STI"))
 		{
+			getArgTokens(2, st);
 			
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+			{
+				SR = regVal(argTokArray[0]);
+				pgoffset9 = (short) addrVal(argTokArray[1]);
+				
+				finalOp |= SR << 9;
+				finalOp |= pgoffset9;
+			}
+			else
+			{
+				badArg = true;
+			}
 		}
 		else if (op.equals("STR"))
 		{
+			getArgTokens(3, st);
 			
+			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
+			{
+				SR = regVal(argTokArray[0]);
+				BaseR = regVal(argTokArray[1]);
+				index6 =  indexVal(argTokArray[2]);
+				finalOp |= SR << 9;
+				finalOp |= BaseR << 6;
+				finalOp |= index6;
+			}
+			else
+			{
+				badArg = true;
+			}
 		}
 		else if (op.equals("TRAP"))
 		{
+			getArgTokens(1, st);
 			
+			if(!st.hasMoreTokens() && isValTrapVect(argTokArray[0]))
+			{
+				trapvect8 = trapVal(argTokArray[0]);
+				finalOp |= trapvect8;
+			}
+			else
+			{
+				badArg = true;
+			}			
 		}
-		else//Op is a branch op
+		else //Op is a branch op
 		{
-			
+			getArgTokens(1, st);
+			if (!st.hasMoreTokens() && isValAddr(argTokArray[0]))
+			{
+				finalOp |= addrVal(argTokArray[0]);
+			}
 		}
+		
+		p2File.input(input.concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
 		
 		if (badArg)
 		{
-			System.out.print("ERROR: Improperly formed arguements at line" + counter);
+			System.out.print("ERROR: Improperly formed argument at line" + body.getReport());
+			p2File.input("ERRORLINE");
 		}
-		
 	}
-	
+
 	private void processWrite(String op) //Write op with no arguments to p2File
 	{
 		String input = new String("T");
