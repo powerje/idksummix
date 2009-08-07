@@ -14,6 +14,19 @@ public class SymbolTable {
 	 * @author Jim
 	 *
 	 */
+	
+	public static String shortToHexString(short data) {
+		String returnVal = Integer.toHexString((int) data);
+		if (returnVal.length() > 4) 
+		{
+			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
+		}
+		while (returnVal.length() < 4) 
+		{
+			returnVal = "0" + returnVal;
+		}
+		return "0x" + returnVal.toUpperCase();
+	}
 	private static class Symbol {
 		/**
 		 * 
@@ -28,7 +41,7 @@ public class SymbolTable {
 		 * Returns a String object representing the specified symbol. 
 		 */
 		public String toString() {
-			return "(" + this.value + ", " + this.isRelative + ") ";
+			return "(" + shortToHexString(this.value) + ", " + this.isRelative + ") ";
 		}
 		
 		public short value;
