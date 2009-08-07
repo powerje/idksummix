@@ -74,20 +74,8 @@ public class LocationCounter {
 		
 			if (index1 == -1 && index2 == -1 && args.getType() == TokenType.ALPHA) //arg is a symbol
 			{
-				if(!(SymbolTable.isDefined(args.getText())))
-				{
-					System.out.println("ERROR: Symbol used for .BLKW operand was not previously defined.");
-				}
-				else
-				{
 					short argAmt = SymbolTable.getValue(args.getText());
 					LocationCounter.incrementAmt((int) argAmt);
-				}
-			}
-			else
-			{
-				System.out.println("ERROR: Arguments for .BLKW are INVALID or MALFORMED!");
-
 			}
 		}
 	
