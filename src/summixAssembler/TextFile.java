@@ -20,6 +20,11 @@ public class TextFile {
 	private int posPointer;
 	/** The vertical depth down the rows of strings in the body array*/
 	private int rowPointer;
+	
+	public String getReport()
+	{
+		return ("line " + (rowPointer - 1));
+	}
 
 	/**
 	 * Constructor for TextFile
