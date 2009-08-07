@@ -183,7 +183,7 @@ public class Pass1 {
 		int extraNeeded = 6 - progName.length();
 		while (extraNeeded > 0)
 		{
-			progName += "_";
+			progName += " ";
 			extraNeeded--;
 		}
 		
