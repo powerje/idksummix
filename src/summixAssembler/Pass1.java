@@ -134,7 +134,6 @@ public class Pass1 {
 	
 	private boolean isLiteral(Token arg)
 	{
-		System.out.println("isLiteral CALLED on: " + arg.getText());
 		boolean literal = false;
 		String strToken;
 		strToken = arg.getText();
@@ -596,7 +595,7 @@ public class Pass1 {
 		// Check for an end recorder
 		if (endFlag == false)
 		{
-			System.out.println("ERROR: The program contains NO end recorder.");
+			System.out.println("ERROR: The program contains NO end record.");
 		}
 
 		// Add Lits to Literal Table and increment the Location Counter for all of the Literals
@@ -614,7 +613,6 @@ public class Pass1 {
 		// Calculate the Program segment size
 		short size = (short) (LocationCounter.getAddress() - start);
 		String sizeStr = shortToHexString(size);
-		System.out.println(size);
 		// Add an "H" to the beginning of header record
 		String headerFinal = "H";
 		headerFinal += headerRecord;
