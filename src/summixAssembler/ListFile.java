@@ -76,7 +76,7 @@ public class ListFile {
 	}
 	
 	
-	public String CreateListFile(TextFile source, TextFile p2)
+	public void CreateListFile(TextFile source, TextFile p2)
 	{
 		String listFile = null;
 		String sourceLine = null;
@@ -104,7 +104,7 @@ public class ListFile {
 			p2Line = p2.getLine();
 			//print 1 line p2 file
 			String lineOp = ProcessLineP2Op(p2);
-			System.out.print("( " + ProcessLineP2Address(p2) + " ) " + lineOp + " " + OutputBinaryP2(lineOp)); 
+			System.out.print("( " + ProcessLineP2Address(p2) + " ) " + lineOp + " " + OutputBinaryP2(lineOp) + " "); 
 			
 			//print count
 			System.out.print("( " + progCount + " )\t");
@@ -115,7 +115,6 @@ public class ListFile {
 			System.out.println(sourceLine);
 		}
 		
-		return listFile;
 	}
 
 }
