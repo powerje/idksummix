@@ -76,11 +76,12 @@ public class ListFile {
 	}
 	
 	
-	public void CreateListFile(TextFile source, TextFile p2)
+	public TextFile CreateListFile(TextFile source, TextFile p2)
 	{
-		String listFile = null;
+		TextFile listFile = null;
 		String sourceLine = null;
 		String p2Line = null;
+		String completeRow = null;
 		int progCount = 1;
 		
 		while(!source.isEndOfFile() && !p2.isEndOfFile())
@@ -89,32 +90,36 @@ public class ListFile {
 			
 			while(commentSource)
 			{
-				System.out.print("( " + progCount + " )\t");
-				System.out.println(sourceLine);
+				completeRow = "( ";
+				completeRow.concat(Integer.toString(progCount));
+				completeRow.concat(" )\t");
+				completeRow.concat(sourceLine);
 				progCount++;
+				listFile.input(completeRow);
 				sourceLine = ProcessLineSource(source);
 			}
 			
 			//print header record
-			System.out.print("( " + progCount + " )\t");
-			System.out.println(sourceLine);
+			completeRow.concat("( " + Integer.toString(progCount) + " )\t" + sourceLine);
 			progCount++;
+			listFile.input(completeRow);
 			
 			//dump header record of p2
 			p2Line = p2.getLine();
 			//print 1 line p2 file
 			String lineOp = ProcessLineP2Op(p2);
-			System.out.print("( " + ProcessLineP2Address(p2) + " ) " + lineOp + " " + OutputBinaryP2(lineOp) + " "); 
+			completeRow.concat("( " + ProcessLineP2Address(p2) + " ) " + " ");
+			completeRow.concat(lineOp + " " + OutputBinaryP2(lineOp) + " ");
 			
 			//print count
-			System.out.print("( " + progCount + " )\t");
+			completeRow.concat("( " + Integer.toString(progCount) + " )\t");
 			progCount++;
 			
 			//print 1 line source file
 			sourceLine = ProcessLineSource(source);
-			System.out.println(sourceLine);
+			completeRow.concat(sourceLine);
 		}
-		
+		return listFile;
 	}
-
+	
 }
