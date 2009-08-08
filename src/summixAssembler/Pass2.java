@@ -86,7 +86,6 @@ public class Pass2 {
 		}
 		else if (numberOfTokens == 1) //Must be an EoL token by itself
 		{
-			p2File.input("");
 		}
 		else
 		{
@@ -145,7 +144,6 @@ public class Pass2 {
 	private boolean isValReg(String register)
 	{
 		boolean flag = false;
-		System.out.println(register);
 		if (register != null && register.matches("^R[0-7]$")) //Is a regular register
 		{
 			flag = true;
@@ -757,11 +755,11 @@ public class Pass2 {
 			{
 				needsRelocation = true;
 			}
-			else if (argTokArray[1] != null && SymbolTable.isDefined(argTokArray[1]) && SymbolTable.isRelative(argTokArray[0]))
+			else if (argTokArray[1] != null && SymbolTable.isDefined(argTokArray[1]) && SymbolTable.isRelative(argTokArray[1]))
 			{
 				needsRelocation = true;
 			}
-			else if (argTokArray[2] != null && SymbolTable.isDefined(argTokArray[2]) && SymbolTable.isRelative(argTokArray[0]))
+			else if (argTokArray[2] != null && SymbolTable.isDefined(argTokArray[2]) && SymbolTable.isRelative(argTokArray[2]))
 			{
 				needsRelocation = true;
 			}

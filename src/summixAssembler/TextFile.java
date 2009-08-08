@@ -21,9 +21,9 @@ public class TextFile {
 	/** The vertical depth down the rows of strings in the body array*/
 	private int rowPointer;
 	
-	public String getReport()
+	public Integer getReport()
 	{
-		return ("line " + (rowPointer - 1));
+		return rowPointer - 1;
 	}
 
 	/**
