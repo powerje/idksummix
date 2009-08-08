@@ -1,0 +1,26 @@
+Lab2EG	.ORIG	x30B0
+Acc   .EQU    #1
+Begin	ADD		R0,R3,R0		;30B0
+		ADD 	R3,R3,#1		;30B1
+Mult	AND 	R5,R5,R3		;30B2
+		AND 	R3,R3,x1F		;30B3
+ShutDn	BRZP 	x3020			;30B4
+		DBUG					;30B5
+		JSR 	Mult			;30B6
+		JMP 	ShutDn			;30B7
+		JSRR 	R2,x0			;30B8
+Value	JMPR 	R4,x10			;30B9
+		LD 		Acc,Value		;30BA
+ANSWR	LDI 	R0,x3100		;30BB
+		LDR 	R0,R4,xA		;30BC
+		LEA 	R0,ShutDn		;30BD
+Value	NOT 	R2,R2			;30BE
+		RET						;30BF
+		ST 		R5,ANSWR		;30C0
+Offset	STI 	R3,x3000		;30C1
+		STR 	R2,R0,Offset	;30C2
+		TRAP 	x25				;30C3
+Str	   	.STRZ   "hi! "			;30C4
+Array   .BLKW   #3				;30C9
+        .FILL   x10				;30CC
+		.END    Begin			;30CD - 30B0 = x1D = 29
