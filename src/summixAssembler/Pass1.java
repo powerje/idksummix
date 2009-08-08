@@ -215,18 +215,19 @@ public class Pass1 {
 			if (index1 != -1) //hex
 			{
 				short argVal = hexstringToShort(arg.getText().subSequence(index1 + 1, arg.getText().length()));
-				SymbolTable.input(label.getText(), argVal, LocationCounter.relative);
+				SymbolTable.input(label.getText(), argVal, false);
 			}
 			int index2 = arg.getText().indexOf('#');
 			if (index2 != -1) //decimal
 			{
 				short argVal = Short.parseShort(arg.getText().substring(1));
-				SymbolTable.input(label.getText(), argVal, LocationCounter.relative);
+				SymbolTable.input(label.getText(), argVal, false);
 			}
 			if (index1 == -1 && index2 == -1) //symbol table
 			{
+					boolean argRel = SymbolTable.isRelative(arg.getText());
 					short argVal = SymbolTable.getValue(arg.getText());
-					SymbolTable.input(label.getText(), argVal, LocationCounter.relative);
+					SymbolTable.input(label.getText(), argVal, argRel);
 			}
 		}
 	}
