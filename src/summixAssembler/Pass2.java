@@ -36,8 +36,6 @@ public class Pass2 {
 	
 	public TextFile processFile()
 	{
-		boolean foundEndLine = false;
-
 		//get header record from first line, place into the body file
 		//Are header records relocatable?
 		p2File.input(body.getLine()); //Get header
@@ -54,17 +52,7 @@ public class Pass2 {
 			System.out.println("ERROR: No end of line record present in sourecode. Expected at line " + body.getReport());
 		}
 		
-		body.reset();
-		return body;
-	}
-	
-	private void processEndLine()
-	{
-		getTokens();
-		if(true)
-		{
-			
-		}
+		return p2File;
 	}
 	
 	private void processAnyLine()
@@ -77,8 +65,7 @@ public class Pass2 {
 			System.out.println("ERROR: Oversized sourecode at line " + body.getReport());
 		}
 		else if (numberOfTokens == 1) //Must be an EoL token by itself
-		{
-		}
+		{}
 		else
 		{
 			processTextLine();
@@ -777,7 +764,7 @@ public class Pass2 {
 			System.out.println("ERROR: Improperly formed argument at line" + body.getReport());
 			p2File.input("ERRORLINE");
 		}
-		else
+		else if (!foundEndLine)
 		{
 			boolean needsRelocation = false;
 			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
@@ -804,8 +791,9 @@ public class Pass2 {
 				p2File.input(input.concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file				
 			}
 			
-			p2File.display();
+
 		}
+		p2File.display();
 	}
 
 	private void processWrite(String op) //Write op with no arguments to p2File
