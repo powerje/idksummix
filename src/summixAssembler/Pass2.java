@@ -772,6 +772,14 @@ public class Pass2 {
 			getArgTokens(1, st);
 			isFill = true;
 			doNothing = true;
+			
+			boolean needsRelocation = false;
+			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
+			{
+				needsRelocation = true;
+			}
+			
+			
 			if(!st.hasMoreTokens() && argTokArray[0] != null)
 			{
 				try{
@@ -779,13 +787,29 @@ public class Pass2 {
 					if (argTokArray[0].startsWith("#") && Integer.valueOf(argTokArray[0].substring(1)) >= -32786
 							&& Integer.valueOf(argTokArray[0].substring(1)) <= 32767)
 					{
-						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1))));					
+						if (needsRelocation)
+						{
+							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)) + "M1");
+						}
+						else
+						{
+							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1))));							
+						}
+					
 					}
 					//Hex
 					else if(argTokArray[0].startsWith("x") && Integer.valueOf(argTokArray[0].substring(1), 16) >= 0
 							&& Integer.valueOf(argTokArray[0].substring(1), 16) <= 0xFFFF)
 					{
-						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)));						
+						if (needsRelocation)
+						{
+							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)) + "M1");								
+						}
+						else
+						{
+							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)));							
+						}
+
 					}
 					else
 					{
@@ -794,7 +818,6 @@ public class Pass2 {
 				}
 				catch(NumberFormatException e)
 				{
-					System.out.print("Threw number format");
 					badArg = true;
 				}
 			}
@@ -835,13 +858,38 @@ public class Pass2 {
 		{
 			getArgTokens(1, st);
 			doNothing = true;
-			if (!st.hasMoreTokens() && argTokArray[0] != null)
+			
+			try
 			{
-				Token tempOpTok = new Token(op, TokenType.ALPHA);
-				Token tempArgTok = new Token(argTokArray[0], TokenType.ALPHA);
-				LocationCounter.incrementAfterVarOp(tempOpTok, tempArgTok);
+
+				if (!st.hasMoreTokens() && argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]))
+				{
+					if(!SymbolTable.isRelative(argTokArray[0]))
+					{
+						LocationCounter.incrementAmt(SymbolTable.getValue(argTokArray[0]));
+					}
+					else
+					{
+						badArg = true;
+					}
+				}
+				else if(!st.hasMoreTokens() && argTokArray[0] != null && argTokArray[0].startsWith("#")&& Integer.valueOf(argTokArray[0].substring(1)) >= 1
+						&& Integer.valueOf(argTokArray[0].substring(1)) <= 0xFFFF)
+				{
+					LocationCounter.incrementAmt(Integer.valueOf(argTokArray[0].substring(1)));
+				}
+				else if (!st.hasMoreTokens() && argTokArray[0] != null && argTokArray[0].startsWith("x")&& Integer.valueOf(argTokArray[0].substring(1), 16) >= 1
+						&& Integer.valueOf(argTokArray[0].substring(1) , 16) <= 0xFFFF)
+				{
+					LocationCounter.incrementAmt(Integer.valueOf(argTokArray[0].substring(1) , 16));
+				}
+				else
+				{
+					badArg = true;
+				}
+				
 			}
-			else
+			catch(NumberFormatException e)
 			{
 				badArg = true;
 			}
@@ -873,10 +921,6 @@ public class Pass2 {
 			{
 				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp)) + "M0"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
 			}
-			else if(isFill && needsRelocation) //Only give M1 record if .fill is followed by a NON-absolute symbol
-			{
-				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp)) + "M1"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
-			}
 			else if (!doNothing){
 				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file				
 			}
@@ -894,6 +938,7 @@ public class Pass2 {
 		System.out.println("Inside process write with this op:" + op);
 		String input = new String("T");
 		p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
+		LocationCounter.incrementAmt(1);
 	}
 
 	public static String shortToHexString(short data) {
