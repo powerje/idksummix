@@ -9,6 +9,7 @@ public class Pass2 {
 	int numberOfTokens;
 	TextFile p2File = new TextFile();
 	String[] argTokArray = new String[3];
+	boolean foundEndLine = false;
 
 	public Pass2(TextFile incomingSource)
 	{
@@ -48,11 +49,7 @@ public class Pass2 {
 			foundEndLine = processAnyLine();
 		}
 		
-		if (foundEndLine)
-		{
-			processEndLine();
-		}
-		else
+		if (!foundEndLine)
 		{
 			System.out.println("ERROR: No end of line record present in sourecode. Expected at line " + body.getReport());
 		}
@@ -368,15 +365,15 @@ public class Pass2 {
 		
 		if (key.charAt(0)=='x')
 		{
-			returnVal = Short.parseShort(key.substring(1));
+			returnVal = Short.valueOf(key.substring(1), 16);
 		}
 		else if (SymbolTable.isDefined(key))
 		{ //symbol
 			returnVal = SymbolTable.getValue(key);
 		}
 		else
-		{ // number
-			returnVal = Short.parseShort(key.substring(0));
+		{ // # number
+			returnVal = Short.parseShort(key.substring(1));
 		}
 		return returnVal;
 	}
@@ -393,6 +390,7 @@ public class Pass2 {
 		}
 		return returnVal;
 	}
+	
 	
 	private void getArgTokens(int amount, StringTokenizer st)
 	{
@@ -724,7 +722,46 @@ public class Pass2 {
 		}
 		else if (op.equals(".END"))
 		{
-
+			getArgTokens(1, st);
+			foundEndLine = true;
+			
+			if(argTokArray[0] != null) //If there are args
+			{
+				if (!isValAddr(argTokArray[0]))
+				{
+					badArg = true;
+				}
+				
+				if(isValAddr(argTokArray[0]) && !foundEndLine) //If args are good, and I haven't already found the end line
+				{
+					if (argTokArray[0].startsWith("x"))
+					{
+						p2File.input("E" + argTokArray[0].substring(1));			
+					}
+					else if (argTokArray[0].startsWith("#"))
+					{
+						p2File.input("E" + Integer.valueOf(argTokArray[0].substring(1), 16));
+					}
+					else //Must be symbol
+					{
+						p2File.input("E" + SymbolTable.getValue(argTokArray[0]));
+					}
+				}
+			
+				if (!badArg && !foundEndLine ) //If the args are good, and I haven't already found an end line
+				{
+				
+				}
+				else
+				{
+					badArg = true;
+					 
+				}
+			}
+			else //If there are no args
+			{
+				
+			}
 		}
 		else if (op.equals(".EQU"))
 		{
@@ -732,6 +769,8 @@ public class Pass2 {
 		}
 		else if (op.equals(".FILL"))
 		{
+			getArgTokens(1, st);
+			if(!st.hasMoreTokens() && argTokArray[0] != null)
 			isFill = true;
 		}
 		else if (op.equals(".STRZ"))
@@ -768,7 +807,7 @@ public class Pass2 {
 			{
 				p2File.input(input.concat(shortToHexString(finalOp)) + "M0"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
 			}
-			else if(isFill)
+			else if(isFill && needsRelocation) //Only give M1 record if .fill is followed by a NON-absolute symbol
 			{
 				p2File.input(input.concat(shortToHexString(finalOp)) + "M1"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
 			}
@@ -788,6 +827,19 @@ public class Pass2 {
 	
 	public static String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
+		if (returnVal.length() > 4) 
+		{
+			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
+		}
+		while (returnVal.length() < 4) 
+		{
+			returnVal = "0" + returnVal;
+		}
+		return returnVal.toUpperCase();
+		}
+	
+	public static String intToHexString(int data) {
+		String returnVal = Integer.toHexString(data);
 		if (returnVal.length() > 4) 
 		{
 			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
