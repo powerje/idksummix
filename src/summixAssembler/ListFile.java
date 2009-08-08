@@ -1,5 +1,9 @@
 package summixAssembler;
-
+/**
+ * 
+ * @author Mike Irwin
+ *
+ */
 public class ListFile {
 	
 	public boolean commentSource, commentP2;
