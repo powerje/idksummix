@@ -82,7 +82,7 @@ public class ListFile {
 	
 	public TextFile CreateListFile(TextFile source, TextFile p2)
 	{
-		TextFile listFile = null;
+		TextFile listFile = new TextFile();
 		String sourceLine = null;
 		String p2Line = null;
 		String completeRow = null;
