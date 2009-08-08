@@ -46,7 +46,7 @@ public class Pass2 {
 		//while(not end record or end of file) {output text records}
 		while(!body.isEndOfFile() && !foundEndLine)
 		{
-			foundEndLine = processAnyLine();
+			processAnyLine();
 		}
 		
 		if (!foundEndLine)
@@ -67,19 +67,14 @@ public class Pass2 {
 		}
 	}
 	
-	private boolean processAnyLine()
+	private void processAnyLine()
 	{
 		getTokens();
 		//System.out.println("Process any line");
-		boolean foundEnd = false;
 		
 		if (numberOfTokens > 4) //You got too many tokens
 		{
 			System.out.println("ERROR: Oversized sourecode at line " + body.getReport());
-		}
-		else if (token_array[0].getText() == ".END" || token_array[1].getText() == ".END") //If the line is an end line, stop processing and return true
-		{
-			foundEnd = true;
 		}
 		else if (numberOfTokens == 1) //Must be an EoL token by itself
 		{
@@ -89,7 +84,6 @@ public class Pass2 {
 			processTextLine();
 		}
 		
-		return foundEnd;
 	}
 	
 	private void processTextLine()
@@ -723,44 +717,39 @@ public class Pass2 {
 		else if (op.equals(".END"))
 		{
 			getArgTokens(1, st);
-			foundEndLine = true;
-			
-			if(argTokArray[0] != null) //If there are args
-			{
-				if (!isValAddr(argTokArray[0]))
+			if (!foundEndLine){
+				foundEndLine = true;
+				if(argTokArray[0] != null) //If there are args
 				{
-					badArg = true;
-				}
-				
-				if(isValAddr(argTokArray[0]) && !foundEndLine) //If args are good, and I haven't already found the end line
-				{
-					if (argTokArray[0].startsWith("x"))
+					if(isValAddr(argTokArray[0])) //If args are good, and I haven't already found the end line
 					{
-						p2File.input("E" + argTokArray[0].substring(1));			
+						if (argTokArray[0].startsWith("x"))
+						{
+							p2File.input("E" + argTokArray[0].substring(1));			
+						}
+						else if (argTokArray[0].startsWith("#"))
+						{
+							p2File.input("E" + Integer.valueOf(argTokArray[0].substring(1), 16));
+						}
+						else //Must be symbol
+						{
+							p2File.input("E" + shortToHexString(SymbolTable.getValue(argTokArray[0])));
+						}
 					}
-					else if (argTokArray[0].startsWith("#"))
+					else
 					{
-						p2File.input("E" + Integer.valueOf(argTokArray[0].substring(1), 16));
+						badArg = true;
 					}
-					else //Must be symbol
-					{
-						p2File.input("E" + SymbolTable.getValue(argTokArray[0]));
-					}
+
 				}
-			
-				if (!badArg && !foundEndLine ) //If the args are good, and I haven't already found an end line
+				else //If there are no args
 				{
-				
-				}
-				else
-				{
-					badArg = true;
-					 
+					p2File.input("E"); //First line of execution
 				}
 			}
-			else //If there are no args
+			else
 			{
-				
+
 			}
 		}
 		else if (op.equals(".EQU"))
