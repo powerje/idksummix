@@ -515,6 +515,7 @@ public class Pass2 {
 			{
 				addr = addrVal(argTokArray[0]);
 				finalOp |= addr;
+				finalOp |= 1 << 11; //Link bit set
 				//No link bit set
 			}
 			else
@@ -530,7 +531,7 @@ public class Pass2 {
 			{
 				addr = addrVal(argTokArray[0]);
 				finalOp |= addr;
-				finalOp |= 1 << 11; //Link bit set
+
 			}
 			else
 			{
@@ -546,6 +547,7 @@ public class Pass2 {
 				index6 = indexVal(argTokArray[1]);
 				finalOp |= BaseR << 6;
 				finalOp |= index6;
+				finalOp |= 1 << 11; //Link bit set
 				//No link bit set
 			}
 			else
@@ -562,7 +564,6 @@ public class Pass2 {
 				index6 = indexVal(argTokArray[1]);
 				finalOp |= BaseR << 6;
 				finalOp |= index6;
-				finalOp |= 1 << 11; //Link bit set
 			}
 			else
 			{
