@@ -4,25 +4,31 @@ import java.util.StringTokenizer;
 
 public class Pass2 {
 	
-	//int counter = 2;
 	TextFile body;
 	Token[] token_array = new Token[4];
 	int numberOfTokens;
 	TextFile p2File = new TextFile();
-	String[] argTokArray = new String[3]; 
-	
+	String[] argTokArray = new String[3];
+
 	public Pass2(TextFile incomingSource)
 	{
 		body = incomingSource;
 		body.reset();
 	}
-	
+
 	private void getTokens()
 	{
 		numberOfTokens = 0;
-		while(token_array[numberOfTokens].getType() != TokenType.EOL)
-		{
-			token_array[numberOfTokens] = body.getToken();
+		Token temp = new Token(";", TokenType.COMMENT);
+		
+		while(temp.getType() != TokenType.EOL)
+		{ 
+			//System.out.println("Pulled out this token:" + temp.getText());
+			temp = body.getToken();
+			if (!(numberOfTokens > 4))
+			{
+				token_array[numberOfTokens] = temp;
+			}
 			numberOfTokens++;
 		}
 	}
@@ -33,21 +39,18 @@ public class Pass2 {
 
 		//get header record from first line, place into the body file
 		//Are header records relocatable?
-		p2File.input(body.getLine());
+		p2File.input(body.getLine()); //Get header
+		body.getLine(); //Flush old header
+		
 		//while(not end record or end of file) {output text records}
 		while(!body.isEndOfFile() && !foundEndLine)
 		{
 			foundEndLine = processAnyLine();
-/*			if (!foundEndLine)
-				{
-					counter ++;
-				}*/
 		}
 		
 		if (foundEndLine)
 		{
 			processEndLine();
-//			counter++;
 		}
 		else
 		{
@@ -70,7 +73,7 @@ public class Pass2 {
 	private boolean processAnyLine()
 	{
 		getTokens();
-		
+		//System.out.println("Process any line");
 		boolean foundEnd = false;
 		
 		if (numberOfTokens > 4) //You got too many tokens
@@ -139,19 +142,10 @@ public class Pass2 {
 		return flag;
 	}
 	
-	private void getArgTokens(int amount, StringTokenizer st)
-	{
-		int counter = 0;
-		while (counter < amount && st.hasMoreTokens()) //Get the tokens you want
-		{
-			argTokArray[counter] = st.nextToken();
-			counter++;
-		}
-	}
-	
 	private boolean isValReg(String register)
 	{
 		boolean flag = false;
+		System.out.println(register);
 		if (register != null && register.matches("^R[0-7]$")) //Is a regular register
 		{
 			flag = true;
@@ -402,16 +396,45 @@ public class Pass2 {
 		return returnVal;
 	}
 	
+	private void getArgTokens(int amount, StringTokenizer st)
+	{
+
+		int counter = 0;
+		
+		while (counter < 3)
+		{
+			argTokArray[counter] = null;
+			counter++;
+		}
+		
+		counter = 0;
+		while (counter < amount && st.hasMoreTokens()) //Get the tokens you want
+		{
+			argTokArray[counter] = st.nextToken();
+			counter++;
+		}
+	}
+	
 	private void processWrite(String op, String arg) //Write op with arguments to p2File
 	{
 		short DR, SR1, SR2, imm5, pgoffset9, index6, BaseR, n, z, p, SR, trapvect8;
 		int addr;
+		boolean M0 = false;
+		boolean M1 = false;
 		boolean badArg = false;
+		boolean doNothing = false;
+		boolean isFill = false;
 		StringTokenizer st = new StringTokenizer(arg, ",");
 		String input = new String("T");
-		short finalOp;
+		short finalOp = 0;
 		
-		finalOp = MachineOpTable.getOp(op);
+		System.out.println("Inside process write with this op:" + op);
+		
+		if (MachineOpTable.isOp(op))
+		{
+			finalOp = MachineOpTable.getOp(op);			
+		}
+
 		
 		//Figure out which op you have
 		if (op.equals("ADD"))
@@ -688,21 +711,73 @@ public class Pass2 {
 				badArg = true;
 			}			
 		}
-		else //Op is a branch op
+		else if (op.matches("^BRN?Z?P?$"))
 		{
 			getArgTokens(1, st);
 			if (!st.hasMoreTokens() && isValAddr(argTokArray[0]))
 			{
 				finalOp |= addrVal(argTokArray[0]);
 			}
+			else
+			{
+				badArg = true;
+			}
+		}
+		else if (op.equals(".END"))
+		{
+
+		}
+		else if (op.equals(".EQU"))
+		{
+			doNothing = true;
+		}
+		else if (op.equals(".FILL"))
+		{
+			isFill = true;
+		}
+		else if (op.equals(".STRZ"))
+		{
+			
+		}
+		else if (op.equals(".BLKW"))
+		{
+			
 		}
 		
-		p2File.input(input.concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
 		
 		if (badArg)
 		{
-			System.out.print("ERROR: Improperly formed argument at line" + body.getReport());
+			System.out.println("ERROR: Improperly formed argument at line" + body.getReport());
 			p2File.input("ERRORLINE");
+		}
+		else
+		{
+			boolean needsRelocation = false;
+			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
+			{
+				needsRelocation = true;
+			}
+			else if (argTokArray[1] != null && SymbolTable.isDefined(argTokArray[1]) && SymbolTable.isRelative(argTokArray[0]))
+			{
+				needsRelocation = true;
+			}
+			else if (argTokArray[2] != null && SymbolTable.isDefined(argTokArray[2]) && SymbolTable.isRelative(argTokArray[0]))
+			{
+				needsRelocation = true;
+			}
+			if (needsRelocation)
+			{
+				p2File.input(input.concat(shortToHexString(finalOp)) + "M0"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
+			}
+			else if(isFill)
+			{
+				p2File.input(input.concat(shortToHexString(finalOp)) + "M1"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
+			}
+			else if (!doNothing){
+				p2File.input(input.concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file				
+			}
+			
+			p2File.display();
 		}
 	}
 
@@ -712,11 +787,16 @@ public class Pass2 {
 		p2File.input(input.concat(shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
 	}
 	
-	private String shortToHexString(short data) {
+	public static String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
-		if (returnVal.length() > 4) {
+		if (returnVal.length() > 4) 
+		{
 			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
 		}
+		while (returnVal.length() < 4) 
+		{
+			returnVal = "0" + returnVal;
+		}
 		return returnVal.toUpperCase();
-	}
+		}
 }
