@@ -11,7 +11,7 @@ import java.util.Map;
 public class PseudoOpTable {
 
 	/**
-	 * 
+	 * Table that holds information on the PseudoOps of a SummiX machine
 	 * @author Jim
 	 *
 	 */
@@ -20,7 +20,7 @@ public class PseudoOpTable {
 		public boolean isVariable;	//is the size dependent on the instruction code?
 		
 		/**
-		 * 
+		 * Private class used to hold information on pseudoOps
 		 * @param size the size of the pseudo op to be created
 		 * @param isVariable whether or not the size of the pseudo op to be created is variable
 		 */
@@ -53,7 +53,7 @@ public class PseudoOpTable {
 	}
 	
 	/**
-	 * 
+	 * Checks to see if a psuedoOp's length in variable or not
 	 * @param name the key to search for the pseudo op
 	 * @return whether or not the pseudo op is of variable size
 	 */
@@ -62,7 +62,7 @@ public class PseudoOpTable {
 	}
 	
 	/**
-	 * 
+	 * Checks to see if a text string matches one of the table's pseudoOps
 	 * @param name the key to search for the pseudo op
 	 * @return whether or not the given string is a pseudoOp
 	 */
@@ -71,7 +71,7 @@ public class PseudoOpTable {
 	}
 	
 	/**
-	 * 
+	 * Returns the size of a pseudoOp that does not have a variable size
 	 * @param name the key to search for the pseudo op
 	 * @return the size of the pseudo op
 	 */

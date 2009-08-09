@@ -21,6 +21,7 @@ public class MachineOpTable {
 		public short size;			//size of the op code
 		
 		/**
+		 * Class used internally by the MachineOpTable class to store the machineops.
 		 * 
 		 * @param op the op code of the machine op
 		 * @param size the size (in words of memory) of the machine op
@@ -76,6 +77,7 @@ public class MachineOpTable {
 	}
 
 	/**
+	 * Returns the op field of an operation's machine code shifted into position.
 	 * 
 	 * @param name the key to be found
 	 * @return the op code of the machine op given by key of name shifted into its position in an instruction code
@@ -85,6 +87,7 @@ public class MachineOpTable {
 	}
 
 	/**
+	 * Returns the size of an operation listed in the machine op table
 	 * 
 	 * @param name the key to be found
 	 * @return the size of the MachineOp with the given key of name
@@ -95,6 +98,7 @@ public class MachineOpTable {
 	}
 	
 	/**
+	 * Checks if a string is one of the operations from the machine table
 	 * 
 	 * @param name String being compared to list of machineOps
 	 * @return Returns true if string passed in is the name of a machineOp
