@@ -19,22 +19,19 @@ public class Pass1 {
 	private Token[] token_array = new Token[4];
 	/** body - User's source code orig - A copy of User's source minus the header. */
 	private TextFile body, orig;
-	/** User's source code. */
+	/** output from Pass1  */
 	private TextFile p1file = new TextFile();
-	/** User's source code. */
-	private String headerRecord="", endRecord="", textRecord="";
-	/** User's source code. */
-	private String strLine;
+	/** strings that represent a header and text record respectively*/
+	private String headerRecord="", textRecord="";
+	/** strings for program name and segment start address*/
 	private String progName = "ERROR ", strStartAddr = "FFFF";
-	/** User's source code. */
-	private Token token;
-	/** User's source code. */
+	/** The number of tokens on a line*/
 	private int num_tokens;
-	/** User's source code. */
+	/** The start of execution */
 	private short start;
-	/** User's source code. */
+	/** The literal set*/
 	private static Set<Short> literals = new HashSet<Short>();
-	/** User's source code. */
+	/** Set to true if line contains an error*/
 	private boolean errorLineFlag = false;
 	
 	/**
@@ -63,20 +60,7 @@ public class Pass1 {
 	
 	private void constructRecord(String recordType){
 		
-		if(recordType.equals("end")){
-			int token_array_size = token_array.length;
-			int i = 0;
-			while(i < token_array_size)
-			{
-				if((token_array[i].getType() != TokenType.EOL))
-				{
-					endRecord += token_array[i];
-					endRecord += " ";
-				}
-				i++;
-			}
-		}
-		else if(recordType.equals("text")){
+		if(recordType.equals("text")){
 			int token_array_size = token_array.length;
 			int i = 0;
 			while(i < token_array_size)
@@ -457,12 +441,13 @@ public class Pass1 {
 		
 		return textRecord;
 	}
+	/**
+	 * This is the point of entry for Pass1  
+	 */
 	
-	
-
 	public TextFile processFile()
 	{
-		boolean endFlag = false, origFlag = false, textFlag = false;
+		boolean origFlag = false, textFlag = false;
 		
 		while(!body.isEndOfFile())
 		{
@@ -518,12 +503,6 @@ public class Pass1 {
 			System.out.println("ERROR: The program does not contains at least ONE text record.");
 		}
 		
-		// Check for an end recorder
-		if (endFlag == false)
-		{
-			System.out.println("ERROR: The program contains NO end record.");
-		}
-
 		// Add Lits to Literal Table and increment the Location Counter for all of the Literals
 		Iterator<Short> literal = literals.iterator();
 		
