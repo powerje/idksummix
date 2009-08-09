@@ -195,7 +195,6 @@ public class Assembler {
 	{		
 		ListFile list = new ListFile();
 		TextFile lFile = new TextFile();
-		String listfiletest = null;
 		
 		lFile = list.CreateListFile(sFile, p2File);
 		
