@@ -123,6 +123,8 @@ public class ListFile {
 		String p2Line = null;
 		String completeRow = null;
 		int progCount = 1;
+		source.reset();
+		p2.reset();
 		
 		while(!source.isEndOfFile() && !p2.isEndOfFile())
 		{
