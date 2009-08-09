@@ -15,6 +15,7 @@ public class LiteralTable {
 	private static int size = 0;
 	
 	/**
+	 * Adds a literal to the literal table
 	 * 
 	 * @param key the key to add
 	 * @param addr the address to give the new literal
@@ -27,7 +28,7 @@ public class LiteralTable {
 	}
 	
 	/**
-	 * 
+	 * Adds a literal to the literal table
 	 * @param key the key to add
 	 * @param addr the address to give the new literal
 	 */
@@ -36,7 +37,7 @@ public class LiteralTable {
 	}
 
 	/**
-	 * 
+	 * Checks to see if a literal is in the table
 	 * @param key the key to look for
 	 * @return whether or not the key exist in the table
 	 */
@@ -46,7 +47,7 @@ public class LiteralTable {
 	}
 	
 	/**
-	 * 
+	 * Adds a literal to the literal table
 	 * @param key the key to add
 	 * @param addr the address to give the new literal
 	 */
@@ -55,7 +56,7 @@ public class LiteralTable {
 	}
 
 	/**
-	 * 
+	 * Adds a literal to the literal table
 	 * @param key the key to add
 	 * @param addr the address to give the new literal
 	 */	
@@ -64,7 +65,7 @@ public class LiteralTable {
 	}
 	
 	/**
-	 * 
+	 * Returns the address where a literal is stored
 	 * @param key the key to search for
 	 * @return the address of the literal given by key
 	 */
@@ -79,7 +80,7 @@ public class LiteralTable {
 	}
 	
 	/**
-	 * 
+	 * Returns the address where a literal is stored
 	 * @param key the key to search for
 	 * @return the address of the literal given by key
 	 */
@@ -89,7 +90,7 @@ public class LiteralTable {
 	}
 	
 	/**
-	 * 
+	 * Returns the address where a literal is stored
 	 * @param key the key to search for
 	 * @return the address of the literal given by key
 	 */
@@ -105,14 +106,6 @@ public class LiteralTable {
 		System.out.println( "Literal Table:\n" +
 						 	"Format: key (address)");
 		System.out.println(literals.toString());
-	}
-	
-	/**
-	 * 
-	 * @return the number of literals in the table
-	 */
-	public static int size() {
-		return size;	//here's your size Dan!
 	}
 	
 }

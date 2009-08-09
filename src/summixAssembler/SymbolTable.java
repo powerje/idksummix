@@ -4,17 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ * Stores the symbols collected by the pass1 object. Dispenses information about them as well.
  * @author Jim
  *
  */
 public class SymbolTable {	
+
 	/**
-	 * 
+	 *
+	 * Takes an short input and returns a four character hex representation of it from 0000 to FFFF 
+	 * @param data	input
+	 * @return hex representation from 0000 to FFFF 
 	 * @author Jim
 	 *
 	 */
-	
 	public static String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
@@ -27,9 +30,16 @@ public class SymbolTable {
 		}
 		return "0x" + returnVal.toUpperCase();
 	}
+
+
+	/**
+	 * 
+	 * @author Jim
+	 *
+	 */
 	private static class Symbol {
 		/**
-		 * 
+		 * Symbol class used by the symbol table internally to store representations of symbols 
 		 * @param value the value of the symbol to be created
 		 * @param relative whether or not this symbols value is relative to its location in memory
 		 */
@@ -43,7 +53,7 @@ public class SymbolTable {
 		public String toString() {
 			return "(" + shortToHexString(this.value) + ", " + this.isRelative + ") ";
 		}
-		
+
 		public short value;
 		public boolean isRelative;
 	}
@@ -51,6 +61,7 @@ public class SymbolTable {
 	private static Map<String, Symbol> symbols = new HashMap<String, Symbol>();
 
 	/**
+	 * Inputs a symbol into the symbol table and stores its value, name, and its relativity.
 	 * 
 	 * @param key the key for the symbol
 	 * @param value the value of the symbol
@@ -65,28 +76,7 @@ public class SymbolTable {
 	}
 
 	/**
-	 * 
-	 * @param key the key for the symbol
-	 */
-	/*
-	public static void input(String key) {
-			symbols.put(key, null);
-	}
-	*/
-	
-	/**
-	 * 
-	 * @param key the key for the symbol
-	 * @param value the value of the symbol
-	 * @param relative whether or not this symbols value is relative to its location in memory
-	 */
-	/*
-	public static void update(String key, short value, boolean relative) {
-			symbols.put(key, new Symbol(value, relative));
-	}
-	*/
-	
-	/**
+	 * Gets the value of a symbol. Prints out an error if it's not defined in the table.
 	 * 
 	 * @param key the key for the symbol
 	 * @return the value of the symbol denoted by key
@@ -100,31 +90,31 @@ public class SymbolTable {
 		}
 		return returnVal;
 	}
-	
+
 	/**
-	 * 
+	 * checks to see if a symbol is relative
 	 * @param key the key for this symbol
-	 * @return the relativity of the symbol denoted by key
+	 * @return True if the symbol is relative
 	 */
 	public static boolean isRelative(String key) {
 		return symbols.get(key).isRelative;
 	}
-	
+
 	/**
-	 * 
+	 * Checks to see if a symbol exists in the symbol table
 	 * @param key
-	 * @return
+	 * @return  True if a symbol is defined in the table
 	 */
 	public static boolean isDefined(String key) {
 		return symbols.containsKey(key);
 	}
-	
+
 	/**
 	 * Display the symbol table to the console
 	 */
 	public static void display() {
 		System.out.println( "Symbol Table:\n" +
-						 	"Format: Mnemonic (value, isRelative)");
+		"Format: Mnemonic (value, isRelative)");
 		System.out.println(symbols.toString());
 	}
 }
