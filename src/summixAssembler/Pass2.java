@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
  *
  * @author Michael Pinnegar
  * 
+ *	
  */
 public class Pass2 {
 	/** User's source code. */
@@ -88,7 +89,6 @@ public class Pass2 {
 	private void processAnyLine()
 	{
 		getTokens();
-		//System.out.println("Process any line");
 
 		if (numberOfTokens > 4) //You got too many tokens
 		{
@@ -103,7 +103,8 @@ public class Pass2 {
 			else
 			{//You've got a bad single line command, spit out error
 				System.out.println("ERROR: Malformed sourcecode at line " + body.getReport());
-				p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE: " + token_array[0].getText());
+				System.out.println(";ERROR MALFORMED SOURECODE ON THIS LINE");
+				p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE");
 			}
 		}
 		else if (numberOfTokens == 1)//must be EoL do nothing
