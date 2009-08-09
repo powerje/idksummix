@@ -5,34 +5,46 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
+ * Wrapper class that is used to pull a text file from hard disk into memory. The TextFile class
+ * gives functionality to that text file in memory so that it can be accessed and written to.
  * 
  * @author Michael Pinnegar
  *
  */
-
-
 public class TextFile {
 
 
-	/** The main storage body for each string that represents the slurped file*/
+	/** The main storage body for each string that represents the text file in memory*/
 	private ArrayList<String> body;
 	/** The horizontal depth into a string of the body array*/ 
 	private int posPointer;
 	/** The vertical depth down the rows of strings in the body array*/
 	private int rowPointer;
-	
+	/** Header record to be written to the object file p2File*/
 	private String headerHolder = null;
 	
+	/**
+	 * Takes the header record from pass1 and saves it.
+	 * @param header	header record
+	 */
 	public void insertHeader(String header)
 	{
 		headerHolder = header;
 	}
 	
+	/**
+	 * Returns the header record stored for pass2.
+	 * @return	header record
+	 */
 	public String getHeader()
 	{
 		return headerHolder;
 	}
 	
+	/**
+	 * Returns the line number that is currently ready to be accessed.
+	 * @return	line number
+	 */
 	public Integer getReport()
 	{
 		return rowPointer;
@@ -41,10 +53,9 @@ public class TextFile {
 	/**
 	 * Constructor for TextFile
 	 * 
-	 * @param inputFilename Name of the file to be slurped
-	 * @throws IOException Missing file
+	 * @param inputFilename Name of the file to be wrapped by the TextFile class
+	 * @throws IOException Unable to access file
 	 */
-
 	public TextFile(String inputFilename) throws IOException
 	{
 		body = new ArrayList<String>();
@@ -61,7 +72,9 @@ public class TextFile {
 
 		in.close();
 	}
-
+	/**
+	 * Constructs an empty textFile
+	 */
 	public TextFile()
 	{
 		body = new ArrayList<String>();
@@ -69,6 +82,9 @@ public class TextFile {
 		rowPointer = 0;
 	}
 	
+	/**
+	 * Removes all comments from a textFile object. Leaves comments inside of a pair of quotation marks on lines with .STRZ 
+	 */
 	public void stripComments()
 	{
 		int tempRow = posPointer;
@@ -110,6 +126,11 @@ public class TextFile {
 		rowPointer = tempRow;
 	}
 	
+	/**
+	 * Inserts a line of text at the specified row
+	 * @param row	specified row
+	 * @param input	line of text
+	 */
 	public void insertLine(int row, String input)
 	{
 		body.add(row, input);
@@ -214,6 +235,10 @@ public class TextFile {
 
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getLine()
 	{
 		String rVal = body.get(rowPointer); //Get the string out of the array located at the rowPointer

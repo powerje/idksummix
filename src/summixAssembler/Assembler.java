@@ -2,9 +2,23 @@ package summixAssembler;
 
 import java.io.*;
 
-
+/**
+ * Assembler for SummiX source code.
+ * 
+ * This provides the main entry into the IDKSummiX assembler. Flow of control is determined by the Assembler class.
+ * 
+ * @author Michael Pinnegar
+ *
+ */
 public class Assembler {
-	public static void main(String[] args) throws IOException {
+	
+	/**
+	 * 
+	 * @param args	-d  DUMP MODE: Turns on a screen dump of the intermidate files between pass 1 and 2
+	 * @param args  -f [fileName] FILENAME: Takes in the filename of the source code from the command line
+	 * @param args  -v VERBOSE MODE: Displays the list and object files to the console before they are written to disk
+	 */
+	public static void main(String[] args) {
 		
 		//Display intro
 		 System.out.println(" _____  _____  ___  ___  ___  _____ ______  _   __");
@@ -19,13 +33,12 @@ public class Assembler {
 		//-d (turns on the dump between passes)
 		//-f [fileName](lets the user input the fileName variable from the command line)
 		//-v (verbose; means that the program outputs the [p2File] and [lFile] to the console before writing them to the files)
-
 		boolean dumpSwitch = false;
 		boolean fileSwitch = false;
 		boolean verboseSwitch = false;
 		boolean goodBuild = false;
-		boolean objectPrinted = false;
-		boolean listPrinted = false;
+		boolean objectWritten = false;
+		boolean listWritten = false;
 		String sourceFileName = "";
 		TextFile sFile = null;
 		TextFile p1File = null;
@@ -82,7 +95,12 @@ public class Assembler {
 			else
 			{
 				System.out.print("Please input the file name of the source file:");
-				sourceFileName = br.readLine();				
+				try {
+					sourceFileName = br.readLine();
+				} catch (IOException e) {
+					System.out.print("ERROR: Assembler is unable to take user input, bailing out.");
+					System.exit(0);
+				}				
 			}
 
 			//Create sFile from the user's fileName file
@@ -116,10 +134,10 @@ public class Assembler {
 		p2File = pass2.processFile();
 		
 		p2File.display();
-		//Create lFile from sFile (or maybe p1File?), p2File, symbol table, and literal table
+		//Create lFile from sFile, p2File, symbol table, and literal table
 		lFile = makelFile(sFile, p2File);
 		
-		//If -v switch is set, display p2File and lFile
+		//If -v switch is set, display p2File and lFile before write
 		if (verboseSwitch)
 		{
 			System.out.println("Verbose mode has been enabled. Displaying list file, and object file.");
@@ -133,7 +151,7 @@ public class Assembler {
 		//Write lFile and p2File to files with extensions .l and .o respectively. .l is for list and .o is for object
 		try {
 			lFile.write(sourceFileName.concat(".l"));
-			listPrinted = true;
+			listWritten = true;
 		}
 		catch(IOException e)
 		{
@@ -143,7 +161,7 @@ public class Assembler {
 	
 		try {
 			p2File.write(sourceFileName.concat(".o"));
-			objectPrinted = true;
+			objectWritten = true;
 		}
 		catch(IOException e)
 		{
@@ -152,7 +170,7 @@ public class Assembler {
 
 		
 		//Display success message for names of files written, and maybe some info about them like size
-		if (listPrinted)
+		if (listWritten)
 		{
 			System.out.println(sourceFileName.concat(".l") + " was written successfully.");
 		}
@@ -161,7 +179,7 @@ public class Assembler {
 			System.out.println(sourceFileName.concat(".l") + " was not written successfully.");	
 		}
 		
-		if (objectPrinted)
+		if (objectWritten)
 		{
 			System.out.println(sourceFileName.concat(".o") + " was written successfully.");
 		}
@@ -169,7 +187,7 @@ public class Assembler {
 		{
 			System.out.println(sourceFileName.concat(".o") + " was not written successfully.");	
 		}
-		br.close();
+		try {br.close();} catch (IOException e) {};
 	}
 
 	
