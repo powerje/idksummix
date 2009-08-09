@@ -97,7 +97,7 @@ public class Pass2 {
 		}
 		else if (numberOfTokens == 1 && token_array[0].getType() != TokenType.EOL) //Singleton that is not an EoL tok
 		{
-			if (token_array[0].getType() == TokenType.ALPHA && (token_array[0].getText() == "DBUG" || token_array[0].getText() == "RET"))
+			if (token_array[0].getType() == TokenType.ALPHA && (token_array[0].getText().equals("DBUG") || token_array[0].getText().equals("RET")))
 			{//Okay, you've got a good single command, process text
 				processTextLine();
 			}
@@ -109,8 +109,8 @@ public class Pass2 {
 		}
 		else if (numberOfTokens == 1)//must be EoL do nothing
 		{}
-		else
-		{
+		else if (!token_array[0].getText().equals(".ORIG") && token_array[1] != null && !token_array[1].getText().equals(".ORIG") )
+		{//If there's an .ORIG in spot one or two, ignore the line, otherwise process it
 			processTextLine();
 		}
 
@@ -122,7 +122,7 @@ public class Pass2 {
 	 */
 	private void processTextLine()
 	{
-		if (isAnOp(token_array[0].getText()) && (numberOfTokens == 3 || numberOfTokens == 2)) //<op><maybe arg>
+		if (isAnOp(token_array[0].getText()) && (numberOfTokens == 3 || numberOfTokens == 2) && token_array[0].getText() != ".ORIG") //<op><maybe arg>
 		{
 			//check to see if there are args
 			if (numberOfTokens == 3) //Then it has an arg; <op><arg>
@@ -143,6 +143,7 @@ public class Pass2 {
 			}
 			else //There is no arg; <label><op>eolTok
 			{
+	
 				processWrite(token_array[1].getText());
 			}
 		}
