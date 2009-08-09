@@ -5,31 +5,45 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * 
+ * Pass1 uses the SymbolTable, LiteralTable, MachineOpTable, and LocationCounter to process a source file into a p1File for Pass2 to process.
+ * All of this functionality is carried out through the processFile() method.
+ *
  * @author Dan Stottlemire
  * @author Mike Irwin
- *
+ * 
  */
 
 public class Pass1 {
-
-	Token[] token_array = new Token[4];
-	TextFile body, orig;
-	TextFile line = new TextFile();
-	TextFile p1file = new TextFile();
-	String headerRecord="", endRecord="", textRecord="";
-	String strLine,progName = "ERROR ", strStartAddr = "FFFF";
-	Token token;
-	int num_tokens;
-	short start;
+	
+	/** User's source code. */
+	private Token[] token_array = new Token[4];
+	/** User's source code. */
+	private TextFile body, orig;
+	/** User's source code. */
+	//private TextFile line = new TextFile();
+	/** User's source code. */
+	private TextFile p1file = new TextFile();
+	/** User's source code. */
+	private String headerRecord="", endRecord="", textRecord="";
+	/** User's source code. */
+	// private String strLine;
+	private String progName = "ERROR ", strStartAddr = "FFFF";
+	/** User's source code. */
+	//private Token token;
+	/** User's source code. */
+	private int num_tokens;
+	/** User's source code. */
+	private short start;
+	/** User's source code. */
 	private static Set<Short> literals = new HashSet<Short>();
-	boolean errorLineFlag = false;
+	/** User's source code. */
+	// private boolean errorLineFlag = false;
 	
 	/**
-	 * hexstringToShort -
 	 * Takes a CharSequence that is a hex number and converts it to a short.
 	 * 
-	 * @param input CharSequence to be converted into an int of its hex value
+	 * @param input CharSequence to be converted into an integer of its hex value
+	 * @returns a short number representation of the hex string
 	 */
 	
 	private short hexstringToShort(CharSequence input) {
@@ -42,6 +56,12 @@ public class Pass1 {
 		}
 		return (short) returnVal;
 	}
+	
+	/**
+	 * Takes a CharSequence that is a hex number and converts it to a short.
+	 * 
+	 * @param input CharSequence to be converted into an int of its hex value
+	 */
 	
 	private void constructRecord(String recordType){
 		
@@ -102,7 +122,6 @@ public class Pass1 {
 	}
 	
 	/**
-	 * getTokens -
 	 * The method takes no parameters and returns nothing. 
 	 * It fills a token array with all the tokens in a line of a TextFile and 
 	 * sets the global variable num_tokens to the number of tokens place into the array.
@@ -304,7 +323,7 @@ public class Pass1 {
 				//because im working under the above assumption i am adding the label to the symbol table
 				//oops assumption wrong for .EQU, so added if statement
 				if (!token_array[1].getText().equals(".EQU")) {
-					SymbolTable.input(token_array[0].getText(), (short)LocationCounter.curAddr, LocationCounter.isRelative());
+					SymbolTable.input(token_array[0].getText(), (short)LocationCounter.getAddress(), LocationCounter.isRelative());
 				}
 
 				if(token_array[1].getText().equals(".EQU"))
@@ -325,7 +344,7 @@ public class Pass1 {
 					
 					else
 					{
-						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.relative);
+						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.isRelative());
 					}			
 				}
 				//I think this place means machineOp? also can take care of literals used with pseudoOps here
@@ -530,13 +549,11 @@ public class Pass1 {
 		String headerFinal = "H";
 		headerFinal += headerRecord;
 		headerFinal += sizeStr;
-		if (LocationCounter.relative) {
+		if (LocationCounter.isRelative()) {
 			headerFinal += "R";
 		}
 		headerRecord = headerFinal;
-		
-		// for some reason p1File was completely messed up so I hacked this on, not sure what the heck was going on with p1file, but didn't want to try to figure it out
-//		orig.insertLine(0, headerRecord); I changed it so that there's a special field to hold the header
+
 		orig.insertHeader(headerRecord);
 		
 		return orig;

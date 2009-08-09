@@ -8,7 +8,6 @@ import java.util.StringTokenizer;
  *
  * @author Michael Pinnegar
  * 
- *	
  */
 public class Pass2 {
 	/** User's source code. */

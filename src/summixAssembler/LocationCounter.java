@@ -8,13 +8,13 @@ package summixAssembler;
 
 public class LocationCounter {
 	
-	static int curAddr;
+	static private int curAddr;
 	
-	public static boolean relative;
+	private static boolean relative;
 	
 	
 	/**
-	 * Incrementer for the Location Counter
+	 * incrementAmt takes an int (amount) and increments the Location Counter by that given integer amount.
 	 * 
 	 * @param amount - The value to increment the Location Counter
 	 */
@@ -28,6 +28,12 @@ public class LocationCounter {
 			}
 			
 		}
+	/**
+	 * hexstringToShort takes a CharSequence (input), which is a string representing a hex value 
+	 * an returns the short value of the corresponding hex value.
+	 * 
+	 * @param input - the hex string corresponding to the short value needed.
+	 */
 	
 	private static short hexstringToShort(CharSequence input) {
 		int returnVal = 0; // needs initialized in the case an exception is caught
@@ -40,6 +46,14 @@ public class LocationCounter {
 		return (short) returnVal;
 	}
 	
+	/**
+	 * incrementAfterLiteral takes an int (amount) and increments the Location Counter by that amount. 
+	 * The method is used to increment the LC for each literal present in the Literal Table.
+	 * The method protects against page roll over for absolute literals.
+	 * 
+	 * @param amount - the amount to increment the Location Counter.
+	 */
+	
 	public static void incrementAfterLiteral(int amount) {
 		short startPage = (short) (curAddr >>> 7);
 		curAddr = (short)(curAddr + amount);
@@ -49,6 +63,14 @@ public class LocationCounter {
 		}
 		
 	}
+	
+	/**
+	 * incrementAfterVarOp takes a Token varOp, which is the pseudo operation, and a Token args, which are the arguments for the 
+	 * given psuedo operation, and increments the Location Counter depending on the variable length of the arguments.
+	 * 
+	 * @param varOp - The variable length pseudo operation.
+	 * @param args - The args of the pseudo operation.
+	 */
 	
 	public static void incrementAfterVarOp(Token varOp, Token args){
 	
@@ -129,6 +151,12 @@ public class LocationCounter {
 		
 		return (short) curAddr;
 	}
+	
+	/**
+	 * returns if the program is relocatable or not
+	 * 
+	 * @return True if the program is relocatable
+	 */
 	
 	public static boolean isRelative() {
 		return relative;
