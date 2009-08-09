@@ -88,8 +88,6 @@ public class ListFile {
 		String completeRow = null;
 		int progCount = 1;
 		
-		System.out.println("//////////////////////////////////////////STARTS HERE!!!!////////////////////////////");
-		
 		while(!source.isEndOfFile() && !p2.isEndOfFile())
 		{
 			sourceLine = ProcessLineSource(source);  //get first line
