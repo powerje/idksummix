@@ -9,6 +9,16 @@ public class ListFile {
 	
 	private String p2MainLine = new String();
 	
+	public ListFile (TextFile source_orig, TextFile p2_orig)
+	{
+		TextFile source = source_orig;
+		TextFile p2 = p2_orig;
+		
+		source.reset();
+		p2.reset();
+		
+	}
+	
 	public boolean commentSource, commentP2;
 	/**
 	 * This method processes 1 line from the source file.
