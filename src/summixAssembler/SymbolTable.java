@@ -33,13 +33,13 @@ public class SymbolTable {
 
 
 	/**
-	 * 
+	 * Symbol class used by the symbol table internally to store representations of symbols
 	 * @author Jim
 	 *
 	 */
 	private static class Symbol {
 		/**
-		 * Symbol class used by the symbol table internally to store representations of symbols 
+		 * Constructs object of type Symbol 
 		 * @param value the value of the symbol to be created
 		 * @param relative whether or not this symbols value is relative to its location in memory
 		 */

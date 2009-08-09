@@ -11,7 +11,9 @@ import java.util.Map;
  *
  */
 public class LiteralTable {
+	/**  Hash map to store name -> address relationship in.*/
 	private static Map<Short, Short> literals = new HashMap<Short, Short>();
+	/** size of the hashmap */
 	private static int size = 0;
 	
 	/**

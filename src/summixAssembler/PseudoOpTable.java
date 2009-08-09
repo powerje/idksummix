@@ -16,8 +16,10 @@ public class PseudoOpTable {
 	 *
 	 */
 	private static class PseudoOp {
-		public short size;			//size of the op code
-		public boolean isVariable;	//is the size dependent on the instruction code?
+		/** size of the op code*/
+		public short size;
+		/** is the size dependent on the instruction code*/
+		public boolean isVariable;
 		
 		/**
 		 * Private class used to hold information on pseudoOps
