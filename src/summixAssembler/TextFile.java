@@ -21,9 +21,21 @@ public class TextFile {
 	/** The vertical depth down the rows of strings in the body array*/
 	private int rowPointer;
 	
+	private String headerHolder = null;
+	
+	public void insertHeader(String header)
+	{
+		headerHolder = header;
+	}
+	
+	public String getHeader()
+	{
+		return headerHolder;
+	}
+	
 	public Integer getReport()
 	{
-		return rowPointer - 1;
+		return rowPointer;
 	}
 
 	/**
@@ -76,7 +88,6 @@ public class TextFile {
 				pos = original.lastIndexOf(';');
 				if (pos < original.indexOf("\"", original.indexOf("\"") + 1))
 				{
-				
 					//this means the semicolon is within the STRZ
 					withinStrz = true;
 				}
@@ -84,7 +95,7 @@ public class TextFile {
 			
 			if ((pos > -1) && !withinStrz) {
 				commentFree = original.substring(0, pos);
-				if (commentFree.length() > 0) {
+				if (commentFree.length() >= 0) {
 					tmpBody.add(commentFree);
 				}
 			} else {

@@ -26,6 +26,7 @@ public class LocationCounter {
 			if (relative && (!(curPage==startPage))) {
 				System.out.println("ERROR: Page rollover with relocatable program.");
 			}
+			
 		}
 	
 	private static short hexstringToShort(CharSequence input) {

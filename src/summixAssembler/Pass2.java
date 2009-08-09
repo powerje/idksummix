@@ -3,7 +3,7 @@ package summixAssembler;
 import java.util.StringTokenizer;
 
 public class Pass2 {
-
+	/** A variable used to hold the textfile */
 	TextFile body;
 	Token[] token_array = new Token[4];
 	int numberOfTokens;
@@ -13,6 +13,7 @@ public class Pass2 {
 
 	public Pass2(TextFile incomingSource)
 	{
+	
 		body = incomingSource;
 		body.reset();
 	}
@@ -36,14 +37,10 @@ public class Pass2 {
 
 	public TextFile processFile()
 	{
-		//get header record from first line, place into the body file
-		//Are header records relocatable?
-		String header = new String(body.getLine());//Get header
+		String header = new String(body.getHeader());//Get header
 		String start = new String(header.substring(7, 11));//Get start location from the header
 		LocationCounter.set(Integer.valueOf(start, 16), header.endsWith("R"));//Set LC to start location
-		System.out.println("LC is now " + LocationCounter.getAddress());
 		p2File.input(header);//Store header in new file
-		body.getLine(); //Flush old header
 
 		//while(not end record or end of file) {output text records}
 		while(!body.isEndOfFile() && !foundEndLine)
@@ -53,7 +50,7 @@ public class Pass2 {
 
 		if (!foundEndLine)
 		{
-			System.out.println("ERROR: No end of line record present in sourecode. Expected at line " + body.getReport());
+			System.out.println("ERROR: No end of line record present in sourcecode. Expected at line " + body.getReport());
 		}
 
 		return p2File;
@@ -66,9 +63,21 @@ public class Pass2 {
 
 		if (numberOfTokens > 4) //You got too many tokens
 		{
-			System.out.println("ERROR: Oversized sourecode at line " + body.getReport());
+			System.out.println("ERROR: Oversized sourcecode at line " + body.getReport());
 		}
-		else if (numberOfTokens == 1) //Must be an EoL token by itself
+		else if (numberOfTokens == 1 && token_array[0].getType() != TokenType.EOL) //Singleton that is not an EoL tok
+		{
+			if (token_array[0].getType() == TokenType.ALPHA && (token_array[0].getText() == "DBUG" || token_array[0].getText() == "RET"))
+			{//Okay, you've got a good single command, process text
+				processTextLine();
+			}
+			else
+			{//You've got a bad single line command, spit out error
+				System.out.println("ERROR: Malformed sourcecode at line " + body.getReport());
+				p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE: " + token_array[0].getText());
+			}
+		}
+		else if (numberOfTokens == 1)//must be EoL do nothing
 		{}
 		else
 		{
@@ -105,7 +114,8 @@ public class Pass2 {
 		}
 		else
 		{
-			System.out.print("ERROR: Malformed sourcecode at line " + body.getReport());
+			System.out.println("ERROR: Malformed sourcecode at line " + body.getReport());
+			p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE: ");
 		}
 	}
 
@@ -397,20 +407,15 @@ public class Pass2 {
 
 	private void processWrite(String op, String arg) //Write op with arguments to p2File
 	{
-		short DR, SR1, SR2, imm5, pgoffset9, index6, BaseR, n, z, p, SR, trapvect8;
+		short DR, SR1, SR2, imm5, pgoffset9, index6, BaseR, SR, trapvect8;
 		int addr;
-		boolean M0 = false;
-		boolean M1 = false;
 		boolean badArg = false;
 		boolean doNothing = false;
-		boolean isFill = false;
 		StringTokenizer st = new StringTokenizer(arg, ",");
 		String input = new String("T");
 		short finalOp = 0;
 
-		System.out.println("Inside process write with this op:" + op);
-		System.out.println("Before execution of this op, LC is:" + shortToHexString(LocationCounter.getAddress()));
-
+		System.out.println("Processing this op:" + op);
 		if (MachineOpTable.isOp(op))
 		{
 			finalOp = MachineOpTable.getOp(op);
@@ -422,7 +427,7 @@ public class Pass2 {
 		{
 			getArgTokens(3, st);
 			//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
-			if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
+			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
 					&& isValReg(argTokArray[2]) && !SymbolTable.isDefined(argTokArray[2]))
 			{
 				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is SR2
@@ -437,7 +442,7 @@ public class Pass2 {
 
 			}
 			//Valid reg + immediate value; DR,SR1,IMM5
-			else if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
+			else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
 			{
 				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
 				//Don't forget to set the link bit to 1
@@ -459,7 +464,7 @@ public class Pass2 {
 			getArgTokens(3, st);
 
 			//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
-			if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
+			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
 					&& isValReg(argTokArray[2]) && !SymbolTable.isDefined(argTokArray[2]))
 			{
 				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is SR2
@@ -474,7 +479,7 @@ public class Pass2 {
 
 			}
 			//Valid reg + immediate value; DR,SR1,IMM5
-			else if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
+			else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
 			{
 				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
 				//Don't forget to set the link bit to 1
@@ -494,7 +499,7 @@ public class Pass2 {
 		else if (op.equals("JSR"))
 		{
 			getArgTokens(1, st);
-			if(!st.hasMoreTokens() && isValAddr(argTokArray[0]))
+			if(!st.hasMoreElements() && isValAddr(argTokArray[0]))
 			{
 				addr = addrVal(argTokArray[0]);
 				finalOp |= addr;
@@ -510,7 +515,7 @@ public class Pass2 {
 		else if(op.equals("JMP"))
 		{
 			getArgTokens(1, st);
-			if(!st.hasMoreTokens() && isValAddr(argTokArray[0]))
+			if(!st.hasMoreElements() && isValAddr(argTokArray[0]))
 			{
 				addr = addrVal(argTokArray[0]);
 				finalOp |= addr;
@@ -524,7 +529,7 @@ public class Pass2 {
 		else if (op.equals("JSRR"))
 		{
 			getArgTokens(2, st);
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
 			{
 				BaseR = regVal(argTokArray[0]);
 				index6 = indexVal(argTokArray[1]);
@@ -541,7 +546,7 @@ public class Pass2 {
 		else if (op.equals("JMPR"))
 		{
 			getArgTokens(2, st);
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
 			{
 				BaseR = regVal(argTokArray[0]);
 				index6 = indexVal(argTokArray[1]);
@@ -557,7 +562,7 @@ public class Pass2 {
 		{
 			getArgTokens(2, st);
 			//Load has valid R1 and then followed by a literal
-			if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && (argTokArray[1] != null) && LiteralTable.isLitereal(argTokArray[1]))
+			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && (argTokArray[1] != null) && LiteralTable.isLitereal(argTokArray[1]))
 			{
 				DR = regVal(argTokArray[0]);
 				pgoffset9 = LiteralTable.getAddress(argTokArray[1]);
@@ -568,7 +573,7 @@ public class Pass2 {
 
 			}
 			//Load has R1, an the next one is an address that isn't in the literal table
-			else if (!st.hasMoreTokens() && isValReg(argTokArray[0]) && (argTokArray[1] != null)
+			else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && (argTokArray[1] != null)
 					&& !LiteralTable.isLitereal(argTokArray[1]) && isValAddr(argTokArray[1]))
 			{
 				DR = regVal(argTokArray[0]);
@@ -582,7 +587,7 @@ public class Pass2 {
 		{
 			getArgTokens(2, st);
 
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
 			{
 				DR = regVal(argTokArray[0]);
 				addr = addrVal(argTokArray[1]);
@@ -598,7 +603,7 @@ public class Pass2 {
 		{
 			getArgTokens(3, st);
 
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
 			{
 				DR = regVal(argTokArray[0]);
 				BaseR = regVal(argTokArray[1]);
@@ -617,7 +622,7 @@ public class Pass2 {
 		{
 			getArgTokens(2, st);
 
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
 			{
 				DR = regVal(argTokArray[0]);
 				addr = addrVal(argTokArray[1]);
@@ -634,7 +639,7 @@ public class Pass2 {
 		{
 			getArgTokens(2, st);
 
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]))
 			{
 				DR = regVal(argTokArray[0]);
 				SR = regVal(argTokArray[1]);
@@ -651,7 +656,7 @@ public class Pass2 {
 		{
 			getArgTokens(2, st);
 
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
 			{
 				SR = regVal(argTokArray[0]);
 				pgoffset9 = addrVal(argTokArray[1]);
@@ -668,7 +673,7 @@ public class Pass2 {
 		{
 			getArgTokens(2, st);
 
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
 			{
 				SR = regVal(argTokArray[0]);
 				pgoffset9 = addrVal(argTokArray[1]);
@@ -685,7 +690,7 @@ public class Pass2 {
 		{
 			getArgTokens(3, st);
 
-			if(!st.hasMoreTokens() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
+			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
 			{
 				SR = regVal(argTokArray[0]);
 				BaseR = regVal(argTokArray[1]);
@@ -703,7 +708,7 @@ public class Pass2 {
 		{
 			getArgTokens(1, st);
 
-			if(!st.hasMoreTokens() && isValTrapVect(argTokArray[0]))
+			if(!st.hasMoreElements() && isValTrapVect(argTokArray[0]))
 			{
 				trapvect8 = trapVal(argTokArray[0]);
 				finalOp |= trapvect8;
@@ -716,7 +721,7 @@ public class Pass2 {
 		else if (op.matches("^BRN?Z?P?$"))
 		{
 			getArgTokens(1, st);
-			if (!st.hasMoreTokens() && isValAddr(argTokArray[0]))
+			if (!st.hasMoreElements() && isValAddr(argTokArray[0]))
 			{
 				finalOp |= addrVal(argTokArray[0]);
 			}
@@ -758,10 +763,6 @@ public class Pass2 {
 					p2File.input("E"); //First line of execution
 				}
 			}
-			else
-			{
-
-			}
 		}
 		else if (op.equals(".EQU"))
 		{
@@ -770,7 +771,6 @@ public class Pass2 {
 		else if (op.equals(".FILL"))
 		{
 			getArgTokens(1, st);
-			isFill = true;
 			doNothing = true;
 			
 			boolean needsRelocation = false;
@@ -780,7 +780,7 @@ public class Pass2 {
 			}
 			
 			
-			if(!st.hasMoreTokens() && argTokArray[0] != null)
+			if(!st.hasMoreElements() && argTokArray[0] != null)
 			{
 				try{
 					//Decimal
@@ -833,7 +833,7 @@ public class Pass2 {
 		{
 			getArgTokens(1, st);
 			doNothing = true;
-			if (!st.hasMoreTokens() && argTokArray[0] != null && argTokArray[0].endsWith("\"") && argTokArray[0].startsWith("\""))
+			if (!st.hasMoreElements() && argTokArray[0] != null && argTokArray[0].endsWith("\"") && argTokArray[0].startsWith("\""))
 			{
 				int index = 1;
 				//Write all the array values to text records
@@ -862,7 +862,7 @@ public class Pass2 {
 			try
 			{
 
-				if (!st.hasMoreTokens() && argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]))
+				if (!st.hasMoreElements() && argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]))
 				{
 					if(!SymbolTable.isRelative(argTokArray[0]))
 					{
@@ -873,12 +873,12 @@ public class Pass2 {
 						badArg = true;
 					}
 				}
-				else if(!st.hasMoreTokens() && argTokArray[0] != null && argTokArray[0].startsWith("#")&& Integer.valueOf(argTokArray[0].substring(1)) >= 1
+				else if(!st.hasMoreElements() && argTokArray[0] != null && argTokArray[0].startsWith("#")&& Integer.valueOf(argTokArray[0].substring(1)) >= 1
 						&& Integer.valueOf(argTokArray[0].substring(1)) <= 0xFFFF)
 				{
 					LocationCounter.incrementAmt(Integer.valueOf(argTokArray[0].substring(1)));
 				}
-				else if (!st.hasMoreTokens() && argTokArray[0] != null && argTokArray[0].startsWith("x")&& Integer.valueOf(argTokArray[0].substring(1), 16) >= 1
+				else if (!st.hasMoreElements() && argTokArray[0] != null && argTokArray[0].startsWith("x")&& Integer.valueOf(argTokArray[0].substring(1), 16) >= 1
 						&& Integer.valueOf(argTokArray[0].substring(1) , 16) <= 0xFFFF)
 				{
 					LocationCounter.incrementAmt(Integer.valueOf(argTokArray[0].substring(1) , 16));
@@ -894,12 +894,17 @@ public class Pass2 {
 				badArg = true;
 			}
 		}
+		else if(op.contentEquals(".ORIG"))
+		{
+			doNothing = true;
+		}
 
 
 		if (badArg)
 		{
-			System.out.println("ERROR: Improperly formed argument at line" + body.getReport());
-			p2File.input(";ERRORLINE");
+			//Something is wrong with the arguements, putting in an errorline comment
+			System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+			p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
 		}
 		else if (!foundEndLine)
 		{
@@ -935,10 +940,11 @@ public class Pass2 {
 
 	private void processWrite(String op) //Write op with no arguments to p2File
 	{
-		System.out.println("Inside process write with this op:" + op);
 		String input = new String("T");
 		p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
 		LocationCounter.incrementAmt(1);
+		System.out.println("Processing this op:" + op);
+		p2File.display();
 	}
 
 	public static String shortToHexString(short data) {

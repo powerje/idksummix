@@ -33,6 +33,11 @@ public class LiteralTable {
 		input(Short.parseShort(key),Short.parseShort(addr));
 	}
 
+	public static boolean isLitereal(String key)
+	{
+		return literals.containsKey(key);
+	}
+	
 	/**
 	 * 
 	 * @param key the key to add

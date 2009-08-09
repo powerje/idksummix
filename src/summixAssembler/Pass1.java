@@ -536,7 +536,8 @@ public class Pass1 {
 		headerRecord = headerFinal;
 		
 		// for some reason p1File was completely messed up so I hacked this on, not sure what the heck was going on with p1file, but didn't want to try to figure it out
-		orig.insertLine(0, headerRecord);
+//		orig.insertLine(0, headerRecord); I changed it so that there's a special field to hold the header
+		orig.insertHeader(headerRecord);
 		
 		return orig;
 	}
