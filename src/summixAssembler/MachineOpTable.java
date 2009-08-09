@@ -17,7 +17,9 @@ public class MachineOpTable {
 	 * 
 	 */
 	private static class MachineOp {
+		/** bit shifted opcode*/
 		public short op;			//4 bit op code
+		/** word size of the opcode*/
 		public short size;			//size of the op code
 		
 		/**
