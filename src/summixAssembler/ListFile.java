@@ -124,6 +124,7 @@ public class ListFile {
 			//print 1 line source file
 			sourceLine = ProcessLineSource(source);
 			completeRow.concat(sourceLine);
+			listFile.input(completeRow);
 		}
 		return listFile;
 	}
