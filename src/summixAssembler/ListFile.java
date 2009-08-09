@@ -69,7 +69,7 @@ public class ListFile {
 		String listP2Op = "";
 		if(p2.isEndOfFile())
 		{
-			listP2Op = p2MainLine.substring(1,4);  //should be 5-8?
+			listP2Op = p2MainLine.substring(5,8);  //should be 5-8?
 		}
 		return listP2Op;
 	}
