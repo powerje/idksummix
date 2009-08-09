@@ -193,7 +193,11 @@ public class Assembler {
 	
 	private static TextFile makelFile(TextFile sFile, TextFile p2File)
 	{		
-		TextFile lFile = null;
+		ListFile list = new ListFile();
+		TextFile lFile = new TextFile();
+		String listfiletest = null;
+		
+		lFile = list.CreateListFile(sFile, p2File);
 		
 		return lFile;
 	}
