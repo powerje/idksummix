@@ -190,7 +190,12 @@ public class Assembler {
 		try {br.close();} catch (IOException e) {};
 	}
 
-	
+/**
+ * 	Processes the list file and returns it 
+ * @param sFile	Source code file 
+ * @param p2File pass2 intermediate file
+ * @return	listing file
+ */
 	private static TextFile makelFile(TextFile sFile, TextFile p2File)
 	{		
 		ListFile list = new ListFile();
