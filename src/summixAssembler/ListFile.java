@@ -90,9 +90,10 @@ public class ListFile {
 	 * @return binaryString - string
 	 */
 	
+
 	private String OutputBinaryP2(String op)
 	{
-		String binaryString = null;
+		String binaryString = new String();
 		String tempString = null;
 		int opInt = hexstringToInt(op);
 		
@@ -119,13 +120,15 @@ public class ListFile {
 	public TextFile CreateListFile(TextFile source, TextFile p2)
 	{
 		TextFile listFile = new TextFile();
-		String sourceLine = null;
-		String p2Line = null;
-		String completeRow = null;
+		String sourceLine = new String();
+		String p2Line = new String();
+		String completeRow = new String();
 		int progCount = 1;
 		source.reset();
 		p2.reset();
 		
+		
+		System.out.println("DID WE GET HERE?!");
 		while(!source.isEndOfFile() && !p2.isEndOfFile())
 		{
 			sourceLine = ProcessLineSource(source);  //get first line
