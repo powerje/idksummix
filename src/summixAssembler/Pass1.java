@@ -15,21 +15,19 @@ import java.util.Set;
 
 public class Pass1 {
 	
-	/** User's source code. */
+	/** Array of tokens pulled from the last line of body during getTokens().*/
 	private Token[] token_array = new Token[4];
-	/** User's source code. */
+	/** body - User's source code orig - A copy of User's source minus the header. */
 	private TextFile body, orig;
-	/** User's source code. */
-	//private TextFile line = new TextFile();
 	/** User's source code. */
 	private TextFile p1file = new TextFile();
 	/** User's source code. */
 	private String headerRecord="", endRecord="", textRecord="";
 	/** User's source code. */
-	// private String strLine;
+	private String strLine;
 	private String progName = "ERROR ", strStartAddr = "FFFF";
 	/** User's source code. */
-	//private Token token;
+	private Token token;
 	/** User's source code. */
 	private int num_tokens;
 	/** User's source code. */
@@ -37,7 +35,7 @@ public class Pass1 {
 	/** User's source code. */
 	private static Set<Short> literals = new HashSet<Short>();
 	/** User's source code. */
-	// private boolean errorLineFlag = false;
+	private boolean errorLineFlag = false;
 	
 	/**
 	 * Takes a CharSequence that is a hex number and converts it to a short.
@@ -58,9 +56,9 @@ public class Pass1 {
 	}
 	
 	/**
-	 * Takes a CharSequence that is a hex number and converts it to a short.
+	 * Takes in a recordType string constructs a record from the token_array pulled with getTokens().
 	 * 
-	 * @param input CharSequence to be converted into an int of its hex value
+	 * @param recordType - A string that identifies the record type.
 	 */
 	
 	private void constructRecord(String recordType){
@@ -100,6 +98,13 @@ public class Pass1 {
 		}
 	}
 	
+	/**
+	 * Takes a short and produces a equivalently represented hex string. 
+	 * 
+	 * @param data - a short to convert to a hex string
+	 * @return a hex string representation of a short
+	 */
+	
 	public static String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
@@ -113,6 +118,11 @@ public class Pass1 {
 		return returnVal.toUpperCase();
 		}
 
+	/**
+	 * Constructor for Pass!
+	 * 
+	 * @param incomingSource - the user's source code
+	 */
 	
 	public Pass1(TextFile incomingSource)
 	{
@@ -150,6 +160,13 @@ public class Pass1 {
 			System.out.println("ERROR: Too many tokens.");
 		}
 	}
+	
+	/**
+	 * Takes a operation token and states if the operation is a psuedoOp
+	 * 
+	 * @param op - an operation token
+	 * @return True if the operation is a psuedoOp
+	 */
 		
 	private boolean isPseudoOp(Token op)
 	{
@@ -163,6 +180,13 @@ public class Pass1 {
 		return opFlag;
 	}
 	
+	/**
+	 * Takes a operation token and states if the operation is a psuedoOp that has variable length arguments
+	 * 
+	 * @param op - an operation token
+	 * @return True if the operation is a VarPsuedoOp
+	 */
+	
 	private boolean isVarPseudoOp(Token op)
 	{
 		boolean opFlag = false;
@@ -175,6 +199,13 @@ public class Pass1 {
 		return opFlag;
 	}
 	
+	/**
+	 * Takes a operation token and states if the token is an operation (machine or psuedo)
+	 * 
+	 * @param op - a token
+	 * @return True if the operation is an operation
+	 */
+	
 	private boolean isOp(Token op)
 	{
 		boolean opFlag = false;
@@ -186,6 +217,13 @@ public class Pass1 {
 		
 		return opFlag;
 	}
+	
+	/**
+	 * Takes a argument token and states if a literal exists with the given arguments
+	 * 
+	 * @param op - an argument token
+	 * @return True if the argument token contains a literal
+	 */
 	
 	private boolean isLiteral(Token arg)
 	{
@@ -204,6 +242,14 @@ public class Pass1 {
 		}
 		return literal;
 	}
+	
+	/**
+	 * Takes an argument token and returns the literal given in the arguments
+	 * 
+	 * @param arg - an argument token
+	 * @return a short representation of the literal given in the arguments
+	 */
+	
 	private short getLiteral(Token arg)
 	{
 		short literal = 0;
@@ -223,6 +269,11 @@ public class Pass1 {
 		return literal;
 		
 	}
+	
+	/**
+	 * Process a text record in which an EQU operation is present
+	 * 
+	 */
 	
 	private void processEQU()
 	{
@@ -250,6 +301,13 @@ public class Pass1 {
 			}
 		}
 	}
+	
+	/**
+	 * Process the header record in a given program
+	 * 
+	 * @return a string that represents a valid header 
+	 */
+	
  	private String processHeader()
 	{
 	boolean isRelative = false;
@@ -313,6 +371,13 @@ public class Pass1 {
 
 	return headerRecord;
 	}
+ 	
+	/**
+	 * Process the Text record in a program, adds symbols to symbol table, adds literals to the 
+	 * literal table and increments the Location Counter
+	 * 
+	 * @return a string that represents a valid header 
+	 */
 
 	private String processText()
 	{
@@ -394,68 +459,6 @@ public class Pass1 {
 	}
 	
 	
-	private String processEnd()
-	{
-		boolean relative = false;
-		String strEndAddr = "No_End_Addr";
-		short end;
-		
-		if(token_array[1].getText().equals(".END"))
-		{
-				if((num_tokens == 4) && (token_array[2].getType() == TokenType.ALPHA))
-				{
-					strEndAddr = token_array[2].getText();
-					int index = strEndAddr.indexOf('x');
-					if (index != -1)
-					{
-						end = hexstringToShort(strEndAddr.subSequence(index + 1, strEndAddr.length())); // should be error checking here?
-						if(((int)(end)) > 65535)
-						{
-							System.out.println("ERROR: The end address exceeds the max addressable memory location!");
-						}
-					}
-					else if(!(SymbolTable.isDefined(token_array[2].getText())))
-					{
-						System.out.println("ERROR: Symbol for start of execution was not previously defined.");
-					}
-				}
-				if(token_array[0].getType() == TokenType.ALPHA)
-				{
-					if(!(SymbolTable.isDefined(token_array[0].getText())))
-					{
-						 SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), relative);
-					}
-				}
-				else
-				{
-					System.out.println("ERROR: Invalid or Malformed Label!");
-				}
-		}
-		else if(token_array[0].getText().equals(".END"))
-		{
-			if((num_tokens == 3) && (token_array[1].getType() == TokenType.ALPHA))
-			{
-				strEndAddr = token_array[1].getText();
-				int index = strEndAddr.indexOf('x');
-				if (index != -1)
-				{
-					end = hexstringToShort(strEndAddr.subSequence(index + 1, strEndAddr.length())); // should be error checking here?
-					if(((int)(end)) > 65535)
-					{
-						System.out.println("ERROR: The end address exceeds the max addressable memory location!");
-					}
-				}
-				else if(!(SymbolTable.isDefined(token_array[1].getText())))
-				{
-					System.out.println("ERROR: Symbol for start of execution was not previously defined.");
-				}
-			}		
-		}
-		
-		constructRecord("end");
-
-		return endRecord;
-	}
 
 	public TextFile processFile()
 	{
@@ -498,25 +501,15 @@ public class Pass1 {
 				textFlag = true;
 				p1file.input(textRecord);
 			}
-			else if((token_array[0].getText().equals(".END")) || (token_array[1].getText().equals(".END")))
-			{
-				if (endFlag == true)
-				{
-					System.out.println("ERROR: The program contains MULTIPLE end records.");
-				}
-				endRecord = processEnd();
-				endFlag = true;
-				p1file.input(endRecord);
-			}
-
 		}
 		
-		// Print error messages if no Header or End record, also if not at least one text record present.
+		// Print error messages if no Header 
 		
 		// Check for a header recorder
 		if (origFlag == false)
 		{
 			System.out.println("ERROR: The program contains NO header record.");
+			headerRecord = "HERROR 00000000";
 		}
 		
 		// Check for at least one text record
