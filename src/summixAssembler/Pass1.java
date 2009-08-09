@@ -509,7 +509,7 @@ public class Pass1 {
 		if (origFlag == false)
 		{
 			System.out.println("ERROR: The program contains NO header record.");
-			headerRecord = "HERROR 00000000";
+			headerRecord = "ERROR 00000000";
 		}
 		
 		// Check for at least one text record
