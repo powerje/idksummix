@@ -7,7 +7,12 @@ package summixAssembler;
 public class ListFile {
 	
 	public boolean commentSource, commentP2;
-	
+	/**
+	 * This method processes 1 line from the source file.
+	 * 
+	 * @param source - original source that is given to us with the problem.
+	 * @return listSource - String
+	 */
 	private String ProcessLineSource(TextFile source)
 	{
 		String listSource = null, line;
@@ -29,7 +34,12 @@ public class ListFile {
 		}
 		return listSource;
 	}
-	
+	/**
+	 *This method processes the address from 1 line of the file that is returned from pass2.
+	 * 
+	 * @param p2 - TextFile returned from pass2
+	 * @return listP2Address - String
+	 */
 	private String ProcessLineP2Address(TextFile p2)
 	{
 		String listP2Address = null;
@@ -39,6 +49,12 @@ public class ListFile {
 		
 		return listP2Address;
 	}
+	/**
+	 * This method processes the hex OP code from 1 line of the file that is returned from pass2.
+	 * 
+	 * @param p2 - TextFile returned from pass2
+	 * @return listP2Op - String
+	 */
 	
 	private String ProcessLineP2Op(TextFile p2)
 	{
@@ -49,6 +65,13 @@ public class ListFile {
 		
 		return listP2Op;
 	}
+	/**
+	 * converts a hex string to an integer (used later on for the binary conversion)
+	 * 
+	 * @author Jim Power
+	 * @param input - string hex value to be converted
+	 * @return returnVal - integer
+	 */
 	
 	private int hexstringToInt(String input) {
 		int returnVal = 0; // needs initialized in the case an exception is caught
@@ -60,6 +83,12 @@ public class ListFile {
 		}
 		return returnVal;
 	}
+	/**
+	 * Creates the 16-bit binary output of the original hex OP code
+	 * 
+	 * @param op - string hex opcode
+	 * @return binaryString - string
+	 */
 	
 	private String OutputBinaryP2(String op)
 	{
@@ -78,7 +107,14 @@ public class ListFile {
 		
 		return binaryString;
 	}
-	
+	/**
+	 * The main method used to create the ListFile.  This method will be called from the assembler and then run its helper methods
+	 * in order to add 1 line from the source and p2 files.
+	 * 
+	 * @param source - original source file
+	 * @param p2 - file created after pass2
+	 * @return listFile - TextFile
+	 */
 	
 	public TextFile CreateListFile(TextFile source, TextFile p2)
 	{
@@ -110,6 +146,7 @@ public class ListFile {
 			
 			//dump header record of p2
 			p2Line = p2.getLine();
+			
 			//print 1 line p2 file
 			String lineOp = ProcessLineP2Op(p2);
 			completeRow.concat("( " + ProcessLineP2Address(p2) + " ) " + " ");
