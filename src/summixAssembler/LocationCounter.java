@@ -8,8 +8,10 @@ package summixAssembler;
 
 public class LocationCounter {
 	
+	/** The location counters current address*/
 	static private int curAddr;
 	
+	/** The boolean that states if the program is relocatable or not*/
 	private static boolean relative;
 	
 	
