@@ -1,10 +1,13 @@
 package summixAssembler;
+
 /**
  * 
  * @author Mike Irwin
  *
  */
 public class ListFile {
+	
+	private String p2MainLine = new String();
 	
 	public boolean commentSource, commentP2;
 	/**
@@ -15,7 +18,8 @@ public class ListFile {
 	 */
 	private String ProcessLineSource(TextFile source)
 	{
-		String listSource = null, line;
+		source.display();
+		String listSource = "", line = "";
 		Token token;
 		
 		token = source.getToken();
@@ -29,7 +33,7 @@ public class ListFile {
 			line = source.getLine();
 			// add original token to the line, following by rest of the line.
 			listSource = token.getText();
-			listSource.concat("\t");
+			//listSource.concat("\t");
 			listSource.concat(line);
 		}
 		return listSource;
@@ -42,11 +46,14 @@ public class ListFile {
 	 */
 	private String ProcessLineP2Address(TextFile p2)
 	{
-		String listP2Address = null;
-		String tempP2Address = p2.getLine();
+		p2.display();
+		String listP2Address = "";
+		if(p2.isEndOfFile())
+		{
+			String p2MainLine = p2.getLine();
 		
-		listP2Address = tempP2Address.substring(1,4);
-		
+			listP2Address = p2MainLine.substring(1,4);
+		}
 		return listP2Address;
 	}
 	/**
@@ -58,11 +65,12 @@ public class ListFile {
 	
 	private String ProcessLineP2Op(TextFile p2)
 	{
-		String listP2Op = null;
-		String tempP2Op = p2.getLine();
-		
-		listP2Op = tempP2Op.substring(1,4);
-		
+		p2.display();
+		String listP2Op = "";
+		if(p2.isEndOfFile())
+		{
+			listP2Op = p2MainLine.substring(1,4);  //should be 5-8?
+		}
 		return listP2Op;
 	}
 	/**
@@ -108,6 +116,29 @@ public class ListFile {
 		
 		return binaryString;
 	}
+	
+	private boolean isGood(String sourceLine)
+	{
+		boolean good = false;
+		
+		if ((sourceLine.indexOf(".ORIG")!= -1) || (sourceLine.indexOf(".END")!= -1) || (sourceLine.indexOf(".EQU")!= -1) || (sourceLine.indexOf(".FILL")!= -1)
+				|| (sourceLine.indexOf(".STRZ")!= -1) || (sourceLine.indexOf(".BLKW")!= -1) || (sourceLine.indexOf("BR")!= -1) || (sourceLine.indexOf("BRN")!= -1)
+				|| (sourceLine.indexOf("BRZ")!= -1) || (sourceLine.indexOf("BRP")!= -1) || (sourceLine.indexOf("BRNZ")!= -1) || (sourceLine.indexOf("BRNP")!= -1)
+				|| (sourceLine.indexOf("BRZP")!= -1) || (sourceLine.indexOf("BRNZP")!= -1) || (sourceLine.indexOf("ADD")!= -1) || (sourceLine.indexOf("LD")!= -1)
+				 || (sourceLine.indexOf("ST")!= -1) || (sourceLine.indexOf("JSR")!= -1) || (sourceLine.indexOf("JMP")!= -1) || (sourceLine.indexOf("AND")!= -1)
+				 || (sourceLine.indexOf("LDR")!= -1) || (sourceLine.indexOf("STR")!= -1) || (sourceLine.indexOf("DBUG")!= -1) || (sourceLine.indexOf("NOT")!= -1)
+				 || (sourceLine.indexOf("LDI")!= -1) || (sourceLine.indexOf("STI")!= -1) || (sourceLine.indexOf("JSRR")!= -1) || (sourceLine.indexOf("JMPR")!= -1)
+				 || (sourceLine.indexOf("RET")!= -1) || (sourceLine.indexOf("LEA")!= -1) || (sourceLine.indexOf("TRAP")!= -1))
+		{
+			good = true;
+		}
+		else
+		{
+			good = false;
+		}
+		return good;
+	}
+	
 	/**
 	 * The main method used to create the ListFile.  This method will be called from the assembler and then run its helper methods
 	 * in order to add 1 line from the source and p2 files.
@@ -121,50 +152,122 @@ public class ListFile {
 	{
 		TextFile listFile = new TextFile();
 		String sourceLine = new String();
+		String oHeader = new String();
 		String p2Line = new String();
 		String completeRow = new String();
 		int progCount = 1;
 		source.reset();
 		p2.reset();
 		
+		//remove object file header
+		oHeader = p2.getLine();
 		
-		System.out.println("DID WE GET HERE?!");
 		while(!source.isEndOfFile() && !p2.isEndOfFile())
 		{
-			sourceLine = ProcessLineSource(source);  //get first line
+			//get one source line to analyze
+			sourceLine = ProcessLineSource(source);
 			
-			while(commentSource)
+			if(sourceLine == "") //empty line
 			{
-				completeRow = "( ";
-				completeRow.concat(Integer.toString(progCount));
-				completeRow.concat(" )\t");
-				completeRow.concat(sourceLine);
-				progCount++;
+				//do nothing?  There is nothing from the text record that corresponds
+				completeRow.concat("( " + progCount + " ) ");
 				listFile.input(completeRow);
-				sourceLine = ProcessLineSource(source);
+				progCount++;
+			}
+			else if(sourceLine.indexOf(".ORIG") != -1) //line up header records
+			{
+				completeRow = oHeader;
+				completeRow.concat("( " + progCount + " ) ");
+				completeRow.concat(sourceLine);
+				
+			}
+			else if(isGood(sourceLine)) //deal with .EQU, .BLKW, .STRZ or regular op code
+			{
+				if(sourceLine.indexOf(".EQU") != -1) // no address in p2
+				{
+					//progCount
+					completeRow.concat("( " + progCount + " ) ");
+					
+					//sFile
+					completeRow.concat(sourceLine);
+					
+					listFile.input(completeRow);
+					progCount++;
+				}
+				else if(sourceLine.indexOf(".BLKW") != -1) //increment progCount more
+				{
+					completeRow = "( " + ProcessLineP2Address(p2) + " ) \t\t\t";
+					
+					//progCount
+					completeRow.concat("( " + progCount + " ) ");
+					
+					//sFile
+					completeRow.concat(sourceLine);
+					listFile.input(completeRow);
+					progCount++;
+					
+				}
+				else if(sourceLine.indexOf(".STRZ") != -1) //multiple oRecords for 1 line in source
+				{
+					//print 1 line from oRecord and source (must do this)
+					completeRow = "( " + ProcessLineP2Address(p2) + " ) ";
+					completeRow.concat(ProcessLineP2Op(p2) + " ");
+					completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)) + " ");
+					
+					//progCount
+					completeRow.concat("( " + progCount + " ) ");
+					
+					//sFile
+					completeRow.concat(sourceLine);
+					listFile.input(completeRow);
+					
+					int index = sourceLine.indexOf('"');
+					String sub = sourceLine.substring(index);
+					int len = sub.length();  //normally -1 however we need a null added on too
+					int i = 0;
+					while(i < (len - 1))  // -1 for the already displayed text record
+					{
+						completeRow = "( " + ProcessLineP2Address(p2) + " ) ";
+						completeRow.concat(ProcessLineP2Op(p2) + " ");
+						completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)) + " ");
+						
+						//progCount
+						completeRow.concat("( " + progCount + " ) ");
+						listFile.input(completeRow);
+						
+						i++;
+					}
+					progCount++;
+				}
+				else //normal display
+				{
+					//object file
+					completeRow = "( " + ProcessLineP2Address(p2) + " ) ";
+					completeRow.concat(ProcessLineP2Op(p2) + " ");
+					completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)) + " ");
+					
+					//progCount
+					completeRow.concat("( " + progCount + " ) ");
+					
+					//sFile
+					completeRow.concat(sourceLine);
+					
+					listFile.input(completeRow);
+					progCount++;
+					
+				}
+			}
+			else if(!isGood(sourceLine)) //deal with error line
+			{
+				completeRow = p2.getLine();
+				completeRow.concat("( " + progCount + " ) ");
+				completeRow.concat(sourceLine);
+				
+				listFile.input(completeRow);
+				progCount++;
+				
 			}
 			
-			//print header record
-			completeRow.concat("( " + Integer.toString(progCount) + " )\t" + sourceLine);
-			progCount++;
-			listFile.input(completeRow);
-			
-			//dump header record of p2
-			p2Line = p2.getLine();
-			
-			//print 1 line p2 file
-			String lineOp = ProcessLineP2Op(p2);
-			completeRow.concat("( " + ProcessLineP2Address(p2) + " ) " + " ");
-			completeRow.concat(lineOp + " " + OutputBinaryP2(lineOp) + " ");
-			
-			//print count
-			completeRow.concat("( " + Integer.toString(progCount) + " )\t");
-			progCount++;
-			
-			//print 1 line source file
-			sourceLine = ProcessLineSource(source);
-			completeRow.concat(sourceLine);
-			listFile.input(completeRow);
 		}
 		return listFile;
 	}
