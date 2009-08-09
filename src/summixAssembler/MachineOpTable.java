@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * MachineOpTable is a static class that contains the operations and size of
+ * the SummiX machine ops.
  * 
  * @author Jim
  *
  */
 public class MachineOpTable {
 	/**
-	 * 
+	 * The MachineOp class stores the bits for an op code and the size of the instruction. 
 	 * @author Jim
 	 * 
 	 */
@@ -35,7 +37,11 @@ public class MachineOpTable {
 			return "(" + this.op + ", " + this.size + ")\n";
 		}
 	}
-
+	
+	/**
+	 * The machineOps Map is the container that holds the MachineOpTable's concrete
+	 * representation.
+	 */
 	private static Map<String, MachineOp> machineOps = new HashMap<String, MachineOp>();
 
 	/**

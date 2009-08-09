@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * LiteralTable is a static class  that contains exactly one
+ * of each literal in a program and an address to store that literal in.
  * 
  * @author Jim
  *
@@ -33,6 +35,11 @@ public class LiteralTable {
 		input(Short.parseShort(key),Short.parseShort(addr));
 	}
 
+	/**
+	 * 
+	 * @param key the key to look for
+	 * @return whether or not the key exist in the table
+	 */
 	public static boolean isLitereal(String key)
 	{
 		return literals.containsKey(key);
@@ -100,6 +107,10 @@ public class LiteralTable {
 		System.out.println(literals.toString());
 	}
 	
+	/**
+	 * 
+	 * @return the number of literals in the table
+	 */
 	public static int size() {
 		return size;	//here's your size Dan!
 	}
