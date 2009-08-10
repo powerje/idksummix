@@ -268,7 +268,7 @@ public class Pass1 {
 
 		if(op.getText().equals(".EQU"))
 		{
-			int index1 = op.getText().indexOf('x');
+			int index1 = arg.getText().indexOf('x');
 			if (index1 != -1) //hex
 			{
 				short argVal = hexstringToShort(arg.getText().subSequence(index1 + 1, arg.getText().length()));
@@ -282,7 +282,14 @@ public class Pass1 {
 			}
 			if (index1 == -1 && index2 == -1) //symbol table
 			{
-				boolean argRel = SymbolTable.isRelative(arg.getText());
+				boolean argRel = false;
+				
+				if(SymbolTable.isDefined(arg.getText())){
+					argRel = SymbolTable.isRelative(arg.getText());
+				}
+				else{
+					System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+				}
 				short argVal = SymbolTable.getValue(arg.getText());
 				SymbolTable.input(label.getText(), argVal, argRel);
 			}
