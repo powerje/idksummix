@@ -173,7 +173,7 @@ public class LiteralTable {
 	}
 	
 	public static TextFile printTable(TextFile lFile) {
-		TextFile returnVal = new TextFile();
+		String completeRow = "";
 		Collection c = literals.values();
 		Iterator<Short> i = c.iterator();
 		while (i.hasNext()) {
@@ -183,11 +183,16 @@ public class LiteralTable {
 			short sKey = key.shortValue(); //value
 			short sAddr = addr.shortValue();
 			
+			completeRow = "( ";
+			completeRow = completeRow.concat(ListFile.shortToHexString(sAddr));
+			completeRow = completeRow.concat(" ) ");
+			completeRow = completeRow.concat(ListFile.shortToHexString(sKey));
+			completeRow = completeRow.concat(ListFile.OutputBinaryP2(ListFile.shortToHexString(sKey)));
+			completeRow = completeRow.concat("\t ( lit ) ");
 			
-			
-			
+			lFile.input(completeRow);
 		}
-		return returnVal;
+		return lFile;
 	}
 }
 
