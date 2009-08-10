@@ -158,5 +158,13 @@ public class LiteralTable {
 			return false;
 		}
 	}
+	
+	public boolean isLiteralAddress(short addr) {
+		return true;
+	}
+	
+	public void printTable() {
+		
+	}
 }
 
