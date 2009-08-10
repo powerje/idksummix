@@ -1,5 +1,6 @@
 package summixAssembler;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import java.util.Map;
 public class LiteralTable {
 	/**  Hash map to store name -> address relationship in.*/
 	private static Map<Short, Short> literals = new HashMap<Short, Short>();
+	private static ArrayList<Short> literalKeys = new ArrayList<Short>();
 	/** size of the hashmap */
 	private static int size = 0;
 	
@@ -29,6 +31,7 @@ public class LiteralTable {
 	public static void input(short key, short addr) {
 		if (!literals.containsKey(key)) {
 			literals.put(key, addr);
+			literalKeys.add(key);
 			size++;
 		}
 	}
@@ -174,10 +177,14 @@ public class LiteralTable {
 	
 	public static TextFile printTable(TextFile lFile) {
 		String completeRow = "";
+		/*
 		Collection c = literals.values();
 		Iterator<Short> i = c.iterator();
+	
+		while (i.hasNext()) {*/
+		Iterator<Short> i = literalKeys.iterator();
 		while (i.hasNext()) {
-			Short key = i.next();
+ 			Short key = i.next();
 			Short addr = literals.get(key);
 			
 			short sKey = key.shortValue(); //value
