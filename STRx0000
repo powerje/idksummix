@@ -1,0 +1,4 @@
+Lab2TP	.ORIG
+off		.EQU	#4
+label	 STR 	R0,off
+		.END	x0000
