@@ -7,16 +7,18 @@ package summixAssembler;
  */
 public class ListFile {
 	
+	//The below three variables have been DECLARED
 	private String p2MainLine = new String();
+	private TextFile source = null; //This one also has global scope.
+	private TextFile p2 = null; //These variables have global scope inside of the ListFile class. ANY method can use them.
 	
 	public ListFile (TextFile source_orig, TextFile p2_orig)
 	{
-		TextFile source = source_orig;
-		TextFile p2 = p2_orig;
+		source = source_orig; //These variables have been ASSIGNED
+		p2 = p2_orig;
 		
 		source.reset();
 		p2.reset();
-		
 	}
 	
 	public boolean commentSource, commentP2;
