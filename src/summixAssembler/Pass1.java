@@ -296,7 +296,7 @@ public class Pass1 {
 		boolean isRelative = false;
 
 		// process the Program Name
-		if(token_array[0].getType() == TokenType.ALPHA)
+		if(token_array[0].getText().matches("^\\w$") && !token_array[0].getText().startsWith("R") && !token_array[0].getText().startsWith("x"))
 		{
 			progName = token_array[0].getText();
 
