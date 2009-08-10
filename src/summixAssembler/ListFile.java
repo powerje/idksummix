@@ -8,7 +8,7 @@ package summixAssembler;
 public class ListFile {
 	
 	//The below three variables have been DECLARED
-	private String p2MainLine = new String();
+	String p2MainLine = new String();
 	private TextFile source = null; //This one also has global scope.
 	private TextFile p2 = null; //These variables have global scope inside of the ListFile class. ANY method can use them.
 	
@@ -31,7 +31,8 @@ public class ListFile {
 	 */
 	private String ProcessLineSource(TextFile source)
 	{
-		source.display();
+		String listSource = source.getLine();
+		/*source.display();
 		String listSource = "", line = "";
 		Token token;
 		
@@ -48,7 +49,7 @@ public class ListFile {
 			listSource = token.getText();
 			//listSource.concat("\t");
 			listSource.concat(line);
-		}
+		}*/
 		return listSource;
 	}
 	/**
@@ -59,14 +60,14 @@ public class ListFile {
 	 */
 	private String ProcessLineP2Address(TextFile p2)
 	{
-		p2.display();
+		System.out.println("address");
 		String listP2Address = "";
-		if(p2.isEndOfFile())
-		{
-			String p2MainLine = p2.getLine();
 		
-			listP2Address = p2MainLine.substring(1,4);
-		}
+		String p2MainLine = p2.getLine();
+		System.out.println(p2MainLine);
+		listP2Address = p2MainLine.substring(1,5);
+		System.out.println(listP2Address);
+
 		return listP2Address;
 	}
 	/**
@@ -78,11 +79,13 @@ public class ListFile {
 	
 	private String ProcessLineP2Op(TextFile p2)
 	{
-		p2.display();
+		System.out.println("op");
+		System.out.println(p2MainLine);
 		String listP2Op = "";
-		if(p2.isEndOfFile())
+		if(!p2.isEndOfFile())
 		{
-			listP2Op = p2MainLine.substring(5,8);  //should be 5-8?
+			System.out.println(p2MainLine);
+			//listP2Op = p2MainLine.substring(5,8);  //should be 5-8?
 		}
 		return listP2Op;
 	}
@@ -95,6 +98,8 @@ public class ListFile {
 	 */
 	
 	private int hexstringToInt(String input) {
+		System.out.println("hex to int?");
+		System.out.println(input);
 		int returnVal = 0; // needs initialized in the case an exception is caught
 		try {
 			returnVal = Integer.valueOf(input, 16).intValue();
@@ -114,6 +119,7 @@ public class ListFile {
 
 	private String OutputBinaryP2(String op)
 	{
+		System.out.println("outputbinary");
 		String binaryString = new String();
 		String tempString = null;
 		int opInt = hexstringToInt(op);
@@ -179,21 +185,25 @@ public class ListFile {
 		
 		//remove object file header
 		oHeader = p2.getLine();
-		
+		System.out.println("main");
 		while(!source.isEndOfFile() && !p2.isEndOfFile())
 		{
 			//get one source line to analyze
+			System.out.println("before process");
 			sourceLine = ProcessLineSource(source);
-			
+			System.out.println("after: " + sourceLine);
 			if(sourceLine == "") //empty line
 			{
+				System.out.println("empty line");
 				//do nothing?  There is nothing from the text record that corresponds
 				completeRow.concat("( " + progCount + " ) ");
 				listFile.input(completeRow);
 				progCount++;
+				
 			}
 			else if(sourceLine.indexOf(".ORIG") != -1) //line up header records
 			{
+				System.out.println(".orig");
 				completeRow = oHeader;
 				completeRow.concat("( " + progCount + " ) ");
 				completeRow.concat(sourceLine);
@@ -203,6 +213,7 @@ public class ListFile {
 			{
 				if(sourceLine.indexOf(".EQU") != -1) // no address in p2
 				{
+					System.out.println(".equ");
 					//progCount
 					completeRow.concat("( " + progCount + " ) ");
 					
@@ -214,6 +225,7 @@ public class ListFile {
 				}
 				else if(sourceLine.indexOf(".BLKW") != -1) //increment progCount more
 				{
+					System.out.println(".blkw");
 					completeRow = "( " + ProcessLineP2Address(p2) + " ) \t\t\t";
 					
 					//progCount
@@ -227,6 +239,7 @@ public class ListFile {
 				}
 				else if(sourceLine.indexOf(".STRZ") != -1) //multiple oRecords for 1 line in source
 				{
+					System.out.println(".strz");
 					//print 1 line from oRecord and source (must do this)
 					completeRow = "( " + ProcessLineP2Address(p2) + " ) ";
 					completeRow.concat(ProcessLineP2Op(p2) + " ");
@@ -259,9 +272,12 @@ public class ListFile {
 				}
 				else //normal display
 				{
+					System.out.println("normal");
 					//object file
 					completeRow = "( " + ProcessLineP2Address(p2) + " ) ";
+					System.out.println("MAIN: " + p2MainLine);
 					completeRow.concat(ProcessLineP2Op(p2) + " ");
+					System.out.println("THIS!! " + ProcessLineP2Op(p2));
 					completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)) + " ");
 					
 					//progCount
@@ -277,6 +293,7 @@ public class ListFile {
 			}
 			else if(!isGood(sourceLine)) //deal with error line
 			{
+				System.out.println("error");
 				completeRow = p2.getLine();
 				completeRow.concat("( " + progCount + " ) ");
 				completeRow.concat(sourceLine);
