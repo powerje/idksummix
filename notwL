@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 
+start	 AND 	R2,R2,x000F
+not		 NOT 	R2,R2
+		.END	start

@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 	x30B1
+		 ADD 	R2,R2,x000F
+		 NOT 	R2,R2
+		.END	x30B1

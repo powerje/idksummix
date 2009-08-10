@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 
+Acc		.EQU	#3
+		 LDI 	Acc, =#5
+		.END	x0000

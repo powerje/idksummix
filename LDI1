@@ -1,0 +1,5 @@
+Lab2TP	.ORIG 
+Value	.EQU	=#4
+Acc		.EQU 	=x7
+		 LDR 	R0,R4,xA
+		.END	x0000
