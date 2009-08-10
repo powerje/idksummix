@@ -32,15 +32,15 @@ public class Pass2 {
 	 */
 	public Pass2(TextFile incomingSource)
 	{
-	
+
 		body = incomingSource;
 		body.reset();
 	}
-	
-/**
- * Populates the array token_array with up to four tokens from the current line of body.
- * The total number of tokens on that line is stored in numberOfTokens.
- */
+
+	/**
+	 * Populates the array token_array with up to four tokens from the current line of body.
+	 * The total number of tokens on that line is stored in numberOfTokens.
+	 */
 	private void getTokens()
 	{
 		numberOfTokens = 0;
@@ -144,7 +144,7 @@ public class Pass2 {
 			}
 			else //There is no arg; <label><op>eolTok
 			{
-	
+
 				processWrite(token_array[1].getText());
 			}
 		}
@@ -186,7 +186,7 @@ public class Pass2 {
 		boolean flag = false;
 		if (register != null && register.matches("^R[0-7]$")) //Is a regular register
 		{
-		//	System.out.println("reg val:" + )
+			//	System.out.println("reg val:" + )
 			flag = true;
 		}
 		//Is an absolute symbol that exists in the table and is in the correct range for a register
@@ -409,7 +409,7 @@ public class Pass2 {
 		}
 		return returnVal;
 	}
-	
+
 	/**
 	 * Strips formatting and returns the raw value of an incoming address. Must only be given well formed addresses. 
 	 * @param key	incoming address
@@ -459,7 +459,66 @@ public class Pass2 {
 		}
 		return returnVal;
 	}
-	
+
+	/**
+	 * Returns the raw value of a literal
+	 * @param key text representation of a literal
+	 * @return	raw value of a literal
+	 */
+	private short literalVal(String key)
+	{
+		short returnVal = 0;
+
+		if (key.startsWith("#"))
+		{//decimal value
+			returnVal = Short.valueOf(key.substring(1));
+		}
+		else if(key.startsWith("x"))
+		{//Hex value
+			returnVal = Short.valueOf(key.substring(1), 16);
+		}
+		else
+		{//Must be symbol
+			returnVal = SymbolTable.getValue(key);
+		}
+
+		return returnVal;
+	}
+
+	private boolean isValLiteral(String key)
+	{
+		boolean flag = false;
+		try{
+
+
+			if (key != null)
+			{
+				if(key.startsWith("=x") && Integer.valueOf(key.substring(2)) >= -32768 && Integer.valueOf(key.substring(2)) <= 32767)
+				{
+					flag = true;
+				}
+				else if (key.startsWith("=#") && Integer.valueOf(key.substring(2)) >= -32768 && Integer.valueOf(key.substring(2)) <= 32767)
+				{
+					flag = true;	
+				}
+				else if(key.startsWith("x") && Integer.valueOf(key.substring(1)) >= -32768 && Integer.valueOf(key.substring(1)) <= 32767)
+				{
+					flag = true;	
+				}
+				else if(key.startsWith("#")  && Integer.valueOf(key.substring(1)) >= -32768 && Integer.valueOf(key.substring(1)) <= 32767)
+				{
+					flag = true;
+				}
+				else if(SymbolTable.isDefined(key) && SymbolTable.getValue(key) >= -32768 && SymbolTable.getValue(key) <= 32767)
+				{
+					flag = true;
+				}
+			}
+		}catch(NumberFormatException e)
+		{}
+		return flag;
+	}
+
 	/**
 	 * Strips formatting and returns the raw value of an incoming trap vectors. Must only be given well formed trap vectors. 
 	 * @param key	incoming trap vector
@@ -664,10 +723,10 @@ public class Pass2 {
 		{
 			getArgTokens(2, st);
 			//Load has valid R1 and then followed by a literal
-			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && (argTokArray[1] != null) && LiteralTable.isLitereal(argTokArray[1]))
+			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValLiteral(argTokArray[1]))
 			{
 				DR = regVal(argTokArray[0]);
-				pgoffset9 = LiteralTable.getAddress(argTokArray[1]);
+				pgoffset9 = LiteralTable.getAddress(argTokArray[1].substring(2));
 				pgoffset9 &= 0x1FF;
 
 				finalOp |= DR << 9;
@@ -867,7 +926,7 @@ public class Pass2 {
 				else //If there are no args
 				{
 					p2File.input("E" + shortToHexString(startOfExecution)); //First line of execution
-					
+
 				}
 			}
 		}
@@ -879,14 +938,14 @@ public class Pass2 {
 		{
 			getArgTokens(1, st);
 			doNothing = true;
-			
+
 			boolean needsRelocation = false;
 			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
 			{
 				needsRelocation = true;
 			}
-			
-			
+
+
 			if(!st.hasMoreElements() && argTokArray[0] != null)
 			{
 				try{
@@ -902,7 +961,7 @@ public class Pass2 {
 						{
 							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1))));							
 						}
-					
+
 					}
 					//Hex
 					else if(argTokArray[0].startsWith("x") && Integer.valueOf(argTokArray[0].substring(1), 16) >= 0
@@ -935,7 +994,7 @@ public class Pass2 {
 
 			LocationCounter.incrementAmt(1);
 		}
-		
+
 		else if (op.equals(".STRZ"))
 		{
 			getArgTokens(1, st);
@@ -951,7 +1010,7 @@ public class Pass2 {
 					LocationCounter.incrementAmt(1);
 					index++;
 				}
-				
+
 				//Write the null terminator to a text record
 				p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(0));				
 				LocationCounter.incrementAmt(1);
@@ -966,7 +1025,7 @@ public class Pass2 {
 		{
 			getArgTokens(1, st);
 			doNothing = true;
-			
+
 			try
 			{
 				if (!st.hasMoreElements() && argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]))
@@ -994,7 +1053,7 @@ public class Pass2 {
 				{
 					badArg = true;
 				}
-				
+
 			}
 			catch(NumberFormatException e)
 			{
@@ -1028,7 +1087,7 @@ public class Pass2 {
 			{
 				needsRelocation = true;
 			}
-			
+
 			if (needsRelocation && !doNothing)
 			{
 				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp)) + "M0"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
@@ -1036,7 +1095,7 @@ public class Pass2 {
 			else if (!doNothing){
 				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file				
 			}
-			
+
 			if(MachineOpTable.isOp(op))
 			{
 				LocationCounter.incrementAmt(1);
