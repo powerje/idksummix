@@ -1,6 +1,6 @@
 Lab2EG	.ORIG	x30B0
 Acc   .EQU    #1
-Begin	ADD		R0,R3,R0		;30B0
++egin	ADD		R0,R3,R0		;30B0
 		ADD 	R3,R3,#1		;30B1
 Mult	AND 	R5,R5,R3		;30B2
 		AND 	R3,R3,x1F		;30B3
