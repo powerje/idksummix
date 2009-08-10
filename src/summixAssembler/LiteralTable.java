@@ -159,8 +159,17 @@ public class LiteralTable {
 		}
 	}
 	
-	public boolean isLiteralAddress(short addr) {
-		return true;
+	public boolean isLiteralAddress(String addr) {
+		Short shortAddr = Short.parseShort(addr, 16);
+		boolean returnVal = false;
+		Collection c = literals.values();
+		Iterator<Short> i = c.iterator();
+		while (i.hasNext()) {
+			if (i.next()==Short.parseShort(addr)) {
+				returnVal = true;
+			}
+		}
+		return returnVal;
 	}
 	
 	public void printTable() {
