@@ -92,7 +92,6 @@ public class ListFile {
 	{
 		//System.out.println("op");
 		//System.out.println(p2MainLine);
-		System.out.println(p2MainLine);
 		String listP2Op = p2MainLine;
 		if(!p2.isEndOfFile())
 				{
@@ -265,23 +264,33 @@ public class ListFile {
 					String p2add = ProcessLineP2Address(p2);
 					if(p2add.indexOf(';') != 0)
 					{
-					completeRow = "( ";
-					completeRow = ProcessLineP2Address(p2);
-					completeRow = completeRow.concat(" ) ");
+						completeRow = "( ";
+						completeRow = completeRow.concat(p2add);
+						completeRow = completeRow.concat(" ) ");
+						//progCount
+						completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t\t\t\t( ");
+						completeRow = completeRow.concat(Integer.toString(progCount));
+						completeRow = completeRow.concat(" ) ");
+						
+						//sFile
+						completeRow = completeRow.concat(sourceLine);
+						listFile.input(completeRow);
+						progCount++;
 					}
 					else
 					{
 						completeRow = p2add;
+						//progCount
+						completeRow = completeRow.concat("\t\t\t\t( ");
+						completeRow = completeRow.concat(Integer.toString(progCount));
+						completeRow = completeRow.concat(" ) ");
+						
+						//sFile
+						completeRow = completeRow.concat(sourceLine);
+						listFile.input(completeRow);
+						progCount++;
 					}
-					//progCount
-					completeRow = completeRow.concat("\t\t\t\t( ");
-					completeRow = completeRow.concat(Integer.toString(progCount));
-					completeRow = completeRow.concat(" ) ");
 					
-					//sFile
-					completeRow = completeRow.concat(sourceLine);
-					listFile.input(completeRow);
-					progCount++;
 					
 				}
 				
@@ -335,25 +344,26 @@ public class ListFile {
 					//System.out.println("normal");
 					String p2address = ProcessLineP2Address(p2);
 					//System.out.println(comment);
-					if(p2address.length() == 4 && p2address.indexOf('E') != 0)
+					if(p2address.length() == 4)
 					{
-						System.out.println("in here?");
-					//object file
-					completeRow = "( ";
-					completeRow = completeRow.concat(p2address);
-					completeRow = completeRow.concat(" ) ");
-					completeRow = completeRow.concat(ProcessLineP2Op(p2));
-					completeRow = completeRow.concat(" ");
-					completeRow = completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)));
-					completeRow = completeRow.concat(" ");
-					
-					//progCount
-					completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
-					completeRow = completeRow.concat(Integer.toString(progCount));
-					completeRow = completeRow.concat(" ) ");
-					
-					//sFile
-					completeRow = completeRow.concat(sourceLine);
+						System.out.println("in here?" + p2address);
+						
+						//object file
+						completeRow = "( ";
+						completeRow = completeRow.concat(p2address);
+						completeRow = completeRow.concat(" ) ");
+						completeRow = completeRow.concat(ProcessLineP2Op(p2));
+						completeRow = completeRow.concat(" ");
+						completeRow = completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)));
+						completeRow = completeRow.concat(" ");
+						
+						//progCount
+						completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
+						completeRow = completeRow.concat(Integer.toString(progCount));
+						completeRow = completeRow.concat(" ) ");
+						
+						//sFile
+						completeRow = completeRow.concat(sourceLine);
 					}
 					else
 					{
