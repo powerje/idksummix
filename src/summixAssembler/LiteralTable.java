@@ -159,7 +159,7 @@ public class LiteralTable {
 		}
 	}
 	
-	public boolean isLiteralAddress(String addr) {
+	public static boolean isLiteralAddress(String addr) {
 		Short shortAddr = Short.parseShort(addr, 16);
 		boolean returnVal = false;
 		Collection c = literals.values();
@@ -172,7 +172,7 @@ public class LiteralTable {
 		return returnVal;
 	}
 	
-	public void printTable() {
+	public static void printTable() {
 		
 	}
 }
