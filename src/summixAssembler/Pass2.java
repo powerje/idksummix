@@ -485,6 +485,11 @@ public class Pass2 {
 		return returnVal;
 	}
 
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
 	private boolean isValLiteral(String key)
 	{
 		boolean flag = false;
@@ -726,7 +731,7 @@ public class Pass2 {
 			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValLiteral(argTokArray[1]))
 			{
 				DR = regVal(argTokArray[0]);
-				pgoffset9 = LiteralTable.getAddress(argTokArray[1].substring(2));
+				pgoffset9 = literalVal(argTokArray[1]);
 				pgoffset9 &= 0x1FF;
 
 				finalOp |= DR << 9;
