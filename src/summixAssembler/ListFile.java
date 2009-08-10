@@ -203,7 +203,7 @@ public class ListFile {
 		
 		//remove object file header
 		oHeader = p2.getLine();
-		System.out.println("main");
+//		System.out.println("main");
 		while(!source.isEndOfFile() && !p2.isEndOfFile())
 		{
 			//get one source line to analyze
@@ -346,7 +346,7 @@ public class ListFile {
 					//System.out.println(comment);
 					if(p2address.length() == 4)
 					{
-						System.out.println("in here?" + p2address);
+//						System.out.println("in here?" + p2address);
 						
 						//object file
 						completeRow = "( ";
