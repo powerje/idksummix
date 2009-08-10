@@ -966,7 +966,6 @@ public class Pass2 {
 			
 			try
 			{
-
 				if (!st.hasMoreElements() && argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]))
 				{
 					if(!SymbolTable.isRelative(argTokArray[0]))
