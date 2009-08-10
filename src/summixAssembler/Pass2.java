@@ -23,7 +23,8 @@ public class Pass2 {
 	private String[] argTokArray = new String[3];
 	/** True if an end record has been extracted from the user's source code.*/
 	private boolean foundEndLine = false;
-	private short startOfExecution = 0; 
+	private short startOfExecution = 0;
+	private boolean foundFirstHeader = false;
 
 	/**
 	 * Creates a Pass2 object and readies it to process p1File.
@@ -32,9 +33,9 @@ public class Pass2 {
 	 */
 	public Pass2(TextFile incomingSource)
 	{
-
 		body = incomingSource;
 		body.reset();
+		body.stripComments();
 	}
 
 	/**
@@ -43,12 +44,21 @@ public class Pass2 {
 	 */
 	private void getTokens()
 	{
+		//Initialize array to nothing
+		token_array[0] = null;
+		token_array[1] = null;
+		token_array[2] = null;
+		token_array[3] = null;
+
 		numberOfTokens = 0;
 		Token temp = new Token(";", TokenType.COMMENT);
 
+
+		//Fill in array
 		while(temp.getType() != TokenType.EOL)
 		{ 
 			temp = body.getToken();
+			//If array is full, keep taking out tokens, but don't add them to the array
 			if (numberOfTokens < 4)
 			{
 				token_array[numberOfTokens] = temp;
@@ -64,12 +74,6 @@ public class Pass2 {
 	 */
 	public TextFile processFile()
 	{
-		String header = new String(body.getHeader());//Get header
-		String start = new String(header.substring(7, 11));//Get start location from the header
-		LocationCounter.set(Integer.valueOf(start, 16), header.endsWith("R"));//Set LC to start location
-		startOfExecution = Short.valueOf(start, 16);
-		p2File.input(header);//Store header in new file
-
 		//while(not end record or end of file) {output text records}
 		while(!body.isEndOfFile() && !foundEndLine)
 		{
@@ -91,30 +95,15 @@ public class Pass2 {
 	private void processAnyLine()
 	{
 		getTokens();
-
 		if (numberOfTokens > 4) //You got too many tokens
 		{
 			p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE");			
 		}
-		else if (numberOfTokens == 1 && token_array[0].getType() != TokenType.EOL) //Singleton that is not an EoL tok
+		else if (numberOfTokens == 2 || numberOfTokens == 3 || numberOfTokens == 4)
 		{
-			if (token_array[0].getType() == TokenType.ALPHA && (token_array[0].getText().equals("DBUG") || token_array[0].getText().equals("RET")))
-			{//Okay, you've got a good single command, process text
-				processTextLine();
-			}
-			else
-			{//You've got a bad single line command, spit out error
-				System.out.println("ERROR: Malformed no arg op at line " + body.getReport());
-				p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE");
-			}
-		}
-		else if (numberOfTokens == 1)//must be EoL do nothing
-		{}
-		else if (!token_array[0].getText().equals(".ORIG") && token_array[1] != null && !token_array[1].getText().equals(".ORIG") )
-		{//If there's an .ORIG in spot one or two, ignore the line, otherwise process it
 			processTextLine();
 		}
-
+		//else{numberOfTokens == 1, so do nothing}
 	}
 
 	/**
@@ -123,16 +112,16 @@ public class Pass2 {
 	 */
 	private void processTextLine()
 	{
-		if (isAnOp(token_array[0].getText()) && (numberOfTokens == 3 || numberOfTokens == 2) && token_array[0].getText() != ".ORIG") //<op><maybe arg>
+		if (isAnOp(token_array[0].getText()) && (numberOfTokens == 3 || numberOfTokens == 2)) //<op><maybe arg>
 		{
 			//check to see if there are args
 			if (numberOfTokens == 3) //Then it has an arg; <op><arg>
 			{
-				processWrite(token_array[0].getText(), token_array[1].getText());
+				processArgOp(token_array[0].getText(), token_array[1].getText());
 			}
-			else //It has no arg; <op>
+			else //(Number of tokens == 2) It has no arg; <op>
 			{
-				processWrite(token_array[0].getText());
+				processNoArgOp(token_array[0].getText());
 			}
 		}
 		else if(isAnOp(token_array[1].getText()) && (numberOfTokens == 4 || numberOfTokens == 3)) //<label><op><maybe arg>
@@ -140,12 +129,11 @@ public class Pass2 {
 			//check to see if there are args
 			if (numberOfTokens == 4) //There is an arg; <label><op><arg>eolTok
 			{
-				processWrite(token_array[1].getText(), token_array[2].getText());
+				processArgOp(token_array[1].getText(), token_array[2].getText());
 			}
 			else //There is no arg; <label><op>eolTok
 			{
-
-				processWrite(token_array[1].getText());
+				processNoArgOp(token_array[1].getText());
 			}
 		}
 		else
@@ -489,7 +477,7 @@ public class Pass2 {
 		{//Must be symbol
 			returnVal = SymbolTable.getValue(key);
 		}
-		
+
 		returnVal &= 0x1FF;
 		return returnVal;
 	}
@@ -579,381 +567,454 @@ public class Pass2 {
 	 * @param op	operation
 	 * @param arg	arguments of an operation
 	 */
-	private void processWrite(String op, String arg) //Write op with arguments to p2File
+	private void processArgOp(String op, String arg) //Write op with arguments to p2File
 	{
+
 		short DR, SR1, SR2, imm5, pgoffset9, index6, BaseR, SR, trapvect8;
 		int addr;
-		boolean badArg = false;
-		boolean doNothing = false;
+		//Figure out which op you have
 		StringTokenizer st = new StringTokenizer(arg, ",");
 		String input = new String("T");
-		short finalOp = 0;
+		boolean badArg = false;
 
-		if (MachineOpTable.isOp(op))
+		if (PseudoOpTable.isPseudoOp(op))
 		{
-			finalOp = MachineOpTable.getOp(op);
+			processPuesdoOpWithArg(op, arg);
 		}
-
-
-		//Figure out which op you have
-		if (op.equals("ADD"))
+		else if(foundFirstHeader) //Else is a machine op. If we have found the first header record, then this is fine!
+								  //Otherwise it's an error because we got a machine op before the header!
 		{
-			getArgTokens(3, st);
-			//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
-			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
-					&& isValReg(argTokArray[2]) && !SymbolTable.isDefined(argTokArray[2]))
+			short finalOp = MachineOpTable.getOp(op);
+			if (op.equals("ADD"))
 			{
-				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is SR2
-				//Don't forget to set the link bit to 0
-				DR = regVal(argTokArray[0]);
-				SR1 = regVal(argTokArray[1]);
-				SR2 = regVal(argTokArray[2]);
+				getArgTokens(3, st);
+				//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
+				if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
+						&& isValReg(argTokArray[2]) && !SymbolTable.isDefined(argTokArray[2]))
+				{
+					//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is SR2
+					//Don't forget to set the link bit to 0
+					DR = regVal(argTokArray[0]);
+					SR1 = regVal(argTokArray[1]);
+					SR2 = regVal(argTokArray[2]);
 
-				finalOp |= SR2;
-				finalOp |= (SR1 << 6);
-				finalOp |= (DR << 9);
+					finalOp |= SR2;
+					finalOp |= (SR1 << 6);
+					finalOp |= (DR << 9);
 
+				}
+				//Valid reg + immediate value; DR,SR1,IMM5
+				else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
+				{
+					//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
+					//Don't forget to set the link bit to 1
+					DR = regVal(argTokArray[0]);
+					SR1 = regVal(argTokArray[1]);
+					imm5 = immVal(argTokArray[2]);
+					finalOp |= (SR1 << 6);
+					finalOp |= (DR << 9);
+					finalOp |= imm5;
+					finalOp |= (1 << 5);
+				}
+				else //regs are invalid, something's screwed up with the tokens, maybe you have too many, maybe the IMM5 value is a # followed by letters
+				{
+					badArg = true;
+				}
 			}
-			//Valid reg + immediate value; DR,SR1,IMM5
-			else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
+			else if (op.equals("AND"))
 			{
-				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
-				//Don't forget to set the link bit to 1
-				DR = regVal(argTokArray[0]);
-				SR1 = regVal(argTokArray[1]);
-				imm5 = immVal(argTokArray[2]);
-				finalOp |= (SR1 << 6);
-				finalOp |= (DR << 9);
-				finalOp |= imm5;
-				finalOp |= (1 << 5);
+				getArgTokens(3, st);
+
+				//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
+				if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
+						&& isValReg(argTokArray[2]) && !SymbolTable.isDefined(argTokArray[2]))
+				{
+					DR = regVal(argTokArray[0]);
+					SR1 = regVal(argTokArray[1]);
+					SR2 = regVal(argTokArray[2]);
+
+					finalOp |= SR2;
+					finalOp |= (SR1 << 6);
+					finalOp |= (DR << 9);
+
+				}
+				//Valid reg + immediate value; DR,SR1,IMM5
+				else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
+				{
+					//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
+					//Don't forget to set the link bit to 1
+					DR = regVal(argTokArray[0]);
+					SR1 = regVal(argTokArray[1]);
+					imm5 = immVal(argTokArray[2]);
+					finalOp |= (SR1 << 6);
+					finalOp |= (DR << 9);
+					finalOp |= imm5;
+					finalOp |= (1 << 5);
+				}
+				else
+				{
+					badArg = true;
+				}
 			}
-			else //regs are invalid, something's screwed up with the tokens, maybe you have too many, maybe the IMM5 value is a # followed by letters
+			else if (op.equals("JSR"))
 			{
-				badArg = true;
+				getArgTokens(1, st);
+				if(!st.hasMoreElements() && isValAddr(argTokArray[0]))
+				{
+					addr = addrVal(argTokArray[0]);
+					finalOp |= addr;
+					finalOp |= 1 << 11; //Link bit set
+					//No link bit set
+				}
+				else
+				{
+					badArg = true;
+				}
+
+			}		
+			else if(op.equals("JMP"))
+			{
+				getArgTokens(1, st);
+				if(!st.hasMoreElements() && isValAddr(argTokArray[0]))
+				{
+					addr = addrVal(argTokArray[0]);
+					finalOp |= addr;
+				}
+				else
+				{
+					badArg = true;
+				}	
+			}
+			else if (op.equals("JSRR"))
+			{
+				getArgTokens(2, st);
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
+				{
+					BaseR = regVal(argTokArray[0]);
+					index6 = indexVal(argTokArray[1]);
+					finalOp |= BaseR << 6;
+					finalOp |= index6;
+					finalOp |= 1 << 11; //Link bit set
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("JMPR"))
+			{
+				getArgTokens(2, st);
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
+				{
+					BaseR = regVal(argTokArray[0]);
+					index6 = indexVal(argTokArray[1]);
+					finalOp |= BaseR << 6;
+					finalOp |= index6;
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("LD"))
+			{
+				//FIX ME!!!!!
+				getArgTokens(2, st);
+				//Load has valid R1 and then followed by a literal
+				if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValLiteral(argTokArray[1]))
+				{
+					DR = regVal(argTokArray[0]);
+					pgoffset9 = literalAddressVal(argTokArray[1]);
+					pgoffset9 &= 0x1FF;
+
+					finalOp |= DR << 9;
+					finalOp |= pgoffset9;
+
+				}
+				//Load has R1, an the next one is an address that isn't in the literal table
+				else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && (argTokArray[1] != null)
+						&& !LiteralTable.isLitereal(argTokArray[1]) && isValAddr(argTokArray[1]))
+				{
+					p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())) + finalOp);
+					DR = regVal(argTokArray[0]);
+					pgoffset9 = addrVal(argTokArray[1]);
+					finalOp |= DR << 9;
+					finalOp |= pgoffset9;
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("LDI"))
+			{
+				getArgTokens(2, st);
+
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+				{
+					DR = regVal(argTokArray[0]);
+					addr = addrVal(argTokArray[1]);
+					finalOp |= DR << 9;
+					finalOp |= addr;
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("LDR"))
+			{
+				getArgTokens(3, st);
+
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
+				{
+					DR = regVal(argTokArray[0]);
+					BaseR = regVal(argTokArray[1]);
+					index6 = indexVal(argTokArray[2]);
+
+					finalOp |= DR << 9;
+					finalOp |= BaseR << 6;
+					finalOp |= index6;
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("LEA"))
+			{
+				getArgTokens(2, st);
+
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+				{
+					DR = regVal(argTokArray[0]);
+					addr = addrVal(argTokArray[1]);
+
+					finalOp |= DR << 9;
+					finalOp |= addr;
+				}
+				else
+				{
+					badArg = true;
+				}			
+			}
+			else if (op.equals("NOT"))
+			{
+				getArgTokens(2, st);
+
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]))
+				{
+					DR = regVal(argTokArray[0]);
+					SR = regVal(argTokArray[1]);
+
+					finalOp |= DR << 9;
+					finalOp |= SR << 6;
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("ST"))
+			{
+				getArgTokens(2, st);
+
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+				{
+					SR = regVal(argTokArray[0]);
+					pgoffset9 = addrVal(argTokArray[1]);
+
+					finalOp |= SR << 9;
+					finalOp |= pgoffset9;
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("STI"))
+			{
+				getArgTokens(2, st);
+
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
+				{
+					SR = regVal(argTokArray[0]);
+					pgoffset9 = addrVal(argTokArray[1]);
+
+					finalOp |= SR << 9;
+					finalOp |= pgoffset9;
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("STR"))
+			{
+				getArgTokens(3, st);
+
+				if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
+				{
+					SR = regVal(argTokArray[0]);
+					BaseR = regVal(argTokArray[1]);
+					index6 =  indexVal(argTokArray[2]);
+					finalOp |= SR << 9;
+					finalOp |= BaseR << 6;
+					finalOp |= index6;
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+			else if (op.equals("TRAP"))
+			{
+				getArgTokens(1, st);
+
+				if(!st.hasMoreElements() && isValTrapVect(argTokArray[0]))
+				{
+					trapvect8 = trapVal(argTokArray[0]);
+					finalOp |= trapvect8;
+				}
+				else
+				{
+					badArg = true;
+				}			
+			}
+			else if (op.matches("^BRN?Z?P?$"))
+			{
+				getArgTokens(1, st);
+				if (!st.hasMoreElements() && isValAddr(argTokArray[0]))
+				{
+					finalOp |= addrVal(argTokArray[0]);
+				}
+				else
+				{
+					badArg = true;
+				}
+			}
+
+
+			if (badArg) //If badargs, output error
+			{
+				//Something is wrong with the arguments, putting in an errorline comment
+				System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+				p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
+			}
+			else //If not badArgs, means args are good! Process them.
+			{
+				boolean needsRelocation = false;
+
+				//Check to see if the args have a relative symbol in them
+				if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
+				{
+					needsRelocation = true;
+				}
+				if (argTokArray[1] != null && SymbolTable.isDefined(argTokArray[1]) && SymbolTable.isRelative(argTokArray[1]))
+				{
+					needsRelocation = true;
+				}
+				if (argTokArray[2] != null && SymbolTable.isDefined(argTokArray[2]) && SymbolTable.isRelative(argTokArray[2]))
+				{
+					needsRelocation = true;
+				}
+				//If the arg contains a relocatable symbol AND the program is relative
+				if (needsRelocation && LocationCounter.isRelative())
+				{
+					p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp)) + "M0"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
+				}
+				else
+				{
+					p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file			
+				}
+				LocationCounter.incrementAmt(MachineOpTable.getSize(op)); //Increment location counter for the size of the machine op
 			}
 		}
-		else if (op.equals("AND"))
+		else
 		{
-			getArgTokens(3, st);
+			p2File.input(";ERROR non-comment/non-blank line preceeds .ORIG op.");
+		}
+	}
 
-			//Valid regs; DR,SR1,SR2 and the final SR2 is NOT a symbol, last SR2, if it is a symbol, is always an IMM5
-			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1])
-					&& isValReg(argTokArray[2]) && !SymbolTable.isDefined(argTokArray[2]))
+	private boolean isValENDArg(String arg)
+	{
+		boolean flag = false;
+
+		try
+		{
+			if (arg.startsWith("x") && Integer.parseInt(arg.substring(1), 16) >= 0 && Integer.parseInt(arg, 16) <= 0xFFFF)
 			{
-				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is SR2
-				//Don't forget to set the link bit to 0
-				DR = regVal(argTokArray[0]);
-				SR1 = regVal(argTokArray[1]);
-				SR2 = regVal(argTokArray[2]);
-
-				finalOp |= SR2;
-				finalOp |= (SR1 << 6);
-				finalOp |= (DR << 9);
-
+				flag = true;
 			}
-			//Valid reg + immediate value; DR,SR1,IMM5
-			else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValImm(argTokArray[2])) 
+			else if(SymbolTable.isDefined(arg) && SymbolTable.getValue(arg) >= 0 && SymbolTable.getValue(arg) <= 0xFFFF)
 			{
-				//construct instruction in finalOp, you have a good layout for the args token 0 is DR, token 1 is SR1, token 2 is IMM5
-				//Don't forget to set the link bit to 1
-				DR = regVal(argTokArray[0]);
-				SR1 = regVal(argTokArray[1]);
-				imm5 = immVal(argTokArray[2]);
-				finalOp |= (SR1 << 6);
-				finalOp |= (DR << 9);
-				finalOp |= imm5;
-				finalOp |= (1 << 5);
-			}
-			else //regs are invalid, something's screwed up with the tokens, maybe you have too many, maybe the IMM5 value is a # followed by letters
-			{
-				badArg = true;
+				flag = true;
 			}
 		}
-		else if (op.equals("JSR"))
+		catch(NumberFormatException e)
+		{}
+
+		return flag;
+	}
+
+	private void processPuesdoOpWithArg(String op, String arg) {
+
+		StringTokenizer st = new StringTokenizer(arg, ",");
+
+		if(!op.equals(".ORIG") && !foundFirstHeader)
 		{
-			getArgTokens(1, st);
-			if(!st.hasMoreElements() && isValAddr(argTokArray[0]))
+			p2File.input(";ERROR non-comment/non-blank line preceeds .ORIG op.");
+		}
+		else if(op.equals(".ORIG"))
+		{//.ORIG has been processed by pass1, print out the header file. If you find a second one, print an error file.
+			if(!foundFirstHeader)
 			{
-				addr = addrVal(argTokArray[0]);
-				finalOp |= addr;
-				finalOp |= 1 << 11; //Link bit set
-				//No link bit set
+				foundFirstHeader = true;
+				p2File.input(body.getHeader());
+				String header = new String(body.getHeader());//Get header
+				String start = new String(header.substring(7, 11));//Get start location from the header
+				LocationCounter.set(Integer.parseInt(start, 16), header.endsWith("R"));//Set LC to start location
+				startOfExecution = (short)Integer.parseInt(start, 16);
 			}
 			else
 			{
-				badArg = true;
-			}
-
-		}		
-		else if(op.equals("JMP"))
-		{
-			getArgTokens(1, st);
-			if(!st.hasMoreElements() && isValAddr(argTokArray[0]))
-			{
-				addr = addrVal(argTokArray[0]);
-				finalOp |= addr;
-
-			}
-			else
-			{
-				badArg = true;
-			}	
-		}
-		else if (op.equals("JSRR"))
-		{
-			getArgTokens(2, st);
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
-			{
-				BaseR = regVal(argTokArray[0]);
-				index6 = indexVal(argTokArray[1]);
-				finalOp |= BaseR << 6;
-				finalOp |= index6;
-				finalOp |= 1 << 11; //Link bit set
-				//No link bit set
-			}
-			else
-			{
-				badArg = true;
-			}
-		}
-		else if (op.equals("JMPR"))
-		{
-			getArgTokens(2, st);
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValIndex(argTokArray[1]))
-			{
-				BaseR = regVal(argTokArray[0]);
-				index6 = indexVal(argTokArray[1]);
-				finalOp |= BaseR << 6;
-				finalOp |= index6;
-			}
-			else
-			{
-				badArg = true;
-			}
-		}
-		else if (op.equals("LD"))
-		{
-			getArgTokens(2, st);
-			//Load has valid R1 and then followed by a literal
-			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValLiteral(argTokArray[1]))
-			{
-				DR = regVal(argTokArray[0]);
-				pgoffset9 = literalAddressVal(argTokArray[1]);
-				pgoffset9 &= 0x1FF;
-
-				finalOp |= DR << 9;
-				finalOp |= pgoffset9;
-
-			}
-			//Load has R1, an the next one is an address that isn't in the literal table
-			else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && (argTokArray[1] != null)
-					&& !LiteralTable.isLitereal(argTokArray[1]) && isValAddr(argTokArray[1]))
-			{
-				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())) + finalOp);
-				DR = regVal(argTokArray[0]);
-				pgoffset9 = addrVal(argTokArray[1]);
-				finalOp |= DR << 9;
-				finalOp |= pgoffset9;
-			}
-			else
-			{
-				badArg = true;
-			}
-
-		}
-		else if (op.equals("LDI"))
-		{
-			getArgTokens(2, st);
-
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
-			{
-				DR = regVal(argTokArray[0]);
-				addr = addrVal(argTokArray[1]);
-				finalOp |= DR << 9;
-				finalOp |= addr;
-			}
-			else
-			{
-				badArg = true;
-			}
-		}
-		else if (op.equals("LDR"))
-		{
-			getArgTokens(3, st);
-
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
-			{
-				DR = regVal(argTokArray[0]);
-				BaseR = regVal(argTokArray[1]);
-				index6 = indexVal(argTokArray[2]);
-
-				finalOp |= DR << 9;
-				finalOp |= BaseR << 6;
-				finalOp |= index6;
-			}
-			else
-			{
-				badArg = true;
-			}
-		}
-		else if (op.equals("LEA"))
-		{
-			getArgTokens(2, st);
-
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
-			{
-				DR = regVal(argTokArray[0]);
-				addr = addrVal(argTokArray[1]);
-
-				finalOp |= DR << 9;
-				finalOp |= addr;
-			}
-			else
-			{
-				badArg = true;
-			}			
-		}
-		else if (op.equals("NOT"))
-		{
-			getArgTokens(2, st);
-
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]))
-			{
-				DR = regVal(argTokArray[0]);
-				SR = regVal(argTokArray[1]);
-
-				finalOp |= DR << 9;
-				finalOp |= SR << 6;
-			}
-			else
-			{
-				badArg = true;
-			}
-		}
-		else if (op.equals("ST"))
-		{
-			getArgTokens(2, st);
-
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
-			{
-				SR = regVal(argTokArray[0]);
-				pgoffset9 = addrVal(argTokArray[1]);
-
-				finalOp |= SR << 9;
-				finalOp |= pgoffset9;
-			}
-			else
-			{
-				badArg = true;
-			}
-		}
-		else if (op.equals("STI"))
-		{
-			getArgTokens(2, st);
-
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValAddr(argTokArray[1]))
-			{
-				SR = regVal(argTokArray[0]);
-				pgoffset9 = addrVal(argTokArray[1]);
-
-				finalOp |= SR << 9;
-				finalOp |= pgoffset9;
-			}
-			else
-			{
-				badArg = true;
-			}
-		}
-		else if (op.equals("STR"))
-		{
-			getArgTokens(3, st);
-
-			if(!st.hasMoreElements() && isValReg(argTokArray[0]) && isValReg(argTokArray[1]) && isValIndex(argTokArray[2]))
-			{
-				SR = regVal(argTokArray[0]);
-				BaseR = regVal(argTokArray[1]);
-				index6 =  indexVal(argTokArray[2]);
-				finalOp |= SR << 9;
-				finalOp |= BaseR << 6;
-				finalOp |= index6;
-			}
-			else
-			{
-				badArg = true;
-			}
-		}
-		else if (op.equals("TRAP"))
-		{
-			getArgTokens(1, st);
-
-			if(!st.hasMoreElements() && isValTrapVect(argTokArray[0]))
-			{
-				trapvect8 = trapVal(argTokArray[0]);
-				finalOp |= trapvect8;
-			}
-			else
-			{
-				badArg = true;
-			}			
-		}
-		else if (op.matches("^BRN?Z?P?$"))
-		{
-			getArgTokens(1, st);
-			if (!st.hasMoreElements() && isValAddr(argTokArray[0]))
-			{
-				finalOp |= addrVal(argTokArray[0]);
-			}
-			else
-			{
-				badArg = true;
+				p2File.input(";ERROR multiple .ORIG entries.");
 			}
 		}
 		else if (op.equals(".END"))
 		{
 			getArgTokens(1, st);
-			if (!foundEndLine){
+
+			if(!st.hasMoreTokens() && argTokArray[0] != null && isValENDArg(argTokArray[0])) //prove args are good
+			{
+				if(SymbolTable.isDefined(argTokArray[0]))
+				{
+					p2File.input("E" + shortToHexString(SymbolTable.getValue(argTokArray[0])));
+				}
+				else//Must be hex value as a string, use it directly after removing x
+				{
+					p2File.input("E" + argTokArray[0].substring(1));
+				}
 				foundEndLine = true;
-				if(argTokArray[0] != null) //If there are args
-				{
-					if(isValAddr(argTokArray[0])) //If args are good, and I haven't already found the end line
-					{
-						if (argTokArray[0].startsWith("x"))
-						{
-							p2File.input("E" + argTokArray[0].substring(1));			
-						}
-						else if (argTokArray[0].startsWith("#"))
-						{
-							p2File.input("E" + Integer.valueOf(argTokArray[0].substring(1), 16));
-						}
-						else //Must be symbol
-						{
-							p2File.input("E" + shortToHexString(SymbolTable.getValue(argTokArray[0])));
-						}
-					}
-					else
-					{
-						badArg = true;
-					}
-
-				}
-				else //If there are no args
-				{
-					p2File.input("E" + shortToHexString(startOfExecution)); //First line of execution
-
-				}
+				System.out.println("Found the .END op on line " + body.getReport() + " compilation complete.");
+				System.out.println("");
+			}
+			else //badargs
+			{
+				System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+				p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
 			}
 		}
 		else if (op.equals(".EQU"))
-		{
-			doNothing = true;
-		}
+		{/*Do nothing*/}
 		else if (op.equals(".FILL"))
 		{
 			getArgTokens(1, st);
-			doNothing = true;
+			boolean badArgs = false;
 
 			boolean needsRelocation = false;
-			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
+
+			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]) && LocationCounter.isRelative())
 			{
 				needsRelocation = true;
 			}
@@ -975,8 +1036,7 @@ public class Pass2 {
 							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1))));							
 						}
 
-					}
-					//Hex
+					}//Hex
 					else if(argTokArray[0].startsWith("x") && Integer.valueOf(argTokArray[0].substring(1), 16) >= 0
 							&& Integer.valueOf(argTokArray[0].substring(1), 16) <= 0xFFFF)
 					{
@@ -988,30 +1048,32 @@ public class Pass2 {
 						{
 							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)));							
 						}
-
 					}
 					else
 					{
-						badArg = true;
+						badArgs = true;
 					}
 				}
 				catch(NumberFormatException e)
 				{
-					badArg = true;
+					badArgs = true;
 				}
 			}
 			else
 			{
-				badArg = true;
+				badArgs = true;
 			}
 
 			LocationCounter.incrementAmt(1);
+			if (badArgs)
+			{
+				System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+				p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
+			}
 		}
-
 		else if (op.equals(".STRZ"))
 		{
 			getArgTokens(1, st);
-			doNothing = true;
 			if (!st.hasMoreElements() && argTokArray[0] != null && argTokArray[0].endsWith("\"") && argTokArray[0].startsWith("\""))
 			{
 				int index = 1;
@@ -1029,28 +1091,24 @@ public class Pass2 {
 			}
 			else
 			{
-				badArg = true;
+				System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+				p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
 			}
 
 		}
 		else if (op.equals(".BLKW"))
 		{
 			getArgTokens(1, st);
-			doNothing = true;
 
+			boolean badArgs = false;
 			try
 			{
-				if (!st.hasMoreElements() && argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]))
+				if (!st.hasMoreElements() && argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0])
+						&& !SymbolTable.isRelative(argTokArray[0]) && SymbolTable.getValue(argTokArray[0]) >= 1
+						&& SymbolTable.getValue(argTokArray[0]) <= 0xFFFF)
 				{
-					if(!SymbolTable.isRelative(argTokArray[0]))
-					{
-						LocationCounter.incrementAmt(SymbolTable.getValue(argTokArray[0]));
-					}
-					else
-					{
-						badArg = true;
-					}
-				}
+					LocationCounter.incrementAmt(SymbolTable.getValue(argTokArray[0]));
+				}				
 				else if(!st.hasMoreElements() && argTokArray[0] != null && argTokArray[0].startsWith("#")&& Integer.valueOf(argTokArray[0].substring(1)) >= 1
 						&& Integer.valueOf(argTokArray[0].substring(1)) <= 0xFFFF)
 				{
@@ -1063,76 +1121,68 @@ public class Pass2 {
 				}
 				else
 				{
-					badArg = true;
+					badArgs = true;
 				}
 
 			}
 			catch(NumberFormatException e)
 			{
-				badArg = true;
+				badArgs = true;
 			}
-		}
-		else if(op.contentEquals(".ORIG"))
-		{
-			doNothing = true;
-		}
 
-
-		if (badArg)
-		{
-			//Something is wrong with the arguements, putting in an errorline comment
-			System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
-			p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
-		}
-		else if (!foundEndLine)
-		{
-			boolean needsRelocation = false;
-
-			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
+			if(badArgs)
 			{
-				needsRelocation = true;
-			}
-			else if (argTokArray[1] != null && SymbolTable.isDefined(argTokArray[1]) && SymbolTable.isRelative(argTokArray[1]))
-			{
-				needsRelocation = true;
-			}
-			else if (argTokArray[2] != null && SymbolTable.isDefined(argTokArray[2]) && SymbolTable.isRelative(argTokArray[2]))
-			{
-				needsRelocation = true;
-			}
-
-			if (needsRelocation && !doNothing)
-			{
-				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp)) + "M0"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
-			}
-			else if (!doNothing){
-				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file				
-
-			}
-
-			if(MachineOpTable.isOp(op))
-			{
-				LocationCounter.incrementAmt(1);
+				System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+				p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
 			}
 		}
 	}
+
+
+
 
 	/**
 	 * RET and DEBUG have no arguments, and it takes either one, then writes the appropriate text record to p2File for them.
 	 * @param op	RET or DEBUG
 	 */
-	private void processWrite(String op) //Write op with no arguments to p2File
+	private void processNoArgOp(String op) //Write op with no arguments to p2File
 	{
-		if (op.equals(".END"))
+		if(!op.equals(".ORIG") && !foundFirstHeader)
 		{
-			p2File.input("E" + shortToHexString(startOfExecution)); //First line of execution
-			foundEndLine = true; 
+			p2File.input(";ERROR non-comment/non-blank line preceeds .ORIG op.");
 		}
-		else
+		else if(op.equals(".ORIG"))
+		{//.ORIG has been processed by pass1, print out the header file. If you find a second one, print an error file.
+			if(!foundFirstHeader)
+			{
+				foundFirstHeader = true;
+				p2File.input(body.getHeader());
+				String header = new String(body.getHeader());//Get header
+				String start = new String(header.substring(7, 11));//Get start location from the header
+				LocationCounter.set(Integer.valueOf(start, 16), header.endsWith("R"));//Set LC to start location
+				startOfExecution = (short)Integer.parseInt(start, 16);
+			}
+			else
+			{
+				p2File.input(";ERROR multiple .ORIG entries.");
+			}
+		}
+		else if (op.equals(".END"))
 		{
-			String input = new String("T");
-			p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
-			LocationCounter.incrementAmt(1);			
+			foundEndLine = true;
+			p2File.input("E" + shortToHexString(startOfExecution)); //First line of execution
+			System.out.println("Found the .END op on line " + body.getReport() + " compilation complete.");
+			System.out.println("");
+		}
+		else if(op.equals("RET"))
+		{
+			p2File.input("T" + shortToHexString(LocationCounter.getAddress()) + shortToHexString(MachineOpTable.getOp(op)));
+			LocationCounter.incrementAmt(1);
+		}
+		else//(op.equals("DEBUG"))
+		{
+			p2File.input("T" + shortToHexString(LocationCounter.getAddress()) + (shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
+			LocationCounter.incrementAmt(1);
 		}
 
 	}
@@ -1142,7 +1192,7 @@ public class Pass2 {
 	 * @param data	input
 	 * @return	hex representation from 0000 to FFFF
 	 */
-	public static String shortToHexString(short data) {
+	private String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
 		{
@@ -1159,7 +1209,7 @@ public class Pass2 {
 	 * @param data	input
 	 * @return	hex representation from 0000 to FFFF
 	 */
-	public static String intToHexString(int data) {
+	private String intToHexString(int data) {
 		String returnVal = Integer.toHexString(data);
 		if (returnVal.length() > 4) 
 		{
@@ -1171,4 +1221,5 @@ public class Pass2 {
 		}
 		return returnVal.toUpperCase();
 	}
+
 }
