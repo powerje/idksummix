@@ -296,7 +296,7 @@ public class Pass1 {
 		boolean isRelative = false;
 
 		// process the Program Name
-		if(token_array[0].getText().matches("^\\w$") && !token_array[0].getText().startsWith("R") && !token_array[0].getText().startsWith("x"))
+		if(token_array[0].getText().matches("^\\w+$") && !token_array[0].getText().startsWith("R") && !token_array[0].getText().startsWith("x"))
 		{
 			progName = token_array[0].getText();
 
@@ -469,7 +469,7 @@ public class Pass1 {
 			{
 				if (origFlag == true)
 				{
-					System.out.println("ERROR: The program contains MULTIPLE header recorders.");
+					System.out.println("ERROR: The program contains MULTIPLE header records.");
 				}
 				else
 				{
