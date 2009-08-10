@@ -185,6 +185,7 @@ public class Pass2 {
 		boolean flag = false;
 		if (register != null && register.matches("^R[0-7]$")) //Is a regular register
 		{
+		//	System.out.println("reg val:" + )
 			flag = true;
 		}
 		//Is an absolute symbol that exists in the table and is in the correct range for a register
@@ -680,6 +681,10 @@ public class Pass2 {
 				pgoffset9 = addrVal(argTokArray[1]);
 				finalOp |= DR << 9;
 				finalOp |= pgoffset9;
+			}
+			else
+			{
+				badArg = true;
 			}
 
 		}
