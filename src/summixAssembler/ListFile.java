@@ -266,7 +266,7 @@ public class ListFile {
 					if(p2add.indexOf(';') != 0)
 					{
 					completeRow = "( ";
-					completeRow = completeRow.concat(ProcessLineP2Address(p2));
+					completeRow = ProcessLineP2Address(p2);
 					completeRow = completeRow.concat(" ) ");
 					}
 					else
@@ -298,7 +298,7 @@ public class ListFile {
 					completeRow = completeRow.concat(" ");
 					
 					//progCount
-					completeRow = completeRow.concat("( ");
+					completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
 					completeRow = completeRow.concat(Integer.toString(progCount));
 					completeRow = completeRow.concat(" ) ");
 					
@@ -321,7 +321,7 @@ public class ListFile {
 						completeRow = completeRow.concat(" ");
 						
 						//progCount
-						completeRow = completeRow.concat("( ");
+						completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
 						completeRow = completeRow.concat(Integer.toString(progCount));
 						completeRow = completeRow.concat(" ) ");
 						listFile.input(completeRow);
