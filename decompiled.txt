@@ -9,7 +9,7 @@ Begin	LEA r1,x3100
 		BRZP x04
 		TRAP x31
 		TRAP x25
-		.BLKW 8
+		.STRZ "hi! "
 		.FILL x7fff
 		.BLKW 2
 		.FILL x7fff
