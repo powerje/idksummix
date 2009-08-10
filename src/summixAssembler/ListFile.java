@@ -128,7 +128,12 @@ public class ListFile {
 		
 		return binaryString;
 	}
-	
+	/**
+	 * Checks to see whether a machineOp or pseudoOp is found within the string (which lets us know if it is a legal call)
+	 * 
+	 * @param sourceLine - the string line that the method will be checking (from the source file)
+	 * @return good - boolean
+	 */
 	private boolean isGood(String sourceLine)
 	{
 		boolean good = false;
@@ -160,7 +165,7 @@ public class ListFile {
 	 * @return listFile - TextFile
 	 */
 	
-	public TextFile CreateListFile(TextFile source, TextFile p2)
+	public TextFile CreateListFile()
 	{
 		TextFile listFile = new TextFile();
 		String sourceLine = new String();
