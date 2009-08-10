@@ -404,6 +404,9 @@ public class Pass1 {
 				{
 					literals.add(getLiteral(token_array[2]));
 				}
+			} else if (token_array[0].getType() == TokenType.ALPHA) {
+				//should only be dbug and ret
+				SymbolTable.input(token_array[0].getText(), (short)LocationCounter.getAddress(), LocationCounter.isRelative());
 			}
 		}
 		else if (isOp(token_array[0]))
