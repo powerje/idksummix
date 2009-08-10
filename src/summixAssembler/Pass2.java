@@ -1117,6 +1117,7 @@ public class Pass2 {
 		if (op.equals(".END"))
 		{
 			p2File.input("E" + shortToHexString(startOfExecution)); //First line of execution
+			foundEndLine = true; 
 		}
 		else
 		{
