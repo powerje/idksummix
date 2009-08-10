@@ -222,7 +222,7 @@ public class ListFile {
 			{
 				//System.out.println(".orig");
 				completeRow = oHeader;
-				completeRow = completeRow.concat("( ");
+				completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t\t\t( ");
 				completeRow = completeRow.concat(Integer.toString(progCount));
 				completeRow = completeRow.concat(" ) ");
 				completeRow = completeRow.concat(sourceLine);
@@ -261,7 +261,7 @@ public class ListFile {
 						completeRow = p2add;
 					}
 					//progCount
-					completeRow = completeRow.concat("( ");
+					completeRow = completeRow.concat("\t\t\t\t( ");
 					completeRow = completeRow.concat(Integer.toString(progCount));
 					completeRow = completeRow.concat(" ) ");
 					
@@ -326,7 +326,6 @@ public class ListFile {
 						System.out.println("in here?");
 					//object file
 					completeRow = "( ";
-					System.out.println("am i ever here? " + p2address);
 					completeRow = completeRow.concat(p2address);
 					completeRow = completeRow.concat(" ) ");
 					if(ProcessLineP2Op(p2).indexOf('E') != 0)
@@ -337,7 +336,7 @@ public class ListFile {
 					completeRow = completeRow.concat(" ");
 					}
 					//progCount
-					completeRow = completeRow.concat("( ");
+					completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
 					completeRow = completeRow.concat(Integer.toString(progCount));
 					completeRow = completeRow.concat(" ) ");
 					
@@ -347,7 +346,7 @@ public class ListFile {
 					else
 					{
 						completeRow = p2address;
-						completeRow = completeRow.concat("( ");
+						completeRow = completeRow.concat("\t\t\t( ");
 						completeRow = completeRow.concat(Integer.toString(progCount));
 						completeRow = completeRow.concat(" ) ");
 						completeRow = completeRow.concat(sourceLine);
@@ -360,7 +359,7 @@ public class ListFile {
 			{
 				//System.out.println("error");
 				completeRow = p2.getLine();
-				completeRow = completeRow.concat("( ");
+				completeRow = completeRow.concat("\t\t\t( ");
 				completeRow = completeRow.concat(Integer.toString(progCount));
 				completeRow = completeRow.concat(" ) ");
 				completeRow = completeRow.concat(sourceLine);
