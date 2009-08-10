@@ -500,7 +500,7 @@ public class Pass1 {
 		// Check for at least one text record
 		if (textFlag == false)
 		{
-			System.out.println("ERROR: The program does not contains at least ONE text record.");
+			System.out.println("ERROR: The program does not contain at least ONE text record.");
 		}
 
 		// Add Lits to Literal Table and increment the Location Counter for all of the Literals
