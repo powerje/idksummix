@@ -23,7 +23,9 @@ public class Pass2 {
 	private String[] argTokArray = new String[3];
 	/** True if an end record has been extracted from the user's source code.*/
 	private boolean foundEndLine = false;
+	/** The beginning of execution*/
 	private short startOfExecution = 0;
+	/** True if there is an .ORIG in the source code */
 	private boolean foundFirstHeader = false;
 
 	/**
@@ -486,9 +488,9 @@ public class Pass2 {
 	}
 
 	/**
-	 * 
-	 * @param key
-	 * @return
+	 * Returns true if the given string is a valid literal
+	 * @param key string to test whether or not it is a literal in the form x<hex number> or #<decimal number>
+	 * @return true if the given string is a valid literal
 	 */
 	private boolean isValLiteral(String key)
 	{
@@ -938,7 +940,11 @@ public class Pass2 {
 			p2File.input(";ERROR non-comment/non-blank line preceeds .ORIG op.");
 		}
 	}
-
+	/**
+	 * Returns true if the string arg is a valid argument for .END
+	 * @param arg the argument to test
+	 * @return true iff the argument is valid for .END
+	 */ 
 	private boolean isValENDArg(String arg)
 	{
 		boolean flag = false;
@@ -960,7 +966,12 @@ public class Pass2 {
 
 		return flag;
 	}
-
+	
+	/**
+	 * Handles pseudo operations with arguments
+	 * @param op the pseudo operation to handle
+	 * @param arg the argument of the given pseudo operation
+	 */
 	private void processPuesdoOpWithArg(String op, String arg) {
 
 		StringTokenizer st = new StringTokenizer(arg, ",");
@@ -1230,6 +1241,12 @@ public class Pass2 {
 		return returnVal.toUpperCase();
 	}
 	
+	/**
+	 * Tests the given address to ensure there is no page roll over from the current instruction
+	 * to the given address.
+	 * @param addr The address to test
+	 * @return validAddressPage is true iff there is no page roll over
+	 */
 	private boolean validAddressPage(short addr) {
 		boolean returnVal = true;
 		//bit mask off upper 7 bits
