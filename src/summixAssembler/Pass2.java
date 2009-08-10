@@ -1259,7 +1259,7 @@ public class Pass2 {
 	}
 	
 	private void printLiterals() {
-		
+		p2File = LiteralTable.printPass2Table(p2File);		
 	}
 }
 
