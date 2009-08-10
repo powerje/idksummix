@@ -76,7 +76,7 @@ public class LiteralTable {
 		if (literals.containsKey(key)) {
 			returnVal = literals.get(key).shortValue();
 		} else {
-			System.out.println("ERROR: Literal " + key + " is undefined in the literal table. The value 0 has been used in its place.");
+			System.out.println("ERROR: Literal is undefined in the literal table: " + key + " The value 0 has been used in its place.");
 		}
 		return returnVal;
 	}
