@@ -15,7 +15,6 @@ public class ListFile {
 	
 	public ListFile (TextFile source_orig, TextFile p2_orig)
 	{
-		//System.out.println("here");
 		source = source_orig; //These variables have been ASSIGNED
 		p2 = p2_orig;
 		
@@ -61,7 +60,6 @@ public class ListFile {
 	 */
 	private String ProcessLineP2Address(TextFile p2)
 	{
-		//System.out.println("address");
 		String listP2Address = "";
 		
 		if(!p2.isEndOfFile())
@@ -75,11 +73,9 @@ public class ListFile {
 			}
 			else
 			{
-			//	System.out.println(p2MainLine);
 				listP2Address = p2MainLine.substring(1,5);
 				System.out.println("balla " + p2MainLine);
 				comment = false;
-			//	System.out.println(listP2Address);
 			}	
 		}
 		return listP2Address;
@@ -93,8 +89,6 @@ public class ListFile {
 	
 	private String ProcessLineP2Op(TextFile p2)
 	{
-		//System.out.println("op");
-		//System.out.println(p2MainLine);
 		String listP2Op = p2MainLine;
 		if(!p2.isEndOfFile())
 				{
@@ -120,7 +114,6 @@ public class ListFile {
 	 */
 	
 	private static int hexstringToInt(String input) {
-		//System.out.println("hex to int?");
 		int returnVal = 0; // needs initialized in the case an exception is caught
 		try {
 			returnVal = Integer.valueOf(input, 16).intValue();
@@ -140,7 +133,6 @@ public class ListFile {
 
 	public static String OutputBinaryP2(String op)
 	{
-		//System.out.println("outputbinary");
 		String binaryString = new String();
 		String tempString = null;
 		int opInt = hexstringToInt(op);
@@ -225,14 +217,12 @@ public class ListFile {
 			
 			if(sourceLine == "") //empty line
 			{
-				//System.out.println("empty line");
 				//do nothing?  There is nothing from the text record that corresponds
 				progCount++;
 				
 			}
 			else if(sourceLine.indexOf(".ORIG") != -1) //line up header records
 			{
-				//System.out.println(".orig");
 				completeRow = p2.getLine();
 				completeRow = completeRow.concat("\t\t\t\t\t\t( ");
 				completeRow = completeRow.concat(Integer.toString(progCount));
@@ -259,7 +249,6 @@ public class ListFile {
 			{
 				if(sourceLine.indexOf(".EQU") != -1) // no address in p2
 				{
-					//System.out.println(".equ");
 					//progCount
 					completeRow = completeRow.concat("( ");
 					completeRow = completeRow.concat(Integer.toString(progCount));
@@ -273,7 +262,6 @@ public class ListFile {
 				}
 				else if(sourceLine.indexOf(".BLKW") != -1) //increment progCount more
 				{
-					//System.out.println(".blkw");
 					String p2add = new String();
 					
 					if(sourceLine.indexOf('#') == -1)
@@ -282,7 +270,6 @@ public class ListFile {
 					}
 					if(p2add.indexOf(';') != 0)
 					{
-						System.out.println("in if");
 						completeRow = p2add;
 						//progCount
 						completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t( ");
@@ -296,7 +283,6 @@ public class ListFile {
 					}
 					else
 					{
-						System.out.println("in else");
 						completeRow = p2add;
 						//progCount
 						completeRow = completeRow.concat("\t\t\t\t( ");
@@ -314,7 +300,6 @@ public class ListFile {
 				
 				else if(sourceLine.indexOf(".STRZ") != -1) //multiple oRecords for 1 line in source
 				{
-					//System.out.println(".strz");
 					//print 1 line from oRecord and source (must do this)
 					completeRow = "( ";
 					completeRow = completeRow.concat(ProcessLineP2Address(p2));
@@ -360,9 +345,7 @@ public class ListFile {
 				}
 				else //normal display
 				{
-					//System.out.println("normal");
 					String p2address = ProcessLineP2Address(p2);
-					//System.out.println(comment);
 					//if(!LiteralTable.isLiteralAddress(p2address))
 					//{
 						if(p2address.length() == 4)
