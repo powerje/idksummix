@@ -149,7 +149,7 @@ public class Pass2 {
 		else
 		{
 			System.out.println("ERROR: Malformed sourcecode at line " + body.getReport());
-			p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE: ");
+			p2File.input(";ERROR NO OP CODE FOUND");
 		}
 	}
 
