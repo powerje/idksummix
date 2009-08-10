@@ -60,9 +60,8 @@ public class Pass1 {
 	private void constructRecord(String recordType){
 
 		if(recordType.equals("text")){
-			int token_array_size = token_array.length;
 			int i = 0;
-			while(i < token_array_size)
+			while(i < num_tokens)
 			{
 				if((token_array[i].getType() != TokenType.EOL))
 				{
@@ -79,6 +78,7 @@ public class Pass1 {
 			}
 			catch (NullPointerException e) {}
 		}
+		
 	}
 
 	/**
