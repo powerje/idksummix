@@ -69,7 +69,7 @@ public class SymbolTable {
 	 */
 	public static void input(String key, short value, boolean relative) {	
 		if (symbols.containsKey(key)) {
-			System.out.println("ERROR: Symbol " + key + " defined multiple times.");
+			System.out.println("ERROR: Symbol defined multiple times: " + key);
 		} else if ((key.charAt(0)=='x') || (key.charAt(0)=='R') || ((key.charAt(0) < 65) || key.charAt(0) > 122 )) {		//can't start with R, x, or a number
 			//check if its a number...
 			System.out.println("ERROR: Invalid symbol name: " + key);
