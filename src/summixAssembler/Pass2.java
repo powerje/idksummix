@@ -937,8 +937,9 @@ public class Pass2 {
 			{
 				int index = 1;
 				//Write all the array values to text records
-				while(argTokArray[0].length() > index)
+				while(argTokArray[0].length() > index + 1)
 				{
+					System.out.println(argTokArray[0].charAt(index));
 					p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString((int)argTokArray[0].charAt(index)));
 					LocationCounter.incrementAmt(1);
 					index++;
