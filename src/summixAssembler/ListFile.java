@@ -75,6 +75,7 @@ public class ListFile {
 			{
 			//	System.out.println(p2MainLine);
 				listP2Address = p2MainLine.substring(1,5);
+				comment = false;
 			//	System.out.println(listP2Address);
 			}	
 		}
@@ -91,16 +92,21 @@ public class ListFile {
 	{
 		//System.out.println("op");
 		//System.out.println(p2MainLine);
-		String listP2Op = "";
-		if(!p2.isEndOfFile() && p2MainLine.indexOf(';') != 0)
-		{
-			listP2Op = p2MainLine.substring(5,9);  //should be 5-8?
-		}
-		else
-		{
-			listP2Op = p2MainLine;
-			comment = true;
-		}
+		System.out.println(p2MainLine);
+		String listP2Op = p2MainLine;
+		if(!p2.isEndOfFile())
+				{
+				if(p2MainLine.indexOf(';') != 0)
+				{
+					listP2Op = p2MainLine.substring(5,9);  //should be 5-8?
+					comment = false;
+				}
+				else
+				{
+					listP2Op = p2MainLine;
+					comment = true;
+				}
+				}
 		return listP2Op;
 	}
 	/**
@@ -141,10 +147,10 @@ public class ListFile {
 		int len = tempString.length();
 		while(len < 16)
 		{
-			binaryString.concat("0");
+			binaryString = binaryString.concat("0");
 			len++;
 		}
-		binaryString.concat(tempString);
+		binaryString = binaryString.concat(tempString);
 		
 		return binaryString;
 	}
@@ -243,10 +249,17 @@ public class ListFile {
 				else if(sourceLine.indexOf(".BLKW") != -1) //increment progCount more
 				{
 					//System.out.println(".blkw");
+					String p2add = ProcessLineP2Address(p2);
+					if(p2add.indexOf(';') != 0)
+					{
 					completeRow = "( ";
 					completeRow = completeRow.concat(ProcessLineP2Address(p2));
 					completeRow = completeRow.concat(" ) ");
-					
+					}
+					else
+					{
+						completeRow = p2add;
+					}
 					//progCount
 					completeRow = completeRow.concat("( ");
 					completeRow = completeRow.concat(Integer.toString(progCount));
@@ -308,12 +321,14 @@ public class ListFile {
 					//System.out.println("normal");
 					String p2address = ProcessLineP2Address(p2);
 					//System.out.println(comment);
-					if(!comment)
+					if(p2address.length() == 4 && p2address.indexOf('E') != 0)
 					{
+						System.out.println("in here?");
 					//object file
 					completeRow = "( ";
-					completeRow.concat(p2address);
-					completeRow.concat(" ) ");
+					System.out.println("am i ever here? " + p2address);
+					completeRow = completeRow.concat(p2address);
+					completeRow = completeRow.concat(" ) ");
 					completeRow = completeRow.concat(ProcessLineP2Op(p2));
 					completeRow = completeRow.concat(" ");
 					completeRow = completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)));
@@ -329,7 +344,7 @@ public class ListFile {
 					}
 					else
 					{
-						completeRow = ProcessLineP2Address(p2);
+						completeRow = p2address;
 						completeRow = completeRow.concat("( ");
 						completeRow = completeRow.concat(Integer.toString(progCount));
 						completeRow = completeRow.concat(" ) ");
