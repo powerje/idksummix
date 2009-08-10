@@ -119,7 +119,7 @@ public class ListFile {
 	 * @return returnVal - integer
 	 */
 	
-	private int hexstringToInt(String input) {
+	private static int hexstringToInt(String input) {
 		//System.out.println("hex to int?");
 		int returnVal = 0; // needs initialized in the case an exception is caught
 		try {
@@ -138,7 +138,7 @@ public class ListFile {
 	 */
 	
 
-	private String OutputBinaryP2(String op)
+	public static String OutputBinaryP2(String op)
 	{
 		//System.out.println("outputbinary");
 		String binaryString = new String();
@@ -184,6 +184,14 @@ public class ListFile {
 		return good;
 	}
 	
+	public static String shortToHexString(short data) {
+		String returnVal = Integer.toHexString((int) data);
+		if (returnVal.length() > 4) {
+			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
+		}
+		return returnVal.toUpperCase();
+	}
+
 	/**
 	 * The main method used to create the ListFile.  This method will be called from the assembler and then run its helper methods
 	 * in order to add 1 line from the source and p2 files.
@@ -221,7 +229,7 @@ public class ListFile {
 			{
 				//System.out.println(".orig");
 				completeRow = p2.getLine();
-				completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t\t\t( ");
+				completeRow = completeRow.concat("\t\t\t\t\t\t( ");
 				completeRow = completeRow.concat(Integer.toString(progCount));
 				completeRow = completeRow.concat(" ) ");
 				completeRow = completeRow.concat(sourceLine);
@@ -232,7 +240,7 @@ public class ListFile {
 			else if(sourceLine.indexOf(".END") != -1) //deal with end
 			{
 				//progCount
-				completeRow = ("\t\t\t\t\t\t\t\t\t\t\t\t\t\t( ");
+				completeRow = ("\t\t\t\t\t\t\t\t\t( ");
 				completeRow = completeRow.concat(Integer.toString(progCount));
 				completeRow = completeRow.concat(" ) ");
 				
@@ -272,7 +280,7 @@ public class ListFile {
 						System.out.println("in if");
 						completeRow = p2add;
 						//progCount
-						completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t\t\t\t\t\t( ");
+						completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t( ");
 						completeRow = completeRow.concat(Integer.toString(progCount));
 						completeRow = completeRow.concat(" ) ");
 						
@@ -312,7 +320,7 @@ public class ListFile {
 					completeRow = completeRow.concat(" ");
 					
 					//progCount
-					completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
+					completeRow = completeRow.concat("\t\t( ");
 					completeRow = completeRow.concat(Integer.toString(progCount));
 					completeRow = completeRow.concat(" ) ");
 					
@@ -335,7 +343,7 @@ public class ListFile {
 						completeRow = completeRow.concat(" ");
 						
 						//progCount
-						completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
+						completeRow = completeRow.concat("\t\t( ");
 						completeRow = completeRow.concat(Integer.toString(progCount));
 						completeRow = completeRow.concat(" ) ");
 						listFile.input(completeRow);
@@ -350,38 +358,41 @@ public class ListFile {
 					//System.out.println("normal");
 					String p2address = ProcessLineP2Address(p2);
 					//System.out.println(comment);
-					if(p2address.length() == 4)
-					{
-//						System.out.println("in here?" + p2address);
-						
-						//object file
-						completeRow = "( ";
-						completeRow = completeRow.concat(p2address);
-						completeRow = completeRow.concat(" ) ");
-						completeRow = completeRow.concat(ProcessLineP2Op(p2));
-						completeRow = completeRow.concat(" ");
-						completeRow = completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)));
-						completeRow = completeRow.concat(" ");
-						
-						//progCount
-						completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
-						completeRow = completeRow.concat(Integer.toString(progCount));
-						completeRow = completeRow.concat(" ) ");
-						
-						//sFile
-						completeRow = completeRow.concat(sourceLine);
+					//if(!LiteralTable.isLiteralAddress(p2address))
+					//{
+						if(p2address.length() == 4)
+						{
+	//						System.out.println("in here?" + p2address);
+							
+							//object file
+							completeRow = "( ";
+							completeRow = completeRow.concat(p2address);
+							completeRow = completeRow.concat(" ) ");
+							completeRow = completeRow.concat(ProcessLineP2Op(p2));
+							completeRow = completeRow.concat(" ");
+							completeRow = completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)));
+							completeRow = completeRow.concat(" ");
+							
+							//progCount
+							completeRow = completeRow.concat("\t\t( ");
+							completeRow = completeRow.concat(Integer.toString(progCount));
+							completeRow = completeRow.concat(" ) ");
+							
+							//sFile
+							completeRow = completeRow.concat(sourceLine);
+						}
+						else
+						{
+							completeRow = p2address;
+							completeRow = completeRow.concat("\t\t\t( ");
+							completeRow = completeRow.concat(Integer.toString(progCount));
+							completeRow = completeRow.concat(" ) ");
+							completeRow = completeRow.concat(sourceLine);
+						}
+						listFile.input(completeRow);
+						progCount++;
 					}
-					else
-					{
-						completeRow = p2address;
-						completeRow = completeRow.concat("\t\t\t( ");
-						completeRow = completeRow.concat(Integer.toString(progCount));
-						completeRow = completeRow.concat(" ) ");
-						completeRow = completeRow.concat(sourceLine);
-					}
-					listFile.input(completeRow);
-					progCount++;
-				}
+				//}
 			}
 			else if(!isGood(sourceLine) && sourceLine.indexOf('E') == -1) //deal with error line
 			{
@@ -398,6 +409,7 @@ public class ListFile {
 			}
 			
 		}
+		listFile = LiteralTable.printTable(listFile);
 		return listFile;
 	}
 	
