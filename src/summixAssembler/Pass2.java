@@ -420,7 +420,10 @@ public class Pass2 {
 		}
 
 		returnVal &= 0x1FF; //keep the lower right 9 bits
-
+		if (!validAddressPage((short)returnVal)) {
+			//page rolls over
+			System.out.println("ERROR: Address field rolls over to next page at line " + body.getReport());
+		}
 		return (short) returnVal;
 	}
 
