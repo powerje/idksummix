@@ -20,4 +20,4 @@ ACC      .EQU    #1
 ;----- Scratch Space -----
 Array    .BLKW   #3
          .FILL    #4
-         .END    Begin
+         .END
