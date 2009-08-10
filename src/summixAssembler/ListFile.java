@@ -204,16 +204,12 @@ public class ListFile {
 		source.reset();
 		p2.reset();
 		
-		//remove object file header
-		oHeader = p2.getLine();
-//		System.out.println("main");
+		
 		while(!source.isEndOfFile() && !p2.isEndOfFile())
 		{
 			//get one source line to analyze
-			//System.out.println("before process");
 			sourceLine = ProcessLineSource(source);
-			System.out.println(sourceLine);
-		//	System.out.println("after: " + sourceLine);
+			
 			if(sourceLine == "") //empty line
 			{
 				//System.out.println("empty line");
@@ -224,7 +220,7 @@ public class ListFile {
 			else if(sourceLine.indexOf(".ORIG") != -1) //line up header records
 			{
 				//System.out.println(".orig");
-				completeRow = oHeader;
+				completeRow = p2.getLine();
 				completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t\t\t( ");
 				completeRow = completeRow.concat(Integer.toString(progCount));
 				completeRow = completeRow.concat(" ) ");
@@ -265,15 +261,18 @@ public class ListFile {
 				else if(sourceLine.indexOf(".BLKW") != -1) //increment progCount more
 				{
 					//System.out.println(".blkw");
-					String p2add = ProcessLineP2Address(p2);
+					String p2add = new String();
+					
+					if(sourceLine.indexOf('#') == -1)
+					{
+						p2add = ProcessLineP2Address(p2);
+					}
 					if(p2add.indexOf(';') != 0)
 					{
-						
-						completeRow = "( ";
-						completeRow = completeRow.concat(p2add);
-						completeRow = completeRow.concat(" ) ");
+						System.out.println("in if");
+						completeRow = p2add;
 						//progCount
-						completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t\t\t\t( ");
+						completeRow = completeRow.concat("\t\t\t\t\t\t\t\t\t\t\t\t\t\t( ");
 						completeRow = completeRow.concat(Integer.toString(progCount));
 						completeRow = completeRow.concat(" ) ");
 						
@@ -324,13 +323,13 @@ public class ListFile {
 					int index = sourceLine.indexOf('"');
 					String sub = sourceLine.substring(index);
 					int len = sub.length();  //normally -1 however we need a null added on too
-					int i = 0;
+					int i = 1;
 					while(i < (len - 1))  // -1 for the already displayed text record
 					{
 						completeRow = "( ";
 						completeRow = completeRow.concat(ProcessLineP2Address(p2));
 						completeRow = completeRow.concat(" ) ");
-						completeRow = 	completeRow.concat(ProcessLineP2Op(p2));
+						completeRow = completeRow.concat(ProcessLineP2Op(p2));
 						completeRow = completeRow.concat(" ");
 						completeRow = completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)));
 						completeRow = completeRow.concat(" ");
@@ -343,6 +342,7 @@ public class ListFile {
 						
 						i++;
 					}
+					
 					progCount++;
 				}
 				else //normal display
