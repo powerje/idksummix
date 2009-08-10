@@ -942,7 +942,8 @@ public class Pass2 {
 
 		try
 		{
-			if (arg.startsWith("x") && Integer.parseInt(arg.substring(1), 16) >= 0 && Integer.parseInt(arg, 16) <= 0xFFFF)
+			//Ah-ha!  Root of the cause: forgot substring(1) in the second call, so was trying to convert hex 'x'
+			if (arg.startsWith("x") && Integer.parseInt(arg.substring(1), 16) >= 0 && Integer.parseInt(arg.substring(1), 16) <= 0xFFFF)
 			{
 				flag = true;
 			}
@@ -984,15 +985,19 @@ public class Pass2 {
 		else if (op.equals(".END"))
 		{
 			getArgTokens(1, st);
-
+			//right now never gets in here for .END x3000
+			//System.out.println("THIS: " + !st.hasMoreTokens() + " argTokArray[0]: " + argTokArray[0] + "  isValENDArg: " + isValENDArg(argTokArray[0]));
+			//isValENDArg is giving me false on x3000
 			if(!st.hasMoreTokens() && argTokArray[0] != null && isValENDArg(argTokArray[0])) //prove args are good
 			{
+	
 				if(SymbolTable.isDefined(argTokArray[0]))
 				{
 					p2File.input("E" + shortToHexString(SymbolTable.getValue(argTokArray[0])));
 				}
 				else//Must be hex value as a string, use it directly after removing x
 				{
+					
 					p2File.input("E" + argTokArray[0].substring(1));
 				}
 				foundEndLine = true;
