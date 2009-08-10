@@ -243,7 +243,11 @@ public class Pass1 {
 		if (index == -1) // not hex? must be decimal
 		{
 			index = strToken.indexOf('#');
-			literal = Short.parseShort(strLiteral.substring(index+1));  
+			try {
+				literal = Short.parseShort(strLiteral.substring(index+1));  
+			} catch (NumberFormatException e) {
+				System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+			}
 		}
 		else { //hex value
 			literal = hexstringToShort(strLiteral.subSequence(index + 1, strLiteral.length()));
