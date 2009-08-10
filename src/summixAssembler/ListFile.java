@@ -164,7 +164,7 @@ public class ListFile {
 	{
 		boolean good = false;
 		
-		if ((sourceLine.indexOf(".ORIG")!= -1) || (sourceLine.indexOf(".END")!= -1) || (sourceLine.indexOf(".EQU")!= -1) || (sourceLine.indexOf(".FILL")!= -1)
+		if ((sourceLine.indexOf(".ORIG")!= -1) || (sourceLine.indexOf(".EQU")!= -1) || (sourceLine.indexOf(".FILL")!= -1)
 				|| (sourceLine.indexOf(".STRZ")!= -1) || (sourceLine.indexOf(".BLKW")!= -1) || (sourceLine.indexOf("BR")!= -1) || (sourceLine.indexOf("BRN")!= -1)
 				|| (sourceLine.indexOf("BRZ")!= -1) || (sourceLine.indexOf("BRP")!= -1) || (sourceLine.indexOf("BRNZ")!= -1) || (sourceLine.indexOf("BRNP")!= -1)
 				|| (sourceLine.indexOf("BRZP")!= -1) || (sourceLine.indexOf("BRNZP")!= -1) || (sourceLine.indexOf("ADD")!= -1) || (sourceLine.indexOf("LD")!= -1)
@@ -230,6 +230,19 @@ public class ListFile {
 				progCount++;
 				
 			}
+			else if(sourceLine.indexOf(".END") != -1) //deal with end
+			{
+				//progCount
+				completeRow = ("\t\t\t\t\t\t\t\t\t\t\t\t\t\t( ");
+				completeRow = completeRow.concat(Integer.toString(progCount));
+				completeRow = completeRow.concat(" ) ");
+				
+				//sFile
+				completeRow = completeRow.concat(sourceLine);
+				listFile.input(completeRow);
+				progCount++;
+				
+			}
 			else if(isGood(sourceLine)) //deal with .EQU, .BLKW, .STRZ or regular op code
 			{
 				if(sourceLine.indexOf(".EQU") != -1) // no address in p2
@@ -271,6 +284,7 @@ public class ListFile {
 					progCount++;
 					
 				}
+				
 				else if(sourceLine.indexOf(".STRZ") != -1) //multiple oRecords for 1 line in source
 				{
 					//System.out.println(".strz");
@@ -328,13 +342,11 @@ public class ListFile {
 					completeRow = "( ";
 					completeRow = completeRow.concat(p2address);
 					completeRow = completeRow.concat(" ) ");
-					if(ProcessLineP2Op(p2).indexOf('E') != 0)
-					{
 					completeRow = completeRow.concat(ProcessLineP2Op(p2));
 					completeRow = completeRow.concat(" ");
 					completeRow = completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)));
 					completeRow = completeRow.concat(" ");
-					}
+					
 					//progCount
 					completeRow = completeRow.concat("\t\t\t\t\t\t\t( ");
 					completeRow = completeRow.concat(Integer.toString(progCount));
