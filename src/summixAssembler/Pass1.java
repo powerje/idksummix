@@ -46,8 +46,7 @@ public class Pass1 {
 		try {
 			returnVal = Integer.valueOf((String) input, 16).intValue();
 		} catch (NumberFormatException e)	{
-			System.out.println("");
-			System.exit(-1); //error
+			System.out.println("ERROR: hex address malformed for .ORIG.");
 		}
 		return (short) returnVal;
 	}
@@ -297,7 +296,7 @@ public class Pass1 {
 		boolean isRelative = false;
 
 		// process the Program Name
-		if(token_array[0].getText().matches("^\\w+$") && !token_array[0].getText().startsWith("R") && !token_array[0].getText().startsWith("x"))			
+		if(token_array[0].getType() == TokenType.ALPHA)
 		{
 			progName = token_array[0].getText();
 
@@ -316,7 +315,7 @@ public class Pass1 {
 		}
 		else
 		{
-			System.out.println("ERROR: " + token_array[0].getText() + "is an invalid program name.");
+			System.out.println("ERROR: Invalid or malformed program name exists!");
 		}
 
 		// Set the Location Counter
@@ -333,7 +332,7 @@ public class Pass1 {
 			if (index != -1)
 			{
 				start = hexstringToShort(strStartAddr.subSequence(index + 1, strStartAddr.length())); // should be error checking here?
-				strStartAddr = strStartAddr.substring(index + 1);
+				strStartAddr = shortToHexString(start);
 				if(start > 65535)
 				{
 					System.out.println("ERROR: The origin address exceeds the max addressable memory location!");
