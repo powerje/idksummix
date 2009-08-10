@@ -184,7 +184,6 @@ public class LiteralTable {
 	 * @return
 	 */
 	public static TextFile printTable(TextFile lFile) {
-		System.out.println("to printtable?");
 		String completeRow = "";
 		/*
 		Collection c = literals.values();
@@ -205,8 +204,7 @@ public class LiteralTable {
 			completeRow = completeRow.concat(ListFile.shortToHexString(sKey));
 			completeRow = completeRow.concat(" ");
 			completeRow = completeRow.concat(ListFile.OutputBinaryP2(ListFile.shortToHexString(sKey)));
-			completeRow = completeRow.concat("\t\t\t ( lit ) ");
-			System.out.println("ends?");
+			completeRow = completeRow.concat("\t\t\t( lit ) ");
 			lFile.input(completeRow);
 		}
 		return lFile;
