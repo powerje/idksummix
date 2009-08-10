@@ -14,6 +14,7 @@ public class ListFile {
 	
 	public ListFile (TextFile source_orig, TextFile p2_orig)
 	{
+		System.out.println("here");
 		source = source_orig; //These variables have been ASSIGNED
 		p2 = p2_orig;
 		
