@@ -184,10 +184,15 @@ public class ListFile {
 		return good;
 	}
 	
-	public static String shortToHexString(short data) {
+	private String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
-		if (returnVal.length() > 4) {
+		if (returnVal.length() > 4) 
+		{
 			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
+		}
+		while (returnVal.length() < 4) 
+		{
+			returnVal = "0" + returnVal;
 		}
 		return returnVal.toUpperCase();
 	}
@@ -362,8 +367,6 @@ public class ListFile {
 					//{
 						if(p2address.length() == 4)
 						{
-	//						System.out.println("in here?" + p2address);
-							
 							//object file
 							completeRow = "( ";
 							completeRow = completeRow.concat(p2address);
@@ -396,13 +399,12 @@ public class ListFile {
 			}
 			else if(!isGood(sourceLine) && sourceLine.indexOf('E') == -1) //deal with error line
 			{
-				//System.out.println("error");
 				completeRow = p2.getLine();
 				completeRow = completeRow.concat("\t\t\t( ");
 				completeRow = completeRow.concat(Integer.toString(progCount));
 				completeRow = completeRow.concat(" ) ");
 				completeRow = completeRow.concat(sourceLine);
-				
+				completeRow = completeRow.concat(" ");
 				listFile.input(completeRow);
 				progCount++;
 				
