@@ -103,7 +103,6 @@ public class Pass2 {
 			else
 			{//You've got a bad single line command, spit out error
 				System.out.println("ERROR: Malformed sourcecode at line " + body.getReport());
-				System.out.println(";ERROR MALFORMED SOURECODE ON THIS LINE");
 				p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE");
 			}
 		}
