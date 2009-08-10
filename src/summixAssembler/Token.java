@@ -29,7 +29,7 @@ public class Token {
 	 * Getter for text
 	 * @return Text from the token
 	 */
-	String getText()
+	public String getText()
 	{
 		return text;
 	}
@@ -38,8 +38,13 @@ public class Token {
 	 * Getter for TokenType
 	 * @return 
 	 */
-	TokenType getType()
+	public TokenType getType()
 	{
 		return type;
+	}
+	
+	public String toString ()
+	{
+		return "TokenText:" + text + " TokenType:" + type.toString();
 	}
 }
