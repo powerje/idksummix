@@ -74,7 +74,6 @@ public class ListFile {
 			else
 			{
 				listP2Address = p2MainLine.substring(1,5);
-				System.out.println("balla " + p2MainLine);
 				comment = false;
 			}	
 		}
