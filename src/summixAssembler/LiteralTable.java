@@ -171,7 +171,7 @@ public class LiteralTable {
 		boolean returnVal = false;
 		Iterator<Short> i = literalKeys.iterator();
 		while (i.hasNext()) {
-			if (literals.get(i.next())==Short.parseShort(addr)) {
+			if (literals.get(i.next())==Short.parseShort(addr, 16)) {
 				returnVal = true;
 			}
 		}
