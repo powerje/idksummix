@@ -519,7 +519,7 @@ public class Pass1 {
 		// Construct and Insert the Header Recorder
 
 		// Calculate the Program segment size
-		short size = (short) ((LocationCounter.getAddress() + 1) - start);
+		short size = (short) ((LocationCounter.getAddress()) - start);
 		String sizeStr = shortToHexString(size);
 		// Add an "H" to the beginning of header record
 		String headerFinal = "H";
