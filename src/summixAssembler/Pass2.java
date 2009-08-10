@@ -23,6 +23,7 @@ public class Pass2 {
 	private String[] argTokArray = new String[3];
 	/** True if an end record has been extracted from the user's source code.*/
 	private boolean foundEndLine = false;
+	private short startOfExecution = 0; 
 
 	/**
 	 * Creates a Pass2 object and readies it to process p1File.
@@ -66,6 +67,7 @@ public class Pass2 {
 		String header = new String(body.getHeader());//Get header
 		String start = new String(header.substring(7, 11));//Get start location from the header
 		LocationCounter.set(Integer.valueOf(start, 16), header.endsWith("R"));//Set LC to start location
+		startOfExecution = Short.valueOf(start, 16);
 		p2File.input(header);//Store header in new file
 
 		//while(not end record or end of file) {output text records}
@@ -864,7 +866,8 @@ public class Pass2 {
 				}
 				else //If there are no args
 				{
-					p2File.input("E"); //First line of execution
+					p2File.input("E" + shortToHexString(startOfExecution)); //First line of execution
+					
 				}
 			}
 		}
@@ -1047,9 +1050,17 @@ public class Pass2 {
 	 */
 	private void processWrite(String op) //Write op with no arguments to p2File
 	{
-		String input = new String("T");
-		p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
-		LocationCounter.incrementAmt(1);
+		if (op.equals(".END"))
+		{
+			p2File.input("E" + shortToHexString(startOfExecution)); //First line of execution
+		}
+		else
+		{
+			String input = new String("T");
+			p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
+			LocationCounter.incrementAmt(1);			
+		}
+
 	}
 
 	/**
