@@ -1,6 +1,8 @@
 package summixAssembler;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -16,6 +18,8 @@ public class LiteralTable {
 	/** size of the hashmap */
 	private static int size = 0;
 	
+	private static Collection<Short> c = null;
+	private static Iterator<Short> iterator = null;
 	/**
 	 * Adds a literal to the literal table
 	 * 
@@ -76,7 +80,7 @@ public class LiteralTable {
 		if (literals.containsKey(key)) {
 			returnVal = literals.get(key).shortValue();
 		} else {
-			System.out.println("ERROR: Literal is undefined in the literal table: " + key + ". The value 0 has been used in its place.");
+			System.out.println("ERROR: Literal is undefined in the literal table: " + key + " The value 0 has been used in its place.");
 		}
 		return returnVal;
 	}
@@ -110,5 +114,40 @@ public class LiteralTable {
 		System.out.println(literals.toString());
 	}
 	
+	/**
+	 * Preps literal table to have values extracted. Should only be called once, and before getNextLiteral() is called
+	 * @see getNextLiteral
+	 */
+	public static void intializeIterator()
+	{
+		c = literals.values();
+		iterator = c.iterator();
+	}
+	
+	/**
+	 * Method to pull out the literals one by one from the literal table. MUST call intializeIterator() before calling this method.
+	 * @return The value of the literal. If there are no more left, it returns null.
+	 * @see inializeIterator
+	 */
+	public static Short getNextLiteral()
+	{
+			return iterator.next(); // necessary because iterator.next is of type Short
+	}
+	
+	/**
+	 * Checks to see if there are anymore literals left to pull out
+	 * @return	True if there are anymore literals left to iterate through
+	 */
+	public static boolean areMoreLiterals()
+	{
+		if(iterator.hasNext())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 
