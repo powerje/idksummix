@@ -1004,7 +1004,7 @@ public class Pass2 {
 			//isValENDArg is giving me false on x3000
 			if(!st.hasMoreTokens() && argTokArray[0] != null && isValENDArg(argTokArray[0])) //prove args are good
 			{
-	
+				printLiterals();
 				if(SymbolTable.isDefined(argTokArray[0]))
 				{
 					p2File.input("E" + shortToHexString(SymbolTable.getValue(argTokArray[0])));
@@ -1188,6 +1188,7 @@ public class Pass2 {
 		}
 		else if (op.equals(".END"))
 		{
+			printLiterals();
 			foundEndLine = true;
 			p2File.input("E" + shortToHexString(startOfExecution)); //First line of execution
 			System.out.println("Found the .END op on line " + body.getReport() + " compilation complete.");
@@ -1255,6 +1256,10 @@ public class Pass2 {
 			returnVal = false;
 		}
 		return returnVal;
+	}
+	
+	private void printLiterals() {
+		
 	}
 }
 
