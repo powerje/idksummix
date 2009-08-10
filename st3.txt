@@ -1,3 +1,4 @@
 StLabe	.ORIG
-Store	ST R0, Store
-	.END Store
+Store	.EQU	x3000
+		ST R0, Store
+		.END Store
