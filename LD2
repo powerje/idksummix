@@ -1,0 +1,5 @@
+Lab2TP	.ORIG 
+Value	 AND 	R3,R3,x000F
+Acc		 AND 	R3,R3,x000A
+		 LD 	Acc, =x5
+		.END	x0000
