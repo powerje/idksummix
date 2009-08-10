@@ -7,7 +7,7 @@ import java.io.*;
  * 
  * This provides the main entry into the IDKSummiX assembler. Flow of control is determined by the Assembler class.
  * 
- * @author Michael Pinnegar
+ * @author Michael Pinnega
  *
  */
 public class Assembler {
@@ -135,7 +135,8 @@ public class Assembler {
 		
 		p2File.display();
 		//Create lFile from sFile, p2File, symbol table, and literal table
-		lFile = makelFile(sFile, p2File);
+		ListFile list = new ListFile(sFile, p2File);
+		lFile = list.CreateListFile();
 		
 		//If -v switch is set, display p2File and lFile before write
 		if (verboseSwitch)
@@ -188,21 +189,5 @@ public class Assembler {
 			System.out.println(sourceFileName.concat(".o") + " was not written successfully.");	
 		}
 		try {br.close();} catch (IOException e) {};
-	}
-
-/**
- * 	Processes the list file and returns it 
- * @param sFile	Source code file 
- * @param p2File pass2 intermediate file
- * @return	listing file
- */
-	private static TextFile makelFile(TextFile sFile, TextFile p2File)
-	{		
-		ListFile list = new ListFile(sFile, p2File);
-		TextFile lFile = new TextFile();
-		
-		lFile = list.CreateListFile(sFile, p2File);
-		
-		return lFile;
 	}
 }
