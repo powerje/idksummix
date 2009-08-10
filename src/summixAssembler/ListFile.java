@@ -63,9 +63,11 @@ public class ListFile {
 	{
 		//System.out.println("address");
 		String listP2Address = "";
+		
 		if(!p2.isEndOfFile())
 		{
 			p2MainLine = p2.getLine();
+			
 			if(p2MainLine.indexOf(';') == 0)
 			{
 				listP2Address = p2MainLine;
@@ -75,6 +77,7 @@ public class ListFile {
 			{
 			//	System.out.println(p2MainLine);
 				listP2Address = p2MainLine.substring(1,5);
+				System.out.println("balla " + p2MainLine);
 				comment = false;
 			//	System.out.println(listP2Address);
 			}	
@@ -209,6 +212,7 @@ public class ListFile {
 			//get one source line to analyze
 			//System.out.println("before process");
 			sourceLine = ProcessLineSource(source);
+			System.out.println(sourceLine);
 		//	System.out.println("after: " + sourceLine);
 			if(sourceLine == "") //empty line
 			{
@@ -264,6 +268,7 @@ public class ListFile {
 					String p2add = ProcessLineP2Address(p2);
 					if(p2add.indexOf(';') != 0)
 					{
+						
 						completeRow = "( ";
 						completeRow = completeRow.concat(p2add);
 						completeRow = completeRow.concat(" ) ");
@@ -279,6 +284,7 @@ public class ListFile {
 					}
 					else
 					{
+						System.out.println("in else");
 						completeRow = p2add;
 						//progCount
 						completeRow = completeRow.concat("\t\t\t\t( ");
@@ -377,7 +383,7 @@ public class ListFile {
 					progCount++;
 				}
 			}
-			else if(!isGood(sourceLine)) //deal with error line
+			else if(!isGood(sourceLine) && sourceLine.indexOf('E') == -1) //deal with error line
 			{
 				//System.out.println("error");
 				completeRow = p2.getLine();
