@@ -516,7 +516,6 @@ public class Pass2 {
 		String input = new String("T");
 		short finalOp = 0;
 
-		System.out.println("Processing this op:" + op);
 		if (MachineOpTable.isOp(op))
 		{
 			finalOp = MachineOpTable.getOp(op);
@@ -1030,13 +1029,12 @@ public class Pass2 {
 			else if (!doNothing){
 				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file				
 			}
-
+			
 			if(MachineOpTable.isOp(op))
 			{
 				LocationCounter.incrementAmt(1);
 			}
 		}
-		p2File.display();
 	}
 
 	/**
@@ -1048,8 +1046,6 @@ public class Pass2 {
 		String input = new String("T");
 		p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
 		LocationCounter.incrementAmt(1);
-		System.out.println("Processing this op:" + op);
-		p2File.display();
 	}
 
 	/**
