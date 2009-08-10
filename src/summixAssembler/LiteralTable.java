@@ -184,6 +184,7 @@ public class LiteralTable {
 	 * @return
 	 */
 	public static TextFile printTable(TextFile lFile) {
+		System.out.println("to printtable?");
 		String completeRow = "";
 		/*
 		Collection c = literals.values();
@@ -204,10 +205,32 @@ public class LiteralTable {
 			completeRow = completeRow.concat(ListFile.shortToHexString(sKey));
 			completeRow = completeRow.concat(" ");
 			completeRow = completeRow.concat(ListFile.OutputBinaryP2(ListFile.shortToHexString(sKey)));
-			completeRow = completeRow.concat("\t\t\t( lit ) ");
+			completeRow = completeRow.concat("\t\t\t ( lit ) ");
+			System.out.println("ends?");
 			lFile.input(completeRow);
 		}
 		return lFile;
+	}
+	public static TextFile printPass2Table(TextFile p2File) {
+		String completeRow = "T";
+		/*
+		Collection c = literals.values();
+		Iterator<Short> i = c.iterator();
+	
+		while (i.hasNext()) {*/
+		Iterator<Short> i = literalKeys.iterator();
+		while (i.hasNext()) {
+ 			Short key = i.next();
+			Short addr = literals.get(key);
+			
+			short sKey = key.shortValue(); //value
+			short sAddr = addr.shortValue();
+			System.out.println("ADDR: " + ListFile.shortToHexString(addr));
+			completeRow = completeRow.concat(ListFile.shortToHexString(addr));
+			completeRow = completeRow.concat(ListFile.shortToHexString(key));
+			p2File.input(completeRow);
+		}
+		return p2File;
 	}
 }
 
