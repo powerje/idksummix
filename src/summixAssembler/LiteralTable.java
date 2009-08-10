@@ -94,6 +94,15 @@ public class LiteralTable {
 	{
 		return getAddress(Short.parseShort(key));
 	}
+	/**
+	 * Returns the address where a literal is stored
+	 * @param key the key to search for
+	 * @return the address of the literal given by key
+	 */
+	public static short getAddressFromHex(String key)
+	{
+		return getAddress(Short.parseShort(key,16));
+	}
 	
 	/**
 	 * Returns the address where a literal is stored

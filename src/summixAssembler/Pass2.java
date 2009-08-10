@@ -465,23 +465,32 @@ public class Pass2 {
 	 * @param key text representation of a literal
 	 * @return	raw value of a literal
 	 */
-	private short literalVal(String key)
+	private short literalAddressVal(String key)
 	{
 		short returnVal = 0;
 
 		if (key.startsWith("#"))
-		{//decimal value
+		{//decimal value constant
 			returnVal = Short.valueOf(key.substring(1));
 		}
 		else if(key.startsWith("x"))
-		{//Hex value
+		{//Hex value constant
 			returnVal = Short.valueOf(key.substring(1), 16);
+		}
+		else if(key.startsWith("=#"))
+		{//literal	
+			returnVal = LiteralTable.getAddress(key.substring(2));
+		}
+		else if(key.startsWith("=x"))
+		{//literal
+			returnVal = LiteralTable.getAddressFromHex(key.substring(2));
 		}
 		else
 		{//Must be symbol
 			returnVal = SymbolTable.getValue(key);
 		}
-
+		
+		returnVal &= 0x1FF;
 		return returnVal;
 	}
 
@@ -494,11 +503,9 @@ public class Pass2 {
 	{
 		boolean flag = false;
 		try{
-
-
 			if (key != null)
 			{
-				if(key.startsWith("=x") && Integer.valueOf(key.substring(2)) >= -32768 && Integer.valueOf(key.substring(2)) <= 32767)
+				if(key.startsWith("=x") && (Integer.parseInt(key.substring(2), 16) >= -32768) && (Integer.parseInt(key.substring(2), 16) <= 32767))
 				{
 					flag = true;
 				}
@@ -506,7 +513,7 @@ public class Pass2 {
 				{
 					flag = true;	
 				}
-				else if(key.startsWith("x") && Integer.valueOf(key.substring(1)) >= -32768 && Integer.valueOf(key.substring(1)) <= 32767)
+				else if(key.startsWith("x") && Integer.valueOf(key.substring(1), 16) >= -32768 && Integer.valueOf(key.substring(1)) <= 32767)
 				{
 					flag = true;	
 				}
@@ -731,7 +738,7 @@ public class Pass2 {
 			if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValLiteral(argTokArray[1]))
 			{
 				DR = regVal(argTokArray[0]);
-				pgoffset9 = literalVal(argTokArray[1]);
+				pgoffset9 = literalAddressVal(argTokArray[1]);
 				pgoffset9 &= 0x1FF;
 
 				finalOp |= DR << 9;
@@ -742,6 +749,7 @@ public class Pass2 {
 			else if (!st.hasMoreElements() && isValReg(argTokArray[0]) && (argTokArray[1] != null)
 					&& !LiteralTable.isLitereal(argTokArray[1]) && isValAddr(argTokArray[1]))
 			{
+				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())) + finalOp);
 				DR = regVal(argTokArray[0]);
 				pgoffset9 = addrVal(argTokArray[1]);
 				finalOp |= DR << 9;
@@ -1010,7 +1018,6 @@ public class Pass2 {
 				//Write all the array values to text records
 				while(argTokArray[0].length() > index + 1)
 				{
-					System.out.println(argTokArray[0].charAt(index));
 					p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString((int)argTokArray[0].charAt(index)));
 					LocationCounter.incrementAmt(1);
 					index++;
@@ -1080,6 +1087,7 @@ public class Pass2 {
 		else if (!foundEndLine)
 		{
 			boolean needsRelocation = false;
+
 			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
 			{
 				needsRelocation = true;
@@ -1099,6 +1107,7 @@ public class Pass2 {
 			}
 			else if (!doNothing){
 				p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp))); //Get finished op, turn it into a string, append it to the output string, and the write it to the file				
+
 			}
 
 			if(MachineOpTable.isOp(op))
