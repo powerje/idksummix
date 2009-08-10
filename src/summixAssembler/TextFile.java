@@ -111,9 +111,8 @@ public class TextFile {
 
 			if ((pos > -1) && !withinStrz) {
 				commentFree = original.substring(0, pos);
-				if (commentFree.length() >= 0) {
-					tmpBody.add(commentFree);
-				}
+				tmpBody.add(commentFree);
+			
 			} else {
 				tmpBody.add(original);
 			}

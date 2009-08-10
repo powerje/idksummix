@@ -67,9 +67,11 @@ public class SymbolTable {
 	 * @param value the value of the symbol
 	 * @param relative whether or not this symbols value is relative to its location in memory
 	 */
-	public static void input(String key, short value, boolean relative) {
+	public static void input(String key, short value, boolean relative) {	
 		if (symbols.containsKey(key)) {
 			System.out.println("ERROR: Symbol " + key + " defined multiple times.");
+		} else if (true) {		//can't start with R, x, #
+			
 		} else {
 			symbols.put(key, new Symbol(value, relative));
 		}
