@@ -329,11 +329,13 @@ public class ListFile {
 					System.out.println("am i ever here? " + p2address);
 					completeRow = completeRow.concat(p2address);
 					completeRow = completeRow.concat(" ) ");
+					if(ProcessLineP2Op(p2).indexOf('E') != 0)
+					{
 					completeRow = completeRow.concat(ProcessLineP2Op(p2));
 					completeRow = completeRow.concat(" ");
 					completeRow = completeRow.concat(OutputBinaryP2(ProcessLineP2Op(p2)));
 					completeRow = completeRow.concat(" ");
-					
+					}
 					//progCount
 					completeRow = completeRow.concat("( ");
 					completeRow = completeRow.concat(Integer.toString(progCount));
