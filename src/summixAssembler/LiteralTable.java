@@ -161,12 +161,15 @@ public class LiteralTable {
 			return false;
 		}
 	}
-	
+	/**
+	 * The literal address is in the literal table
+	 * @param addr
+	 * @return
+	 */
 	public static boolean isLiteralAddress(String addr) {
 		Short shortAddr = Short.parseShort(addr, 16);
 		boolean returnVal = false;
-		Collection c = literals.values();
-		Iterator<Short> i = c.iterator();
+		Iterator<Short> i = literalKeys.iterator();
 		while (i.hasNext()) {
 			if (literals.get(i.next())==Short.parseShort(addr)) {
 				returnVal = true;
@@ -175,6 +178,11 @@ public class LiteralTable {
 		return returnVal;
 	}
 	
+	/**
+	 * Prints the literal table for the list file
+	 * @param lFile
+	 * @return
+	 */
 	public static TextFile printTable(TextFile lFile) {
 		String completeRow = "";
 		/*
