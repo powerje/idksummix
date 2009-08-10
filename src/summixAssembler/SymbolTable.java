@@ -87,7 +87,7 @@ public class SymbolTable {
 	public static short getValue(String key) {
 		short returnVal = 0;
 		if (!symbols.containsKey(key)) {
-			System.out.println("ERROR: The value of symbol " + key + " is undefined in symbol table. The value 0 has been used in its place.");
+			System.out.println("ERROR: The value of this symbol is undefined in symbol table: " + key + " The value 0 has been used in its place.");
 		} else {
 			returnVal = symbols.get(key).value;
 		}
