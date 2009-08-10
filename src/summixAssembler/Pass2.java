@@ -49,7 +49,7 @@ public class Pass2 {
 		while(temp.getType() != TokenType.EOL)
 		{ 
 			temp = body.getToken();
-			if (!(numberOfTokens > 4))
+			if (numberOfTokens < 4)
 			{
 				token_array[numberOfTokens] = temp;
 			}
@@ -94,7 +94,7 @@ public class Pass2 {
 
 		if (numberOfTokens > 4) //You got too many tokens
 		{
-			System.out.println("ERROR: Oversized sourcecode at line " + body.getReport());
+			p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE");			
 		}
 		else if (numberOfTokens == 1 && token_array[0].getType() != TokenType.EOL) //Singleton that is not an EoL tok
 		{
@@ -104,7 +104,7 @@ public class Pass2 {
 			}
 			else
 			{//You've got a bad single line command, spit out error
-				System.out.println("ERROR: Malformed sourcecode at line " + body.getReport());
+				System.out.println("ERROR: Malformed no arg op at line " + body.getReport());
 				p2File.input(";ERROR MALFORMED SOURECODE ON THIS LINE");
 			}
 		}
