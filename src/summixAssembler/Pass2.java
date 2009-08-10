@@ -1221,5 +1221,15 @@ public class Pass2 {
 		}
 		return returnVal.toUpperCase();
 	}
-
+	
+	private boolean validAddressPage(short addr) {
+		boolean returnVal = true;
+		//bit mask off upper 7 bits
+		addr &= 0x1FF; 
+		if (addr==511) {	//if the offset would cause a rollover we have a bad address
+			returnVal = false;
+		}
+		return returnVal;
+	}
 }
+
