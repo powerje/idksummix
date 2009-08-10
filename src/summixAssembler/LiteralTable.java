@@ -165,15 +165,29 @@ public class LiteralTable {
 		Collection c = literals.values();
 		Iterator<Short> i = c.iterator();
 		while (i.hasNext()) {
-			if (i.next()==Short.parseShort(addr)) {
+			if (literals.get(i.next())==Short.parseShort(addr)) {
 				returnVal = true;
 			}
 		}
 		return returnVal;
 	}
 	
-	public static void printTable() {
-		
+	public static TextFile printTable(TextFile lFile) {
+		TextFile returnVal = new TextFile();
+		Collection c = literals.values();
+		Iterator<Short> i = c.iterator();
+		while (i.hasNext()) {
+			Short key = i.next();
+			Short addr = literals.get(key);
+			
+			short sKey = key.shortValue(); //value
+			short sAddr = addr.shortValue();
+			
+			
+			
+			
+		}
+		return returnVal;
 	}
 }
 
