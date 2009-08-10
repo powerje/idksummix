@@ -111,9 +111,17 @@ public class TextFile {
 
 			if ((pos > -1) && !withinStrz) {
 				commentFree = original.substring(0, pos);
+				while(commentFree.endsWith(" "))
+				{
+					commentFree = commentFree.substring(0, commentFree.length() - 1);
+				}
 				tmpBody.add(commentFree);
 			
 			} else {
+				while(original.endsWith(" "))
+				{
+					original = original.substring(0, original.length() - 1);
+				}
 				tmpBody.add(original);
 			}
 			line++;
