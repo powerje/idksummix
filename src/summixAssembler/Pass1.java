@@ -14,7 +14,7 @@ import java.util.Set;
  */
 
 public class Pass1 {
-	
+
 	/** Array of tokens pulled from the last line of body during getTokens().*/
 	private Token[] token_array = new Token[4];
 	/** body - User's source code orig - A copy of User's source minus the header. */
@@ -33,14 +33,14 @@ public class Pass1 {
 	private static Set<Short> literals = new HashSet<Short>();
 	/** Set to true if line contains an error*/
 	private boolean errorLineFlag = false;
-	
+
 	/**
 	 * Takes a CharSequence that is a hex number and converts it to a short.
 	 * 
 	 * @param input CharSequence to be converted into an integer of its hex value
 	 * @returns a short number representation of the hex string
 	 */
-	
+
 	private short hexstringToShort(CharSequence input) {
 		int returnVal = 0; // needs initialized in the case an exception is caught
 		try {
@@ -51,15 +51,15 @@ public class Pass1 {
 		}
 		return (short) returnVal;
 	}
-	
+
 	/**
 	 * Takes in a recordType string constructs a record from the token_array pulled with getTokens().
 	 * 
 	 * @param recordType - A string that identifies the record type.
 	 */
-	
+
 	private void constructRecord(String recordType){
-		
+
 		if(recordType.equals("text")){
 			int token_array_size = token_array.length;
 			int i = 0;
@@ -76,19 +76,19 @@ public class Pass1 {
 		else if(recordType.equals("header")){
 			// Construct the header record string
 			try {
-			headerRecord = progName + strStartAddr; 
+				headerRecord = progName + strStartAddr; 
 			}
 			catch (NullPointerException e) {}
 		}
 	}
-	
+
 	/**
 	 * Takes a short and produces a equivalently represented hex string. 
 	 * 
 	 * @param data - a short to convert to a hex string
 	 * @return a hex string representation of a short
 	 */
-	
+
 	public static String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
@@ -100,33 +100,33 @@ public class Pass1 {
 			returnVal = "0" + returnVal;
 		}
 		return returnVal.toUpperCase();
-		}
+	}
 
 	/**
 	 * Constructor for Pass!
 	 * 
 	 * @param incomingSource - the user's source code
 	 */
-	
+
 	public Pass1(TextFile incomingSource)
 	{
 		body = incomingSource;
 		body.stripComments();
 		orig = body;
 	}
-	
+
 	/**
 	 * The method takes no parameters and returns nothing. 
 	 * It fills a token array with all the tokens in a line of a TextFile and 
 	 * sets the global variable num_tokens to the number of tokens place into the array.
 	 * 0 < num_tokens < 5
 	 */
-	
+
 	private void getTokens()
 	{
 		int count = 0;
 		num_tokens = 0;
-		
+
 		while(count < 4)
 		{
 			token_array[count] = body.getToken();
@@ -137,85 +137,85 @@ public class Pass1 {
 			count++;
 			num_tokens++;
 		}
-		
+
 		if (num_tokens == 4 && token_array[num_tokens - 1].getType() != TokenType.EOL)
 		{
 			errorLineFlag = true;
 			System.out.println("ERROR: Too many tokens.");
 		}
 	}
-	
+
 	/**
 	 * Takes a operation token and states if the operation is a psuedoOp
 	 * 
 	 * @param op - an operation token
 	 * @return True if the operation is a psuedoOp
 	 */
-		
+
 	private boolean isPseudoOp(Token op)
 	{
 		boolean opFlag = false;
-		
+
 		if(PseudoOpTable.isPseudoOp(op.getText()) && !op.getText().equals(".END") && !op.getText().equals(".ORIG"))
 		{
 			opFlag = true;
 		}
-		
+
 		return opFlag;
 	}
-	
+
 	/**
 	 * Takes a operation token and states if the operation is a psuedoOp that has variable length arguments
 	 * 
 	 * @param op - an operation token
 	 * @return True if the operation is a VarPsuedoOp
 	 */
-	
+
 	private boolean isVarPseudoOp(Token op)
 	{
 		boolean opFlag = false;
-		
+
 		if(op.getText().equals(".BLKW") || op.getText().equals(".STRZ"))
 		{
 			opFlag = true;
 		}
-		
+
 		return opFlag;
 	}
-	
+
 	/**
 	 * Takes a operation token and states if the token is an operation (machine or psuedo)
 	 * 
 	 * @param op - a token
 	 * @return True if the operation is an operation
 	 */
-	
+
 	private boolean isOp(Token op)
 	{
 		boolean opFlag = false;
-		
+
 		if(PseudoOpTable.isPseudoOp(op.getText()) || (MachineOpTable.isOp(op.getText())))
 		{
 			opFlag = true;
 		}
-		
+
 		return opFlag;
 	}
-	
+
 	/**
 	 * Takes a argument token and states if a literal exists with the given arguments
 	 * 
 	 * @param op - an argument token
 	 * @return True if the argument token contains a literal
 	 */
-	
+
 	private boolean isLiteral(Token arg)
 	{
 		boolean literal = false;
 		String strToken;
 		strToken = arg.getText();
 		int index = strToken.indexOf('=');
-		
+
 		if(index == -1)
 		{
 			literal = false;
@@ -226,14 +226,14 @@ public class Pass1 {
 		}
 		return literal;
 	}
-	
+
 	/**
 	 * Takes an argument token and returns the literal given in the arguments
 	 * 
 	 * @param arg - an argument token
 	 * @return a short representation of the literal given in the arguments
 	 */
-	
+
 	private short getLiteral(Token arg)
 	{
 		short literal = 0;
@@ -249,20 +249,20 @@ public class Pass1 {
 		else { //hex value
 			literal = hexstringToShort(strLiteral.subSequence(index + 1, strLiteral.length()));
 		}
-		
+
 		return literal;
-		
+
 	}
-	
+
 	/**
 	 * Process a text record in which an EQU operation is present
 	 * 
 	 */
-	
+
 	private void processEQU()
 	{
 		Token label = token_array[0], op = token_array[1], arg = token_array[2];
-		
+
 		if(op.getText().equals(".EQU"))
 		{
 			int index1 = op.getText().indexOf('x');
@@ -279,83 +279,83 @@ public class Pass1 {
 			}
 			if (index1 == -1 && index2 == -1) //symbol table
 			{
-					boolean argRel = SymbolTable.isRelative(arg.getText());
-					short argVal = SymbolTable.getValue(arg.getText());
-					SymbolTable.input(label.getText(), argVal, argRel);
+				boolean argRel = SymbolTable.isRelative(arg.getText());
+				short argVal = SymbolTable.getValue(arg.getText());
+				SymbolTable.input(label.getText(), argVal, argRel);
 			}
 		}
 	}
-	
+
 	/**
 	 * Process the header record in a given program
 	 * 
 	 * @return a string that represents a valid header 
 	 */
-	
- 	private String processHeader()
-	{
-	boolean isRelative = false;
 
-	// process the Program Name
-	if(token_array[0].getType() == TokenType.ALPHA)
+	private String processHeader()
 	{
-		progName = token_array[0].getText();
+		boolean isRelative = false;
 
-		//make sure that Program Name has 6 characters and ONLY 6 characters
-		int extraNeeded = 6 - progName.length();
-		while (extraNeeded > 0)
+		// process the Program Name
+		if(token_array[0].getType() == TokenType.ALPHA)
 		{
-			progName += " ";
-			extraNeeded--;
-		}
-		
-		if (progName.length() > 6)
-		{
-			progName = (String) progName.subSequence(0, 6);
-		}
-	}
-	else
-	{
-		System.out.println("ERROR: Invalid or malformed program name exists!");
-	}
+			progName = token_array[0].getText();
 
-	// Set the Location Counter
-
-	if(token_array[2].getType() == TokenType.EOL)
-	{
-		isRelative = true; 
-		strStartAddr = "0000";
-	}
-	else if(token_array[2].getType() == TokenType.ALPHA)
-	{
-		strStartAddr = token_array[2].getText();
-		int index = strStartAddr.indexOf('x');
-		if (index != -1)
-		{
-			start = hexstringToShort(strStartAddr.subSequence(index + 1, strStartAddr.length())); // should be error checking here?
-			strStartAddr = strStartAddr.substring(index + 1);
-			if(start > 65535)
+			//make sure that Program Name has 6 characters and ONLY 6 characters
+			int extraNeeded = 6 - progName.length();
+			while (extraNeeded > 0)
 			{
-				System.out.println("ERROR: The origin address exceeds the max addressable memory location!");
+				progName += " ";
+				extraNeeded--;
+			}
+
+			if (progName.length() > 6)
+			{
+				progName = (String) progName.subSequence(0, 6);
+			}
+		}
+		else
+		{
+			System.out.println("ERROR: Invalid or malformed program name exists!");
+		}
+
+		// Set the Location Counter
+
+		if(token_array[2].getType() == TokenType.EOL)
+		{
+			isRelative = true; 
+			strStartAddr = "0000";
+		}
+		else if(token_array[2].getType() == TokenType.ALPHA)
+		{
+			strStartAddr = token_array[2].getText();
+			int index = strStartAddr.indexOf('x');
+			if (index != -1)
+			{
+				start = hexstringToShort(strStartAddr.subSequence(index + 1, strStartAddr.length())); // should be error checking here?
+				strStartAddr = strStartAddr.substring(index + 1);
+				if(start > 65535)
+				{
+					System.out.println("ERROR: The origin address exceeds the max addressable memory location!");
+				}
+			}
+			else
+			{
+				System.out.println("ERROR: Expected hex value for start of segment memory location!");
 			}
 		}
 		else
 		{
 			System.out.println("ERROR: Expected hex value for start of segment memory location!");
 		}
-	}
-	else
-	{
-		System.out.println("ERROR: Expected hex value for start of segment memory location!");
+
+		LocationCounter.set((int)(start), isRelative);
+
+		constructRecord("header");
+
+		return headerRecord;
 	}
 
-	LocationCounter.set((int)(start), isRelative);
-
-	constructRecord("header");
-
-	return headerRecord;
-	}
- 	
 	/**
 	 * Process the Text record in a program, adds symbols to symbol table, adds literals to the 
 	 * literal table and increments the Location Counter
@@ -377,7 +377,7 @@ public class Pass1 {
 
 				if(token_array[1].getText().equals(".EQU"))
 				{
-						processEQU();
+					processEQU();
 				}
 				else if(isPseudoOp(token_array[1])) 
 				{
@@ -385,12 +385,12 @@ public class Pass1 {
 					{
 						LocationCounter.incrementAmt(1);
 					}
-					
+
 					else if(isVarPseudoOp(token_array[1]))
 					{
 						LocationCounter.incrementAfterVarOp(token_array[1], token_array[2]);	
 					}
-					
+
 					else
 					{
 						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.isRelative());
@@ -402,22 +402,23 @@ public class Pass1 {
 					literals.add(getLiteral(token_array[2]));
 				}
 			}
-			else if(isOp(token_array[0]))
+		}
+		else if (isOp(token_array[0]))
+		{
+			if(isPseudoOp(token_array[0]))
 			{
-				if(isPseudoOp(token_array[0]))
+				if(token_array[0].getText().equals(".FILL"))
 				{
-					if(token_array[0].getText().equals(".FILL"))
-					{
-						LocationCounter.incrementAmt(1);
-					}
-					else if(isVarPseudoOp(token_array[0]))
-					{
-						LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);
-
-					}			
+					LocationCounter.incrementAmt(1);
 				}
+				else if(isVarPseudoOp(token_array[0]))
+				{
+					LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);
+
+				}			
 			}
 		}
+
 		//added this to get literals 
 
 		if (num_tokens > 1) {
@@ -436,34 +437,34 @@ public class Pass1 {
 		if (MachineOpTable.isOp(token_array[0].getText())) {
 			LocationCounter.incrementAmt(MachineOpTable.getSize(token_array[0].getText()));
 		}	
-	
+
 		constructRecord("text");
-		
+
 		return textRecord;
 	}
 	/**
 	 * This is the point of entry for Pass1  
 	 */
-	
+
 	public TextFile processFile()
 	{
 		boolean origFlag = false, textFlag = false;
-		
+
 		while(!body.isEndOfFile())
 		{
 			getTokens();
-			
+
 			if (num_tokens > 4)
 			{
 				errorLineFlag = true;
 			} 
-		
+
 			//While (You don't have an empty AND you aren't at the end of file, get more tokens)
 			while((token_array[0].getType() == TokenType.EOL) && !body.isEndOfFile())
 			{
 				getTokens();
 			}
-			
+
 			//MUST at least have <token>eolTok
 			if(token_array[1].getText().equals(".ORIG"))
 			{
@@ -476,36 +477,36 @@ public class Pass1 {
 					headerRecord = processHeader();
 					origFlag = true;
 				}
-				
+
 			} //At least <token>eolTok and 2nd token isn't .ORIG
 			else if(!(token_array[0].getText().equals(".ORIG") || token_array[0].getText().equals(".END") || token_array[1].getText().equals(".END"))
 					&& (isOp(token_array[0]) || isOp(token_array[1])))
-					
+
 			{//<op><token> or <token><op> but <op> is not .end or .orig 
 				textRecord = processText();
 				textFlag = true;
 				p1file.input(textRecord);
 			}
 		}
-		
+
 		// Print error messages if no Header 
-		
+
 		// Check for a header recorder
 		if (origFlag == false)
 		{
 			System.out.println("ERROR: The program contains NO header record.");
 			headerRecord = "ERROR 0000";
 		}
-		
+
 		// Check for at least one text record
 		if (textFlag == false)
 		{
 			System.out.println("ERROR: The program does not contains at least ONE text record.");
 		}
-		
+
 		// Add Lits to Literal Table and increment the Location Counter for all of the Literals
 		Iterator<Short> literal = literals.iterator();
-		
+
 		while (literal.hasNext())
 		{
 			Short lit = literal.next();
@@ -513,7 +514,7 @@ public class Pass1 {
 			LocationCounter.incrementAfterLiteral(1);
 		}
 		// Construct and Insert the Header Recorder
-		
+
 		// Calculate the Program segment size
 		short size = (short) ((LocationCounter.getAddress() + 1) - start);
 		String sizeStr = shortToHexString(size);
@@ -527,7 +528,7 @@ public class Pass1 {
 		headerRecord = headerFinal;
 
 		orig.insertHeader(headerRecord);
-		
+
 		return orig;
 	}
 }
