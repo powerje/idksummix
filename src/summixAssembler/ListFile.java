@@ -184,7 +184,7 @@ public class ListFile {
 		return good;
 	}
 	
-	private String shortToHexString(short data) {
+	public String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
 		{
