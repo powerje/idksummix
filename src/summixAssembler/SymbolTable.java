@@ -1,7 +1,9 @@
 package summixAssembler;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * Stores the symbols collected by the pass1 object. Dispenses information about them as well.
@@ -58,8 +60,84 @@ public class SymbolTable {
 		public boolean isRelative;
 	}
 
+	/**	concrete representation of symbols in the symbol table*/
 	private static Map<String, Symbol> symbols = new HashMap<String, Symbol>();
 
+	/** symbols that are ENT */
+	private static Vector<String> entSymbols = new Vector<String>();
+	
+	/** symbols that are EXT */
+	private static Vector<String> extSymbols = new Vector<String>();
+	
+	/**
+	 * Adds an entry to symbol table
+	 * @param ent the name of the entry
+	 */
+	private static void setEnt(String ent) {
+		if (!entSymbols.contains(ent)) {
+			entSymbols.add(ent);
+		} else {
+			System.out.println("ERROR: .ENT " + ent + " is already defined as an ENT.");
+		}
+	}
+	
+	/**
+	 * Adds an external symbol to the symbol table
+	 * @param ext the external symbol to be added
+	 */
+	private static void setExt(String ext) {
+		if (!extSymbols.contains(ext)) {
+			extSymbols.add(ext);
+		} else {
+			System.out.println("ERROR: .EXT " + ext + " is already defined as an EXT.");
+		}
+	}
+	
+	/**
+	 * Checks whether or not the ext is valid
+	 * @param ext the ext to check
+	 * @return true if the ext is valid, false if not 
+	 */
+	private static boolean isExt(String ext) {
+		return extSymbols.contains(ext);
+	}
+	
+	/**
+	 * Symbol table is expected to be complete, finalize gives any error messages associated with an incomplete table.
+	 */
+	private static void checkTable() {
+		Iterator<String> i = entSymbols.iterator();
+		while (i.hasNext()) {
+			//look at each entSymbol
+			String key = i.next();
+			if (!(symbols.containsKey(key))) {
+				//if that symbol is not defined in the symbol table we have a problem!
+				System.out.println("ERROR: .ENT not defined within this scope.");
+			}
+			if (extSymbols.contains(key)) {
+				System.out.println("ERROR: .ENT " + key + " is also defined as .EXT.");				
+			}
+		}
+	}
+	
+	/**
+	 * Adds all external symbols to p2File in the format I<symbol name>=<address of symbol>
+	 * @param p2File the file to add external symbols to 
+	 * @return
+	 */
+	public static TextFile printPass2Table(TextFile p2File) {
+	
+		Iterator<String> i = entSymbols.iterator();
+
+		while (i.hasNext()) {
+			String key = i.next();
+ 			String ent = "I" + key + "=" + symbols.get(key);
+			p2File.input(ent);
+		}
+		
+		return p2File;
+	}
+	
 	/**
 	 * Inputs a symbol into the symbol table and stores its value, name, and its relativity.
 	 * 
