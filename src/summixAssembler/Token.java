@@ -42,7 +42,8 @@ public class Token {
 	{
 		return type;
 	}
-	
+
+	@Override
 	public String toString ()
 	{
 		return "TokenText:" + text + " TokenType:" + type.toString();
