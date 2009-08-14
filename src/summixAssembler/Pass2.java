@@ -1,5 +1,6 @@
 package summixAssembler;
 
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
@@ -27,6 +28,7 @@ public class Pass2 {
 	private short startOfExecution = 0;
 	/** True if there is an .ORIG in the source code */
 	private boolean foundFirstHeader = false;
+	private int foundOpAt;
 
 	/**
 	 * Creates a Pass2 object and readies it to process p1File.
@@ -87,6 +89,8 @@ public class Pass2 {
 			System.out.println("ERROR: No end of line record present in sourcecode. Expected at line " + body.getReport());
 		}
 
+		SymbolTable.checkTable();
+		SymbolTable.printPass2Table(p2File);
 		return p2File;
 	}
 
@@ -116,6 +120,7 @@ public class Pass2 {
 	{
 		if (isAnOp(token_array[0].getText()) && (numberOfTokens == 3 || numberOfTokens == 2)) //<op><maybe arg>
 		{
+			foundOpAt = 0;
 			//check to see if there are args
 			if (numberOfTokens == 3) //Then it has an arg; <op><arg>
 			{
@@ -127,7 +132,8 @@ public class Pass2 {
 			}
 		}
 		else if(isAnOp(token_array[1].getText()) && (numberOfTokens == 4 || numberOfTokens == 3)) //<label><op><maybe arg>
-		{
+		{			
+			foundOpAt = 1;
 			//check to see if there are args
 			if (numberOfTokens == 4) //There is an arg; <label><op><arg>eolTok
 			{
@@ -565,6 +571,18 @@ public class Pass2 {
 			counter++;
 		}
 	}
+	
+	private ArrayList<String> getAllArgTokens(StringTokenizer st)
+	{
+		ArrayList<String> returnVal = new ArrayList<String>();
+		
+		while (st.hasMoreTokens())
+		{
+			returnVal.add(st.nextToken());
+		}
+		
+		return returnVal;
+	}
 
 	/**
 	 * Validates an line of source code by processing the arguments of an operation. Writes the corresponding text record, or end record, to
@@ -587,7 +605,7 @@ public class Pass2 {
 			processPuesdoOpWithArg(op, arg);
 		}
 		else if(foundFirstHeader) //Else is a machine op. If we have found the first header record, then this is fine!
-								  //Otherwise it's an error because we got a machine op before the header!
+			//Otherwise it's an error because we got a machine op before the header!
 		{
 			short finalOp = MachineOpTable.getOp(op);
 			if (op.equals("ADD"))
@@ -723,7 +741,6 @@ public class Pass2 {
 			}
 			else if (op.equals("LD"))
 			{
-				//FIX ME!!!!!
 				getArgTokens(2, st);
 				//Load has valid R1 and then followed by a literal
 				if (!st.hasMoreElements() && isValReg(argTokArray[0]) && isValLiteral(argTokArray[1]))
@@ -966,7 +983,7 @@ public class Pass2 {
 
 		return flag;
 	}
-	
+
 	/**
 	 * Handles pseudo operations with arguments
 	 * @param op the pseudo operation to handle
@@ -1011,7 +1028,7 @@ public class Pass2 {
 				}
 				else//Must be hex value as a string, use it directly after removing x
 				{
-					
+
 					p2File.input("E" + argTokArray[0].substring(1));
 				}
 				foundEndLine = true;
@@ -1026,6 +1043,55 @@ public class Pass2 {
 		}
 		else if (op.equals(".EQU"))
 		{/*Do nothing*/}
+		else if(op.equals(".ENT"))
+		{
+			if (foundOpAt == 1)//Check for label
+			{//Found a label, BAD .ENT ENTRY
+				System.out.println("ERROR: Bad .ENT entry on line " + body.getReport() + " should not have a label.");
+				p2File.input(";ERROR OP HAS LABEL: " + op + " " + arg);
+			}
+			else //No label, foundOpAt = 0
+			{
+				ArrayList<String> temp = getAllArgTokens(st); //Get all the tokens from the args
+				
+				if (temp.isEmpty()) //If there are no tokens because it only had commas in the argument, it's bad
+				{
+					System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+					p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
+				}
+				
+				while (!temp.isEmpty()) //While not empty, pull out elements from the array to add to the .ENT list
+				{
+					String holder = temp.remove(0);
+					SymbolTable.setEnt(holder);
+				}
+
+			}
+		}
+		else if(op.equals(".EXT"))
+		{
+			if (foundOpAt == 1)//check for label
+			{//Found a label, bad .EXT ENTRY
+				System.out.println("ERROR: Bad .EXT entry on line " + body.getReport() + " should not have a label.");
+				p2File.input(";ERROR OP HAS LABEL: " + op + " " + arg);
+			}
+			else //No label, foundOpAt = 0
+			{
+				ArrayList<String> temp = getAllArgTokens(st); //Get all the tokens from the args
+				
+				if (temp.isEmpty()) //If there are no tokens because it only had commas in the argument, it's bad
+				{
+					System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
+					p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
+				}
+				
+				while (!temp.isEmpty()) //While not empty, pull out elements from the array to add to the .EXT list
+				{
+					String holder = temp.remove(0);
+					SymbolTable.setExt(holder);
+				}
+			}
+		}
 		else if (op.equals(".FILL"))
 		{
 			getArgTokens(1, st);
@@ -1199,12 +1265,25 @@ public class Pass2 {
 			p2File.input("T" + shortToHexString(LocationCounter.getAddress()) + shortToHexString(MachineOpTable.getOp(op)));
 			LocationCounter.incrementAmt(1);
 		}
-		else//(op.equals("DEBUG"))
+		else if (op.equals("DEBUG"))
 		{
 			p2File.input("T" + shortToHexString(LocationCounter.getAddress()) + (shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
 			LocationCounter.incrementAmt(1);
 		}
+		else //Command should have an arg, but doesn't
+		{
+			System.out.println("ERROR: Operation encountered that should have an arguement but does not.");
+			p2File.input(";ERROR argOp encountered with no args.");
+		}
 
+
+
+	}
+
+
+	boolean isValLabel(String canidate)
+	{
+		return true;
 	}
 
 	/**
@@ -1241,7 +1320,7 @@ public class Pass2 {
 		}
 		return returnVal.toUpperCase();
 	}
-	
+
 	/**
 	 * Tests the given address to ensure there is no page roll over from the current instruction
 	 * to the given address.
@@ -1257,7 +1336,7 @@ public class Pass2 {
 		}
 		return returnVal;
 	}
-	
+
 	private void printLiterals() {
 		p2File = LiteralTable.printPass2Table(p2File);		
 	}
