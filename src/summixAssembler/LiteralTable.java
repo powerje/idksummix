@@ -210,7 +210,6 @@ public class LiteralTable {
 		return lFile;
 	}
 	public static TextFile printPass2Table(TextFile p2File) {
-		String completeRow = "T";
 		/*
 		Collection c = literals.values();
 		Iterator<Short> i = c.iterator();
@@ -218,7 +217,8 @@ public class LiteralTable {
 		while (i.hasNext()) {*/
 		Iterator<Short> i = literalKeys.iterator();
 		while (i.hasNext()) {
- 			Short key = i.next();
+			String completeRow = "T";
+			Short key = i.next();
 			Short addr = literals.get(key);
 			
 			short sKey = key.shortValue(); //value
