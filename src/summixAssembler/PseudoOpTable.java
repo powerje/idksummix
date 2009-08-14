@@ -52,6 +52,8 @@ public class PseudoOpTable {
 		pseudoOps.put(".FILL", new PseudoOp(1, false));
 		pseudoOps.put(".STRZ", new PseudoOp(-1, true));
 		pseudoOps.put(".BLKW", new PseudoOp(-1, true));
+		pseudoOps.put(".ENT", new PseudoOp(0, false));
+		pseudoOps.put(".EXT", new PseudoOp(0, false));
 	}
 	
 	/**
