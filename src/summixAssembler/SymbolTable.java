@@ -112,7 +112,7 @@ public class SymbolTable {
 			String key = i.next();
 			if (!(symbols.containsKey(key))) {
 				//if that symbol is not defined in the symbol table we have a problem!
-				System.out.println("ERROR: .ENT not defined within this scope.");
+				System.out.println("ERROR: .ENT " + key + " is not defined within this scope.");
 			}
 			if (extSymbols.contains(key)) {
 				System.out.println("ERROR: .ENT " + key + " is also defined as .EXT.");				
@@ -131,7 +131,7 @@ public class SymbolTable {
 
 		while (i.hasNext()) {
 			String key = i.next();
- 			String ent = "I" + key + "=" + symbols.get(key);
+ 			String ent = "I" + key + "=" + shortToHexString(symbols.get(key).value);
 			p2File.input(ent);
 		}
 		
