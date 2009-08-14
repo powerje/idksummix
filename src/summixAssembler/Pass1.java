@@ -428,7 +428,12 @@ public class Pass1 {
 				{
 					LocationCounter.incrementAfterVarOp(token_array[0], token_array[1]);
 
-				}			
+				}	
+				else if(token_array[0].getText().equals(".EQU"))
+				{
+					System.out.println("ERROR: No Label exists for .EQU!");
+
+				}
 			}
 		}
 
@@ -499,6 +504,11 @@ public class Pass1 {
 				textRecord = processText();
 				textFlag = true;
 				p1file.input(textRecord);
+			}
+			else if(token_array[1].getText().equals(".END"))
+			{
+				System.out.println("ERROR: [ "+ token_array[0].getText() + " ]Label Found on end Record! The end record may not have a label!");
+
 			}
 		}
 
