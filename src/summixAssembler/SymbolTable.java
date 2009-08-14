@@ -33,6 +33,18 @@ public class SymbolTable {
 		return "0x" + returnVal.toUpperCase();
 	}
 
+	public static String shortToHexStringNoPrefix(short data) {
+		String returnVal = Integer.toHexString((int) data);
+		if (returnVal.length() > 4) 
+		{
+			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
+		}
+		while (returnVal.length() < 4) 
+		{
+			returnVal = "0" + returnVal;
+		}
+		return returnVal.toUpperCase();
+	}
 
 	/**
 	 * Symbol class used by the symbol table internally to store representations of symbols
@@ -131,7 +143,7 @@ public class SymbolTable {
 
 		while (i.hasNext()) {
 			String key = i.next();
- 			String ent = "I" + key + "=" + shortToHexString(symbols.get(key).value);
+ 			String ent = "I" + key + "=" + shortToHexStringNoPrefix(symbols.get(key).value);
 			p2File.input(ent);
 		}
 		
