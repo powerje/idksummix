@@ -73,7 +73,7 @@ public class SymbolTable {
 	 * Adds an entry to symbol table
 	 * @param ent the name of the entry
 	 */
-	private static void setEnt(String ent) {
+	public static void setEnt(String ent) {
 		if (!entSymbols.contains(ent)) {
 			entSymbols.add(ent);
 		} else {
@@ -85,7 +85,7 @@ public class SymbolTable {
 	 * Adds an external symbol to the symbol table
 	 * @param ext the external symbol to be added
 	 */
-	private static void setExt(String ext) {
+	public static void setExt(String ext) {
 		if (!extSymbols.contains(ext)) {
 			extSymbols.add(ext);
 		} else {
@@ -98,14 +98,14 @@ public class SymbolTable {
 	 * @param ext the ext to check
 	 * @return true if the ext is valid, false if not 
 	 */
-	private static boolean isExt(String ext) {
+	public static boolean isExt(String ext) {
 		return extSymbols.contains(ext);
 	}
 	
 	/**
 	 * Symbol table is expected to be complete, finalize gives any error messages associated with an incomplete table.
 	 */
-	private static void checkTable() {
+	public static void checkTable() {
 		Iterator<String> i = entSymbols.iterator();
 		while (i.hasNext()) {
 			//look at each entSymbol
