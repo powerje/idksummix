@@ -572,18 +572,6 @@ public class Pass2 {
 		}
 	}
 	
-	private ArrayList<String> getAllArgTokens(StringTokenizer st)
-	{
-		ArrayList<String> returnVal = new ArrayList<String>();
-		
-		while (st.hasMoreTokens())
-		{
-			returnVal.add(st.nextToken());
-		}
-		
-		return returnVal;
-	}
-
 	/**
 	 * Validates an line of source code by processing the arguments of an operation. Writes the corresponding text record, or end record, to
 	 * the p2File. Outputs an error to console, and to the p2File if the arguments are bad. Also increments the location counter.
@@ -926,7 +914,8 @@ public class Pass2 {
 			else //If not badArgs, means args are good! Process them.
 			{
 				boolean needsRelocation = false;
-
+				boolean needsExternalRecord = false;
+				int externalHere = 0;
 				//Check to see if the args have a relative symbol in them
 				if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
 				{
@@ -940,10 +929,31 @@ public class Pass2 {
 				{
 					needsRelocation = true;
 				}
+				
+				//Check to see if the args have an .EXT symbol in them
+				if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]) && SymbolTable.isExt(argTokArray[0]))
+				{
+					needsExternalRecord = true;
+					externalHere = 0;
+				}
+				if (argTokArray[1] != null && SymbolTable.isDefined(argTokArray[1]) && SymbolTable.isRelative(argTokArray[1]) && SymbolTable.isExt(argTokArray[1]))
+				{
+					needsExternalRecord = true;
+					externalHere = 1;
+				}
+				if (argTokArray[2] != null && SymbolTable.isDefined(argTokArray[2]) && SymbolTable.isRelative(argTokArray[2]) && SymbolTable.isExt(argTokArray[2]))
+				{
+					needsExternalRecord = true;
+					externalHere = 2;
+				}
 				//If the arg contains a relocatable symbol AND the program is relative
-				if (needsRelocation && LocationCounter.isRelative())
+				if (needsRelocation && LocationCounter.isRelative() && !needsExternalRecord)
 				{
 					p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp)) + "M0"); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
+				}
+				else if(needsRelocation && LocationCounter.isRelative() && needsExternalRecord)
+				{
+					p2File.input(input.concat(shortToHexString(LocationCounter.getAddress())).concat(shortToHexString(finalOp)) + "M0X" + argTokArray[externalHere]); //Get finished op, turn it into a string, append it to the output string, and the write it to the file
 				}
 				else
 				{
@@ -968,7 +978,6 @@ public class Pass2 {
 
 		try
 		{
-			//Ah-ha!  Root of the cause: forgot substring(1) in the second call, so was trying to convert hex 'x'
 			if (arg.startsWith("x") && Integer.parseInt(arg.substring(1), 16) >= 0 && Integer.parseInt(arg.substring(1), 16) <= 0xFFFF)
 			{
 				flag = true;
@@ -1016,9 +1025,6 @@ public class Pass2 {
 		else if (op.equals(".END"))
 		{
 			getArgTokens(1, st);
-			//right now never gets in here for .END x3000
-			//System.out.println("THIS: " + !st.hasMoreTokens() + " argTokArray[0]: " + argTokArray[0] + "  isValENDArg: " + isValENDArg(argTokArray[0]));
-			//isValENDArg is giving me false on x3000
 			if(!st.hasMoreTokens() && argTokArray[0] != null && isValENDArg(argTokArray[0])) //prove args are good
 			{
 				printLiterals();
@@ -1044,64 +1050,25 @@ public class Pass2 {
 		else if (op.equals(".EQU"))
 		{/*Do nothing*/}
 		else if(op.equals(".ENT"))
-		{
-			if (foundOpAt == 1)//Check for label
-			{//Found a label, BAD .ENT ENTRY
-				System.out.println("ERROR: Bad .ENT entry on line " + body.getReport() + " should not have a label.");
-				p2File.input(";ERROR OP HAS LABEL: " + op + " " + arg);
-			}
-			else //No label, foundOpAt = 0
-			{
-				ArrayList<String> temp = getAllArgTokens(st); //Get all the tokens from the args
-				
-				if (temp.isEmpty()) //If there are no tokens because it only had commas in the argument, it's bad
-				{
-					System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
-					p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
-				}
-				
-				while (!temp.isEmpty()) //While not empty, pull out elements from the array to add to the .ENT list
-				{
-					String holder = temp.remove(0);
-					SymbolTable.setEnt(holder);
-				}
-
-			}
-		}
+		{/*Do nothing*/}
 		else if(op.equals(".EXT"))
-		{
-			if (foundOpAt == 1)//check for label
-			{//Found a label, bad .EXT ENTRY
-				System.out.println("ERROR: Bad .EXT entry on line " + body.getReport() + " should not have a label.");
-				p2File.input(";ERROR OP HAS LABEL: " + op + " " + arg);
-			}
-			else //No label, foundOpAt = 0
-			{
-				ArrayList<String> temp = getAllArgTokens(st); //Get all the tokens from the args
-				
-				if (temp.isEmpty()) //If there are no tokens because it only had commas in the argument, it's bad
-				{
-					System.out.println("ERROR: Improperly formed argument at line " + body.getReport());
-					p2File.input(";ERROR IN ARGUMENT ON THIS LINE: " + op + " " + arg);
-				}
-				
-				while (!temp.isEmpty()) //While not empty, pull out elements from the array to add to the .EXT list
-				{
-					String holder = temp.remove(0);
-					SymbolTable.setExt(holder);
-				}
-			}
-		}
+		{/*Do nothing*/}
 		else if (op.equals(".FILL"))
 		{
 			getArgTokens(1, st);
 			boolean badArgs = false;
-
+			boolean needsExternalRecord = false;
 			boolean needsRelocation = false;
-
+			
+			
 			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]) && LocationCounter.isRelative())
 			{
 				needsRelocation = true;
+			}
+			
+			if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]) && LocationCounter.isRelative() && SymbolTable.isExt(argTokArray[0]))
+			{
+				needsExternalRecord = true;
 			}
 
 
@@ -1112,27 +1079,24 @@ public class Pass2 {
 					if (argTokArray[0].startsWith("#") && Integer.valueOf(argTokArray[0].substring(1)) >= -32786
 							&& Integer.valueOf(argTokArray[0].substring(1)) <= 32767)
 					{
-						if (needsRelocation)
-						{
-							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)) + "M1");
-						}
-						else
-						{
-							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1))));							
-						}
-
+						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1))));	
 					}//Hex
 					else if(argTokArray[0].startsWith("x") && Integer.valueOf(argTokArray[0].substring(1), 16) >= 0
 							&& Integer.valueOf(argTokArray[0].substring(1), 16) <= 0xFFFF)
 					{
-						if (needsRelocation)
-						{
-							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)) + "M1");								
-						}
-						else
-						{
-							p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)));							
-						}
+						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)));							
+					}//Relative Symbol
+					else if(needsRelocation && !needsExternalRecord)
+					{
+						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)) + "M1");
+					}//Relative .EXT Symbol
+					else if (needsRelocation && needsExternalRecord)
+					{
+						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)) + "M1X" + argTokArray[0]);
+					}//Absolute symbol
+					else if(SymbolTable.isDefined(argTokArray[0]) && !SymbolTable.isRelative(argTokArray[0]))
+					{
+						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)));
 					}
 					else
 					{
@@ -1280,11 +1244,6 @@ public class Pass2 {
 
 	}
 
-
-	boolean isValLabel(String canidate)
-	{
-		return true;
-	}
 
 	/**
 	 * Takes a short input and returns a four character hex representation of it from 0000 to FFFF 
