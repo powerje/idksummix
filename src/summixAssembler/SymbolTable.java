@@ -100,6 +100,7 @@ public class SymbolTable {
 	public static void setExt(String ext) {
 		if (!extSymbols.contains(ext)) {
 			extSymbols.add(ext);
+			symbols.put(ext, new Symbol((short)0, true));
 		} else {
 			System.out.println("ERROR: .EXT " + ext + " is already defined as an EXT.");
 		}
