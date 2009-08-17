@@ -1,3 +1,11 @@
 Lab2TP	.ORIG 
+		.ENT	a,b,c,d
+		.EXT	z
 		 ADD 	R0,R3,R0
+a		 BRZ	z				
+b		 TRAP	x25		 
+c		 TRAP	x25		 
+d		 TRAP	x25	
+		BRZ	z  
+		.FILL z
 		.END	x0000

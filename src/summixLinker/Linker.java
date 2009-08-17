@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import summixAssembler.TextFile;
+import summixSimulator.*;
 
 public class Linker {
 
@@ -19,7 +20,15 @@ public class Linker {
 		
 		//start with main, and then add to the end of it all of the lines of addon
 		
+		/*
+		String[] args = {fileName};
 		
+		try {
+			summixSimulator.Simulator.main(args);
+		} catch (IOException e) {
+			e.printStackTrace(); 
+		}
+		*/
 		
 	}
 	
