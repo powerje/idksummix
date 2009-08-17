@@ -3,6 +3,7 @@ package summixAssembler;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * Pass1 uses the SymbolTable, LiteralTable, MachineOpTable, and LocationCounter to process a source file into a p1File for Pass2 to process.
@@ -121,6 +122,25 @@ public class Pass1 {
 	 * 0 < num_tokens < 5
 	 */
 
+	private void processENT(String arg)
+	{
+		StringTokenizer st = new StringTokenizer(arg, ",");
+	     while (st.hasMoreTokens()) 
+	     {
+	    	 String st1 = st.nextToken();
+	    	 SymbolTable.setEnt(st1);
+	     }	
+	}
+	
+	private void processEXT(String arg)
+	{
+		StringTokenizer st = new StringTokenizer(arg, ",");
+	     while (st.hasMoreTokens()) 
+	     {
+	    	 String st1 = st.nextToken();
+	    	 SymbolTable.setExt(st1);	     }
+	}
+	
 	private void getTokens()
 	{
 		int count = 0;
@@ -505,9 +525,45 @@ public class Pass1 {
 				textFlag = true;
 				p1file.input(textRecord);
 			}
-			else if(token_array[1].getText().equals(".END"))
+			
+			if(token_array[1].getText().equals(".END"))
 			{
-				System.out.println("ERROR: [ "+ token_array[0].getText() + " ]Label Found on end Record! The end record may not have a label!");
+				System.out.println("ERROR: [ "+ token_array[0].getText() + " ] Label Found on end Record! The end record may not have a label!");
+
+			}
+			
+			if(token_array[0].getText().equals(".ENT"))
+			{
+				if(num_tokens < 3)
+				{
+					System.out.println("ERROR: No operand found!.ENT must have an operand!");
+				}
+				else if(num_tokens == 3)
+				{
+					processENT(token_array[1].getText());
+				}
+				
+		}
+			else if(token_array[1].getText().equals(".ENT"))
+			{
+				System.out.println("ERROR: [ "+ token_array[0].getText() + " ] Label Found on .ENT!");
+
+			}
+			
+			if(token_array[0].getText().equals(".EXT"))
+			{
+				if(num_tokens < 3)
+				{
+					System.out.println("ERROR: No operand found!.ENT must have an operand!");
+				}
+				else if(num_tokens == 3)
+				{
+					processEXT(token_array[1].getText());
+				}
+			}
+			else if(token_array[1].getText().equals(".EXT"))
+			{
+				System.out.println("ERROR: [ "+ token_array[0].getText() + " ]Label Found on .EXT!");
 
 			}
 		}
