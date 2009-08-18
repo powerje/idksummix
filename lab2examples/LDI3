@@ -1,0 +1,5 @@
+Lab2TP	.ORIG 
+Value	 AND 	R3,R3,x000F
+Acc		.EQU 	=x7
+		 LDI 	Acc, =#5
+		.END	x0000

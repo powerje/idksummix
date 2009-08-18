@@ -1,0 +1,16 @@
+SAMPLE .ORIG 3000
+Begin	LEA R1,x3100
+		LD R2,x3000
+		AND R0,R0,0
+		LDR R3,R1,0
+		ADD R0,R0,r3
+		ADD R1,R1,1
+		ADD R2,R2,-1
+		BRZP x04
+		TRAP x31
+		TRAP x25
+		.STRZ "hi! "
+		.FILL x7fff
+		.BLKW #2
+		.FILL x7fff
+		.END Begin

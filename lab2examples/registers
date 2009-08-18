@@ -1,0 +1,5 @@
+Lab2TP	.ORIG
+reg3	 LD  	R0,=#3
+reg		.EQU	#8
+		 AND 	reg,reg3,=#0	
+		.END	x0000

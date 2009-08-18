@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 	x30B1
+halt	 TRAP 	x25
+start	 BRNZ 	halt
+		.END	start

@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 
+msg		.EQU	#45
+		.EQU	msg	
+		.END	x0000

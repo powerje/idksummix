@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 	x30B1
+		 TRAP	x25
+		 BRZP 	x30B1
+		.END	x30B2

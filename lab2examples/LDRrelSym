@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 		
+msg		.FILL	#4
+		 LDR 	R0,R4,msg
+		.END	x0000
