@@ -18,7 +18,7 @@ public class SummiX_Utilities {
 		return "0x" + returnVal.toUpperCase();
 	}
 	
-	private int hexstringToInt(CharSequence input) {
+	public static int hexStringToInt(CharSequence input) {
 		int returnVal = 0; // needs initialized in the case an exception is caught
 		/**
 		 * Takes a CharSequence that is a hex number and converts it to an integer.
