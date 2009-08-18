@@ -144,7 +144,14 @@ public class SymbolTable {
 
 		while (i.hasNext()) {
 			String key = i.next();
- 			String ent = "I" + key + "=" + shortToHexStringNoPrefix(symbols.get(key).value);
+			String ent = new String("");
+			if (symbols.get(key).isRelative) {
+				ent += "R";
+			} else {
+				ent += "A";
+			}
+			
+ 			ent += key + "=" + shortToHexStringNoPrefix(symbols.get(key).value);
 			p2File.input(ent);
 		}
 		
