@@ -1,0 +1,3 @@
+ProgramLab2EG   .ORIG   x30B0
+count           .FILL   #4
+				.END	x30B0

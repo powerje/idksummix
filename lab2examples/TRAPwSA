@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 
+halt	.EQU	x25
+		 TRAP	halt
+		.END	0001

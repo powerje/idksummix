@@ -1,0 +1,4 @@
+Lab2TP	.ORIG 
+halt	 TRAP 	x25
+		 BRN 	halt
+		.END	x0001

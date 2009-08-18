@@ -1,0 +1,3 @@
+StLabe	.ORIG
+Store	STR R0, #12288
+	.END Store
