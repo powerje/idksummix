@@ -9,9 +9,6 @@ import summixAssembler.*;
 import summixAssembler.TextFile;
 
 public class Integrate {
-
-	//is this going to be the actual "running class" for this package?
-	//yes
 	
 	/** this container holds our assembled TextFile objects */
 	ArrayList<TextFile> objectFiles = new ArrayList<TextFile>();
