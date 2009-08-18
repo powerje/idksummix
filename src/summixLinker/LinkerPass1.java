@@ -5,7 +5,6 @@ import java.util.Iterator;
 import summixAssembler.TextFile;
 
 public class LinkerPass1 {
-	static int programLength;
 	static int PLA;
 	
 	public static void processObjects(ArrayList<TextFile> objects, int memoryStart)
@@ -49,7 +48,7 @@ public class LinkerPass1 {
 	private static void processHeaderRecord(String line) {
 		String programName = line.substring(1,6);
 		int programAddr = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,10));
-		programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,14));
+		int programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,14));
 		//maybe check for relocatability here also?
 		ExternalSymbolTable.input(programName, (short) programAddr, false);
 		PLA += programLength;	//get ready for the next program
