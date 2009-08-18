@@ -2,8 +2,8 @@ package summixLinker;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import summixAssembler.TextFile;
+import summixSimulator.SummiX_Utilities;
 
 public class LinkerPass1 {
 	static int PC;
@@ -43,7 +43,8 @@ public class LinkerPass1 {
 	}
 
 	private static void processHeaderRecord(String line) {
-		
+		String programName = line.substring(1,6);
+		int programAddr = IPLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,10));
 	}
 	
 }
