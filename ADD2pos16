@@ -1,3 +1,0 @@
-Lab2TP	.ORIG 
-		 ADD 	R3,R3,#16		
-		.END	x0000
