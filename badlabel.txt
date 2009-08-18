@@ -1,6 +1,6 @@
 Lab2     .ORIG
 badLabel 	.ENT Begin
-badLabel2 	.EXT outThere
+ 	.EXT outThere
 			.ENT Begin
 Begin        .EQU #1
 outThere 	LD R4,=xF
