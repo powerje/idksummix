@@ -3,17 +3,14 @@ package summixLinker;
 import java.util.ArrayList;
 import java.util.Iterator;
 import summixAssembler.TextFile;
-import summixSimulator.SummiX_Utilities;
 
 public class LinkerPass1 {
 	static int programLength;
-	static int IPLA;
 	static int PLA;
 	
 	public static void processObjects(ArrayList<TextFile> objects, int memoryStart)
 	{
-		IPLA = memoryStart;
-		PLA = IPLA;
+		PLA = memoryStart;
 		
 		Iterator<TextFile> i = objects.iterator();
 
@@ -57,5 +54,5 @@ public class LinkerPass1 {
 		ExternalSymbolTable.input(programName, (short) programAddr, false);
 		PLA += programLength;	//get ready for the next program
 	}
-	
+
 }
