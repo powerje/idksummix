@@ -9,7 +9,7 @@ public class Linker {
 	/**
 	 * @param args
 	 */
-	public TextFile Linker(ArrayList<TextFile> objects, int memoryStart)
+	public static TextFile processObjects(ArrayList<TextFile> objects, int memoryStart)
 	{
 
 		LinkerPass1.processObjects(objects, memoryStart);
