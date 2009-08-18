@@ -18,6 +18,18 @@ public class SummiX_Utilities {
 		return "0x" + returnVal.toUpperCase();
 	}
 	
+	public static String shortToHexStringNoPrefix(short data) {
+		String returnVal = Integer.toHexString((int) data);
+		if (returnVal.length() > 4) 
+		{
+			returnVal = returnVal.substring(returnVal.length() - 4, returnVal.length());
+		}
+		while (returnVal.length() < 4) 
+		{
+			returnVal = "0" + returnVal;
+		}
+		return returnVal.toUpperCase();
+	}
 	public static int hexStringToInt(CharSequence input) {
 		int returnVal = 0; // needs initialized in the case an exception is caught
 		/**
