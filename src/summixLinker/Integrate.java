@@ -27,7 +27,7 @@ public class Integrate {
 		 System.out.println("  \\_/  \\____/\\_| |_/\\_|  |_/  \\___/ |___/  \\_| \\_/ ");
 		 System.out.println("                                                 -TOO PRO");
 		
-		 int i = 0;
+		 int i = 0, memoryStart;
 		 String sourceFileName = null;
 		 String ipla = new String();
 		 boolean fileSwitch=false, objectSwitch=false;
@@ -46,6 +46,7 @@ public class Integrate {
 			System.out.print("ERROR: Integrator is unable to take user input, bailing out.");
 			System.exit(0);
 		}
+		memoryStart = summixSimulator.SummiX_Utilities.hexStringToInt(ipla);
 		
 		
 		 //use many of the same checks / information from assembler
@@ -108,8 +109,9 @@ public class Integrate {
 				}
 				i++;
 			}
-
-			
+	
+			LinkerPass1.processObjects(objectFiles, memoryStart);
+/* pointless			
 			boolean goodBuild = false;
 			TextFile sFile = null;
 			//Take filename from user, and try to make an object from it until you've successfully made one
@@ -145,7 +147,8 @@ public class Integrate {
 						System.out.println(e);
 					}
 				}
-				
+*/	
+			
 				//do actual work in here...
 				
 				/*if we pull 1 file, and then send it to the linker, the linker will link the main file and then an empty file.
@@ -157,7 +160,7 @@ public class Integrate {
 				
 				 */
 				
-				
+			/*	
 				System.out.println("Input another file? (y/n)");
 				try {
 					ans = br.readLine();
@@ -166,12 +169,14 @@ public class Integrate {
 					System.exit(0);
 					}
 			}
+			*/
 			/*now that the user is done inputting files, we will send the final main TextFile to our simulator from lab1.  This file will be an object file that
 			 * is acceptable by the original simulator. 
 			 * 
 			 * call summixSimulator/simulator
 			 * 
 			 */
+			
 	}
 	
 }
