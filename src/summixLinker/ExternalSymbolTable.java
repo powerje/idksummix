@@ -67,10 +67,10 @@ public class ExternalSymbolTable {
 	 */
 	public static void input(String key, short value, boolean relative) {	
 		if (symbols.containsKey(key)) {
-			System.out.println("ERROR: Symbol defined multiple times: " + key);
+			System.out.println("ERROR: External Symbol defined multiple times: " + key);
 		} else if (!key.matches("^\\w+$") || ((key.charAt(0)=='x') || (key.charAt(0)=='R'))) {		//can't start with R, x, or a number
 			//check if its a number...
-			System.out.println("ERROR: Invalid symbol name: " + key);
+			System.out.println("ERROR: Invalid external symbol name: " + key);
 		} else {
 			symbols.put(key, new Symbol(value, relative));
 		}
@@ -85,7 +85,7 @@ public class ExternalSymbolTable {
 	public static short getValue(String key) {
 		short returnVal = 0;
 		if (!symbols.containsKey(key)) {
-			System.out.println("ERROR: The value of this symbol is undefined in symbol table: " + key + ". The value 0 has been used in its place.");
+			System.out.println("ERROR: The value of this external symbol is undefined: " + key + ". The value 0 has been used in its place.");
 		} else {
 			returnVal = symbols.get(key).value;
 		}
@@ -114,7 +114,7 @@ public class ExternalSymbolTable {
 	 * Display the symbol table to the console
 	 */
 	public static void display() {
-		System.out.println( "Symbol Table:\n" +
+		System.out.println( "External Symbol Table:\n" +
 		"Format: Mnemonic (value, isRelative)");
 		System.out.println(symbols.toString());
 	}
