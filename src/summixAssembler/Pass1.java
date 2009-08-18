@@ -401,10 +401,12 @@ public class Pass1 {
 			{
 				//because im working under the above assumption i am adding the label to the symbol table
 				//oops assumption wrong for .EQU, so added if statement
-				if (!token_array[1].getText().equals(".EQU")) {
+/*				if (!token_array[1].getText().equals(".EQU") && !token_array[1].getClass().equals(".ENT") && !token_array[1].getText().equals(".EXT")) {
+
+					System.out.println("TEST2: " + token_array[1].getText());
 					SymbolTable.input(token_array[0].getText(), (short)LocationCounter.getAddress(), LocationCounter.isRelative());
 				}
-
+*/
 				if(token_array[1].getText().equals(".EQU"))
 				{
 					processEQU();
@@ -423,6 +425,7 @@ public class Pass1 {
 
 					else
 					{
+						//adds labels to symbol table here...
 						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.isRelative());
 					}			
 				}
@@ -563,7 +566,7 @@ public class Pass1 {
 			}
 			else if(token_array[1].getText().equals(".EXT"))
 			{
-				System.out.println("ERROR: [ "+ token_array[0].getText() + " ]Label Found on .EXT!");
+				System.out.println("ERROR: [ "+ token_array[0].getText() + " ] Label Found on .EXT!");
 
 			}
 		}
