@@ -20,6 +20,9 @@ public class LinkerPass1 {
 		}
 		
 		//TODO check final PLA against memoryStart (IPLA) and compare pages 
+		checkPage((short)PLA, (short)memoryStart);
+		
+		//leaving this committed for diagnostic purposes please don't tease me or otherwise insult my small ego
 		ExternalSymbolTable.display();
 	}
 	
@@ -52,9 +55,15 @@ public class LinkerPass1 {
 		String programName = line.substring(1,6).trim();
 		int programAddr = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,11));
 		int programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,15));
-		//TODO check for relocatability here
+		if (!(line.charAt(15)=='R'))  {	
+			//non-relocatable program
+			System.out.println("ERROR: Non-relocatable program " + programName + " cannot be linked properly.");
+		}
 		ExternalSymbolTable.input(programName, (short) programAddr, false);
 		PLA += programLength;	//get ready for the next program
 	}
-
+	
+	private static void checkPage(short page1, short page2) {
+		
+	}
 }
