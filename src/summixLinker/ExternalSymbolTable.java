@@ -2,7 +2,7 @@ package summixLinker;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SymbolTableL {
+public class ExternalSymbolTable {
 	public static String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
