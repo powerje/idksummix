@@ -20,6 +20,7 @@ public class LinkerPass1 {
 		}
 		
 		//TODO check final PLA against memoryStart (IPLA) and compare pages 
+		ExternalSymbolTable.display();
 	}
 	
 	private static void processObjectFile(TextFile code) {
@@ -36,21 +37,21 @@ public class LinkerPass1 {
 	}
 
 	private static void processRelocatableExternalSymbol(String line) {
-		String symbolName = line.substring(1, line.indexOf('=') - 1); //everything from the R til the =
+		String symbolName = line.substring(1, line.indexOf('=')); //everything from the R til the =
 		int symbolValue = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(line.indexOf('=')+1));	//everything after the =
 		ExternalSymbolTable.input(symbolName, (short)symbolValue, false);
 	}
 
 	private static void processAbsoluteExternalSymbol(String line) {
-		String symbolName = line.substring(1, line.indexOf('=') - 1); //everything from the A til the =
+		String symbolName = line.substring(1, line.indexOf('=')); //everything from the A til the =
 		int symbolValue = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(line.indexOf('=')+1));	//everything after the =
 		ExternalSymbolTable.input(symbolName, (short)symbolValue, false);
 	}
 
 	private static void processHeaderRecord(String line) {
-		String programName = line.substring(1,6);
-		int programAddr = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,10));
-		int programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,14));
+		String programName = line.substring(1,6).trim();
+		int programAddr = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,11));
+		int programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,15));
 		//TODO check for relocatability here
 		ExternalSymbolTable.input(programName, (short) programAddr, false);
 		PLA += programLength;	//get ready for the next program
