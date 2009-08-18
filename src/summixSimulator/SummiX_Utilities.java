@@ -42,7 +42,7 @@ public class SummiX_Utilities {
 		try {
 			returnVal = Integer.valueOf((String) input, 16).intValue();
 		} catch (NumberFormatException e)	{
-			System.out.println("Expected: hex value");
+			System.out.println("ERROR: not a good hex value: " + input);
 			System.exit(-1); //error
 		}
 		return returnVal;
