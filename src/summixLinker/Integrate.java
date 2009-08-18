@@ -11,9 +11,9 @@ import summixAssembler.TextFile;
 public class Integrate {
 	
 	/** this container holds our assembled TextFile objects */
-	ArrayList<TextFile> objectFiles = new ArrayList<TextFile>();
+	static ArrayList<TextFile> objectFiles = new ArrayList<TextFile>();
 	/** this container holds our source code TextFile objects */
-	ArrayList<TextFile> sourceFiles = new ArrayList<TextFile>();
+	static ArrayList<TextFile> sourceFiles = new ArrayList<TextFile>();
 	
 	
 	public static void main(String[] args) {
@@ -30,7 +30,7 @@ public class Integrate {
 		 int i = 0;
 		 String sourceFileName = null;
 		 String ipla = new String();
-		 boolean fileSwitch=false, verboseSwitch=false, dumpSwitch=false;
+		 boolean fileSwitch=false, objectSwitch=false;
 		 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		 
 		 //different modes to execute
@@ -56,7 +56,7 @@ public class Integrate {
 			while (i < args.length)
 			{
 				if(args[i].equalsIgnoreCase("-f")) //Check file switch, if it's there, increment and make sure that the filename is next
-				{
+				{/*
 					fileSwitch = true;
 					i++;
 					
@@ -68,24 +68,40 @@ public class Integrate {
 					{
 						System.out.println("ERROR: Missing [fileName] after the -f switch on command line.");
 						fileSwitch = false;
-					}
+					}*/
 				}
 				else if (args[i].equalsIgnoreCase("-o")) {
 					//in here we need to save these in whatever container we keep our assembled files in to give to the loader
-				}
-				else if(args[i].equalsIgnoreCase("-v")) 
-				{
-					verboseSwitch = true;
+					boolean foundOne = false;
+					objectSwitch = true;
+					i++;
+				
+					while (args.length > i) {
+						foundOne = true;
+						try {
+							TextFile objectFile = new TextFile(args[i]);
+							objectFiles.add(objectFile);
+							i++;
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		
+					/*
+					if (args.length > i) {
+		
+					}
+					else {
+						System.out.println("ERROR: Missing [fileName] after the -o switch on command line.");
+						objectSwitch = false;						
+					}
+					*/
 				}
 				else if(args[i].equalsIgnoreCase("-s")) 
 				{
 					//sim mode
-				}
-				
-				else if(args[i].equalsIgnoreCase("-d"))
-				{
-					dumpSwitch = true;
-				}
+				}				
 				else
 				{
 					System.out.println("ERROR: " + args[i] + "is a malformed switch.");

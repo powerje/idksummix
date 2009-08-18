@@ -18,6 +18,8 @@ public class LinkerPass1 {
 			TextFile current = i.next();
 			processObjectFile(current);
 		}
+		
+		//TODO check final PLA against memoryStart (IPLA) and compare pages 
 	}
 	
 	private static void processObjectFile(TextFile code) {
@@ -49,7 +51,7 @@ public class LinkerPass1 {
 		String programName = line.substring(1,6);
 		int programAddr = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,10));
 		int programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,14));
-		//maybe check for relocatability here also?
+		//TODO check for relocatability here
 		ExternalSymbolTable.input(programName, (short) programAddr, false);
 		PLA += programLength;	//get ready for the next program
 	}
