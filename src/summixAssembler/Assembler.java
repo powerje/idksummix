@@ -133,7 +133,6 @@ public class Assembler {
 		Pass2 pass2 = new Pass2(p1File);
 		p2File = pass2.processFile();
 		
-		p2File.display();
 		//Create lFile from sFile, p2File, symbol table, and literal table
 		ListFile list = new ListFile(sFile, p2File);
 		lFile = list.CreateListFile();
