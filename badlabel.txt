@@ -1,14 +1,15 @@
-Lab2     	.ORIG
-badLabel1 	.ENT Begin
+Lab2     .ORIG
+badLabel 	.ENT Begin
 badLabel2 	.EXT outThere
 			.ENT Begin
-Begin   	.EQU #1
-			LD R4,=xF
-			LD R0,=xFFF
-			LD Begin,=#16
-			LD Begin,=#0
+Begin        .EQU #1
+outThere 	LD R4,=xF
+Begin 		LD R0,=xFFF
+Begin 		LD Begin,=#16
+Begin 		LD Begin,=#0
 			LD Begin,#4
 			LD R7,xF
 			DBUG
-			RET
-			.END
+			RET       
+        	.END
+

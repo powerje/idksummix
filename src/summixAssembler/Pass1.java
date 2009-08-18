@@ -399,6 +399,10 @@ public class Pass1 {
 		{
 			if(token_array[0].getType() == TokenType.ALPHA && num_tokens == 4 ) //this means the line has a label for sure right?
 			{
+				if (!token_array[1].getText().equals(".EQU")) {
+					SymbolTable.input(token_array[0].getText(), (short)LocationCounter.getAddress(), LocationCounter.isRelative());
+				}
+				
 				if(token_array[1].getText().equals(".EQU"))
 				{
 					processEQU();
@@ -418,7 +422,7 @@ public class Pass1 {
 					else
 					{
 						//adds labels to symbol table here...
-						SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.isRelative());
+						//SymbolTable.input(token_array[0].getText(), LocationCounter.getAddress(), LocationCounter.isRelative());
 					}			
 				}
 				//I think this place means machineOp? also can take care of literals used with pseudoOps here

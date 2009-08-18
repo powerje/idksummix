@@ -22,6 +22,28 @@ public class LinkerPass1 {
 	}
 	
 	private static void processObjectFile(TextFile code) {
+		while (!code.isEndOfFile()) {
+			String line = code.getLine();
+			if (line.charAt(0)=='H') {
+				processHeaderRecord(line);
+			} else if (line.charAt(0)=='A') {
+				processAbsoluteExternalSymbol(line);
+			} else if (line.charAt(0)=='R') {
+				processRelocatableExternalSymbol(line);
+			}
+		}
+	}
+
+	private static void processRelocatableExternalSymbol(String line) {
 		
 	}
+
+	private static void processAbsoluteExternalSymbol(String line) {
+		
+	}
+
+	private static void processHeaderRecord(String line) {
+		
+	}
+	
 }
