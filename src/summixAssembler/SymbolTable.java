@@ -167,7 +167,11 @@ public class SymbolTable {
 	 */
 	public static void input(String key, short value, boolean relative) {	
 		if (symbols.containsKey(key)) {
-			System.out.println("ERROR: Symbol defined multiple times: " + key);
+			if (extSymbols.contains(key)) {
+				System.out.println("ERROR: Symbol is external and should not be defined within this scope: " + key);				
+			} else {
+				System.out.println("ERROR: Symbol defined multiple times: " + key);
+			}
 		} else if (!key.matches("^\\w+$") || ((key.charAt(0)=='x') || (key.charAt(0)=='R'))) {		//can't start with R, x, or a number
 			//check if its a number...
 			System.out.println("ERROR: Invalid symbol name: " + key);
