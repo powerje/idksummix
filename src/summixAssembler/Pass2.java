@@ -1230,7 +1230,7 @@ public class Pass2 {
 			p2File.input("T" + shortToHexString(LocationCounter.getAddress()) + shortToHexString(MachineOpTable.getOp(op)));
 			LocationCounter.incrementAmt(1);
 		}
-		else if (op.equals("DEBUG"))
+		else if (op.equals("DBUG"))
 		{
 			p2File.input("T" + shortToHexString(LocationCounter.getAddress()) + (shortToHexString(MachineOpTable.getOp(op)))); //Get op from machineop table, turn it into a string, append it to the output string, and the write it to the file
 			LocationCounter.incrementAmt(1);
