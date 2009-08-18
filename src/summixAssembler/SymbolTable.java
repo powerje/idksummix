@@ -141,18 +141,20 @@ public class SymbolTable {
 	public static TextFile printPass2Table(TextFile p2File) {
 	
 		Iterator<String> i = entSymbols.iterator();
-
+		
 		while (i.hasNext()) {
 			String key = i.next();
 			String ent = new String("");
-			if (symbols.get(key).isRelative) {
-				ent += "R";
-			} else {
-				ent += "A";
-			}
+			if (symbols.containsKey(key)) {
+				if (symbols.get(key).isRelative) {
+					ent += "R";
+				} else {
+					ent += "A";
+				}
 			
- 			ent += key + "=" + shortToHexStringNoPrefix(symbols.get(key).value);
-			p2File.input(ent);
+ 				ent += key + "=" + shortToHexStringNoPrefix(symbols.get(key).value);
+ 				p2File.input(ent);
+			}
 		}
 		
 		return p2File;

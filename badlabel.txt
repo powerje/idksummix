@@ -1,15 +1,14 @@
 Lab2     .ORIG
-badLabel 	.ENT Begin
- 	.EXT outThere
-			.ENT Begin
+badLabel .ENT Begin,Yo,Here
+.EXT outThere
+.ENT Begin,Yo,Here
 Begin        .EQU #1
-outThere 	LD R4,=xF
-Begin 		LD R0,=xFFF
-Begin 		LD Begin,=#16
-Begin 		LD Begin,=#0
-			LD Begin,#4
-			LD R7,xF
-			DBUG
-			RET       
-        	.END
-
+outThere LD R4,=xF
+LD R0,=xFFF
+Yo LD Begin,=#16
+now LD Begin,=#0
+LD Begin,#4
+LD R7,xF
+DBUG
+now RET
+			.END
