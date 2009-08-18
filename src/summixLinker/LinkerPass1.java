@@ -19,7 +19,7 @@ public class LinkerPass1 {
 			processObjectFile(current);
 		}
 		
-		//TODO check final PLA against memoryStart (IPLA) and compare pages 
+		//check final PLA against memoryStart (IPLA) and compare pages 
 		checkPage((short)PLA, (short)memoryStart);
 		
 		//leaving this committed for diagnostic purposes please don't tease me or otherwise insult my small ego
@@ -64,6 +64,10 @@ public class LinkerPass1 {
 	}
 	
 	private static void checkPage(short page1, short page2) {
-		
+		page1 = (short) (page1 >>> 7);
+		page2 = (short) (page2 >>> 7);
+		if (!(page1==page2)) {
+			System.out.println("ERROR: Page rollover within program.");
+		}
 	}
 }
