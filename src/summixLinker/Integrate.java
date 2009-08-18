@@ -31,6 +31,7 @@ public class Integrate {
 		 String sourceFileName = null;
 		 String ipla = new String();
 		 boolean fileSwitch=false, objectSwitch=false;
+		 
 		 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		 
 		 //different modes to execute
@@ -40,7 +41,6 @@ public class Integrate {
 		 //loop through to get valid user input, take it in hex
 		 System.out.print("Please input an IPLA (Initial Program Load Address: ");
 		 try {
-			 //int i = Integer.parseInt(br.readLine());
 			ipla = br.readLine();
 		} catch (IOException e1) {
 			System.out.print("ERROR: Integrator is unable to take user input, bailing out.");
@@ -57,19 +57,48 @@ public class Integrate {
 			while (i < args.length)
 			{
 				if(args[i].equalsIgnoreCase("-f")) //Check file switch, if it's there, increment and make sure that the filename is next
-				{/*
+				{
 					fileSwitch = true;
-					i++;
-					
-					if (args.length > i)
+					while(fileSwitch)
 					{
-						sourceFileName = args[i];
+						i++;
+						//verify that the next arg isn't the -o identifier.
+						if(args[i].equalsIgnoreCase("-o"))
+						{
+							fileSwitch = false;
+						}
+						
+						if ((args.length > i) && fileSwitch)
+						{
+							//clear symbol table, location counter, etc..
+							
+							sourceFileName = args[i];
+							//create p1file
+							TextFile sFile = new TextFile();
+							try {
+								sFile = new TextFile(sourceFileName);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							TextFile p1File = new TextFile();
+							Pass1 pass1 = new Pass1(sFile);
+							p1File = pass1.processFile();
+							
+							//create p2file
+							TextFile p2File = new TextFile();
+							Pass2 pass2 = new Pass2(p1File);
+							p2File = pass2.processFile();
+							
+							//add assembled object to object files
+							objectFiles.add(p2File);  //DOES THIS ADD AT THE BEGINNING, END, WHAT?
+						}
+						else if(!(args.length > i) && fileSwitch)
+						{
+							System.out.println("ERROR: Missing [fileName] after the -f switch on command line.");
+							fileSwitch = false;
+						}
 					}
-					else
-					{
-						System.out.println("ERROR: Missing [fileName] after the -f switch on command line.");
-						fileSwitch = false;
-					}*/
 				}
 				else if (args[i].equalsIgnoreCase("-o")) {
 					//in here we need to save these in whatever container we keep our assembled files in to give to the loader
@@ -77,6 +106,12 @@ public class Integrate {
 					objectSwitch = true;
 					i++;
 				
+					//verify that the next arg isn't the -f identifier.
+					if(args[i].equalsIgnoreCase("-f"))
+					{
+						objectSwitch = false;
+					}
+					
 					while (args.length > i) {
 						foundOne = true;
 						try {
@@ -88,16 +123,6 @@ public class Integrate {
 							e.printStackTrace();
 						}
 					}
-		
-					/*
-					if (args.length > i) {
-		
-					}
-					else {
-						System.out.println("ERROR: Missing [fileName] after the -o switch on command line.");
-						objectSwitch = false;						
-					}
-					*/
 				}
 				else if(args[i].equalsIgnoreCase("-s")) 
 				{
@@ -111,71 +136,9 @@ public class Integrate {
 			}
 	
 			LinkerPass1.processObjects(objectFiles, memoryStart);
-/* pointless			
-			boolean goodBuild = false;
-			TextFile sFile = null;
-			//Take filename from user, and try to make an object from it until you've successfully made one
-			//enter multiple file names
-			String ans = "y";
 			
-			//how can I input multiple files while having unique variable names so they don't overwrite each other??
+			//pass final TextFile to summixSimulator
 			
-			while(ans == "y")
-			{
-				while (!goodBuild)
-				{
-					if (fileSwitch)
-					{
-						fileSwitch = false;
-					}
-					else
-					{
-						System.out.print("Please input the file name of the source file:");
-						try {
-							sourceFileName = br.readLine();
-						} catch (IOException e) {
-							System.out.print("ERROR: Integrator is unable to take user input, bailing out.");
-							System.exit(0);
-						}				
-					}
-					//Create sFile from the user's fileName file
-					try{
-						sFile = new TextFile(sourceFileName);
-						goodBuild = true;
-					}
-					catch(IOException e){
-						System.out.println(e);
-					}
-				}
-*/	
-			
-				//do actual work in here...
-				
-				/*if we pull 1 file, and then send it to the linker, the linker will link the main file and then an empty file.
-				the returned value is then the new "main file." At that point, we can ask for another file, and it goes through a similar process.
-				This new file is the "addon" for the linker which will be joined with the original main.  That returned value is the new "main" and we 
-				continue until the user is done inputting files.
-				
-				call Linker(main, addon);
-				
-				 */
-				
-			/*	
-				System.out.println("Input another file? (y/n)");
-				try {
-					ans = br.readLine();
-				} catch (IOException e) {
-					System.out.print("ERROR: Integrator is unable to take user input, bailing out.");
-					System.exit(0);
-					}
-			}
-			*/
-			/*now that the user is done inputting files, we will send the final main TextFile to our simulator from lab1.  This file will be an object file that
-			 * is acceptable by the original simulator. 
-			 * 
-			 * call summixSimulator/simulator
-			 * 
-			 */
 			
 	}
 	
