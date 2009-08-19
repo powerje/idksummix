@@ -55,7 +55,7 @@ public class LinkerPass2 {
 		else if(line.startsWith("T"))
 		{
 
-			short front = (short) (ExternalSymbolTable.getValue(programName.trim()) + Short.parseShort(line.substring(1, 5), 16)); //First four after T
+			short front = (short) (ExternalSymbolTable.getValue(programName) + Short.parseShort(line.substring(1, 5), 16)); //First four after T
 			short back = Short.parseShort(line.substring(5, 9), 16); //Last four after T
 			short temp = 0;
 			
@@ -63,13 +63,13 @@ public class LinkerPass2 {
 			{
 				if (line.charAt(10) == 0) //M0
 				{
-					temp = ExternalSymbolTable.getValue(programName.trim());
+					temp = ExternalSymbolTable.getValue(programName);
 					temp &= 0x1FF;
 					back += temp;
 				}
 				else //M1
 				{
-					temp = ExternalSymbolTable.getValue(programName.trim());
+					temp = ExternalSymbolTable.getValue(programName);
 					back += temp;
 				}
 			}
