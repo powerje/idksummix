@@ -11,13 +11,11 @@ public class LinkerPass2 {
 	private static TextFile finalObjectFile = new TextFile();
 	private static String programName;
 	private static short programSize;
-	private static short programStartingAddress;
 	private static boolean processedFirstHeader;
 	private static String finalObjectHeader;
 
-	public static TextFile processObjects(ArrayList<TextFile> objects, int memoryStart)
+	public static TextFile processObjects(ArrayList<TextFile> objects)
 	{
-		programStartingAddress = (short) memoryStart;
 		Iterator<TextFile> objectCycler = objects.iterator();
 
 		while(objectCycler.hasNext())
@@ -30,15 +28,18 @@ public class LinkerPass2 {
 
 	private static void processObjectFile(TextFile unlinkedObject)
 	{
-		while(!unlinkedObject.isEndOfFile())
+		boolean foundEnd = false;
+		
+		while(!unlinkedObject.isEndOfFile() && !foundEnd)
 		{
-			processAnyLine(unlinkedObject.getLine());
+			foundEnd = processAnyLine(unlinkedObject.getLine());
 		}
 	}
 
-	private static void processAnyLine(String line)
+	private static boolean processAnyLine(String line)
 	{
-
+		boolean foundEnd = false;
+		
 		if (line.startsWith("H"))
 		{
 			programName = line.substring(1, 7);
@@ -53,22 +54,22 @@ public class LinkerPass2 {
 		}
 		else if(line.startsWith("T"))
 		{
-			short front = (short) (ExternalSymbolTable.getValue(programName) + Short.parseShort(line.substring(1, 5), 16)); //First four after T
-			short back = 0; //Last four after T
+
+			short front = (short) (ExternalSymbolTable.getValue(programName.trim()) + Short.parseShort(line.substring(1, 5), 16)); //First four after T
+			short back = Short.parseShort(line.substring(5, 9), 16); //Last four after T
 			short temp = 0;
 			
 			if (line.length() == 11) //Line has M0 or M1 record, but no X record
 			{
 				if (line.charAt(10) == 0) //M0
 				{
-					back = Short.parseShort(line.substring(5, 9), 16);
-					temp = ExternalSymbolTable.getValue(programName);
+					temp = ExternalSymbolTable.getValue(programName.trim());
 					temp &= 0x1FF;
 					back += temp;
 				}
 				else //M1
 				{
-					back = ExternalSymbolTable.getValue(programName);
+					temp = ExternalSymbolTable.getValue(programName.trim());
 					back += temp;
 				}
 			}
@@ -76,17 +77,17 @@ public class LinkerPass2 {
 			{
 				if (line.charAt(10) == 0) //M0
 				{
-					
+					temp = ExternalSymbolTable.getValue(line.substring(12));
+					temp &= 0x1FF;
+					back += temp;
 				}
 				else //M1
 				{
-					
+					temp = ExternalSymbolTable.getValue(line.substring(12));
+					back += temp;
 				}				
 			}
-			else //Line has neither M0/M1/X record
-			{
-				
-			}
+			//else Line has neither M0/M1/X record
 			
 			finalObjectFile.input("T" + SymbolTable.shortToHexStringNoPrefix(front) + SymbolTable.shortToHexStringNoPrefix(back));
 		}
@@ -94,12 +95,13 @@ public class LinkerPass2 {
 		{
 			finalObjectHeader += ExternalSymbolTable.shortToHexStringNoPrefix(programSize);
 			finalObjectFile.input("E");
+			foundEnd = true;
 		}
 		else if(line.startsWith(";"))
 		{
 			System.out.println("ERROR: Object file for program " + programName + " has an error in it.");
 		}
-
+		return foundEnd;
 
 	}
 }
