@@ -16,7 +16,7 @@ public class SymbolTable {
 	 *
 	 * Takes an short input and returns a four character hex representation of it from 0000 to FFFF 
 	 * @param data	input
-	 * @return hex representation from 0000 to FFFF 
+	 * @return hex representation from 0x0000 to 0xFFFF 
 	 * @author Jim
 	 *
 	 */
@@ -33,6 +33,14 @@ public class SymbolTable {
 		return "0x" + returnVal.toUpperCase();
 	}
 
+	/**
+	 *
+	 * Takes an short input and returns a four character hex representation of it from 0000 to FFFF 
+	 * @param data	input
+	 * @return hex representation from 0000 to FFFF 
+	 * @author Jim
+	 *
+	 */
 	public static String shortToHexStringNoPrefix(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
