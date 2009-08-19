@@ -1,5 +1,6 @@
 package summixLinker;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -134,11 +135,15 @@ public class Integrate {
 				}
 				i++;
 			}
-	
-			LinkerPass1.processObjects(objectFiles, memoryStart);
+			
+			TextFile finalObj = new TextFile();
+			finalObj = Linker.processObjects(objectFiles, memoryStart);
+			//do not do this, LinkerPass1.processObjects(objectFiles, memoryStart);
+			
+			finalObj.write("finalObject.o");
 			
 			//pass final TextFile to summixSimulator
-			
+			summixSimulator.Simulator("finalObject.o");
 			
 	}
 	
