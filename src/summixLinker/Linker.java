@@ -13,7 +13,7 @@ public class Linker {
 	{
 
 		LinkerPass1.processObjects(objects, memoryStart);
-		TextFile finalObjectFile = LinkerPass2.processObjects(objects, memoryStart);
+		TextFile finalObjectFile = LinkerPass2.processObjects(objects);
 
 
 		return finalObjectFile;
