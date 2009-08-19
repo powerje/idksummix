@@ -110,6 +110,8 @@ public class Pass1 {
 
 	public Pass1(TextFile incomingSource)
 	{
+		SymbolTable.reset();
+		LiteralTable.reset();
 		body = incomingSource;
 		body.stripComments();
 		orig = body;

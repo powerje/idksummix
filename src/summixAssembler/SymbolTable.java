@@ -80,6 +80,15 @@ public class SymbolTable {
 	
 	/** symbols that are EXT */
 	private static Vector<String> extSymbols = new Vector<String>();
+
+	/**
+	 * Resets to empty Symbol Table
+	 */
+	public static void reset() {
+		symbols 	= new HashMap<String,Symbol>();
+		entSymbols	= new Vector<String>();
+		extSymbols 	= new Vector<String>();
+	}
 	
 	/**
 	 * Adds an entry to symbol table
