@@ -18,10 +18,23 @@ public class LiteralTable {
 	private static Map<Short, Short> literals = new HashMap<Short, Short>();
 	private static ArrayList<Short> literalKeys = new ArrayList<Short>();
 	/** size of the hashmap */
-	private static int size = 0;
-	
+	private static int size = 0;	
 	private static Collection<Short> c = null;
 	private static Iterator<Short> iterator = null;
+	
+	/**
+	 * Resets the literal table to an empty state.
+	 */
+	public static void reset() {
+		/**  Hash map to store name -> address relationship in.*/
+		literals = new HashMap<Short, Short>();
+		literalKeys = new ArrayList<Short>();
+		/** size of the hashmap */
+		size = 0;	
+		c = null;
+		iterator = null;
+	}
+	
 	/**
 	 * Adds a literal to the literal table
 	 * 
