@@ -68,9 +68,11 @@ public class ExternalSymbolTable {
 	public static void input(String key, short value, boolean relative) {	
 		if (symbols.containsKey(key)) {
 			System.out.println("ERROR: External Symbol defined multiple times: " + key);
-		} else if (!key.matches("^\\w+$") || ((key.charAt(0)=='x') || (key.charAt(0)=='R'))) {		//can't start with R, x, or a number
+	/*  This restriction is not necessary in the linker/loader
+	 *	} else if (!key.matches("^\\w+$") || ((key.charAt(0)=='x') || (key.charAt(0)=='R'))) {		//can't start with R, x, or a number
 			//check if its a number...
 			System.out.println("ERROR: Invalid external symbol name: " + key);
+	*/
 		} else {
 			symbols.put(key, new Symbol(value, relative));
 		}
