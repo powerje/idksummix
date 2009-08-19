@@ -3,10 +3,21 @@ package summixLinker;
 import java.util.ArrayList;
 import java.util.Iterator;
 import summixAssembler.TextFile;
-
+/**
+ * 
+ * @author Jim
+ * @author Dan
+ */
 public class LinkerPass1 {
+	/**
+	 * 
+	 */
 	static int PLA;
-	
+	/**
+	 * 
+	 * @param objects
+	 * @param memoryStart
+	 */
 	public static void processObjects(ArrayList<TextFile> objects, int memoryStart)
 	{
 		PLA = memoryStart;
@@ -22,10 +33,12 @@ public class LinkerPass1 {
 		//check final PLA against memoryStart (IPLA) and compare pages 
 		checkPage((short)PLA, (short)memoryStart);
 		
-		//leaving this committed for diagnostic purposes please don't tease me or otherwise insult my small ego
-		ExternalSymbolTable.display();
 	}
 	
+	/**
+	 * 
+	 * @param code
+	 */
 	private static void processObjectFile(TextFile code) {
 		while (!code.isEndOfFile()) {
 			String line = code.getLine();
@@ -39,18 +52,30 @@ public class LinkerPass1 {
 		}
 	}
 
+	/**
+	 * 
+	 * @param line
+	 */
 	private static void processRelocatableExternalSymbol(String line) {
 		String symbolName = line.substring(1, line.indexOf('=')); //everything from the R til the =
 		int symbolValue = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(line.indexOf('=')+1));	//everything after the =
 		ExternalSymbolTable.input(symbolName, (short)symbolValue, false);
 	}
 
+	/**
+	 * 
+	 * @param line
+	 */
 	private static void processAbsoluteExternalSymbol(String line) {
 		String symbolName = line.substring(1, line.indexOf('=')); //everything from the A til the =
 		int symbolValue = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(line.indexOf('=')+1));	//everything after the =
 		ExternalSymbolTable.input(symbolName, (short)symbolValue, false);
 	}
 
+	/**
+	 * 
+	 * @param line
+	 */
 	private static void processHeaderRecord(String line) {
 		String programName = line.substring(1,6);
 		int programAddr = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,11));
@@ -63,6 +88,11 @@ public class LinkerPass1 {
 		PLA += programLength;	//get ready for the next program
 	}
 	
+	/**
+	 * 
+	 * @param page1
+	 * @param page2
+	 */
 	private static void checkPage(short page1, short page2) {
 		page1 = (short) (page1 >>> 7);
 		page2 = (short) (page2 >>> 7);
