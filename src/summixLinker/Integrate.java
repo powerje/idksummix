@@ -140,11 +140,21 @@ public class Integrate {
 			finalObj = Linker.processObjects(objectFiles, memoryStart);
 			//do not do this, LinkerPass1.processObjects(objectFiles, memoryStart);
 			
-			finalObj.write("finalObject.o");
+			try {
+				finalObj.write("finalObject.o");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			//pass final TextFile to summixSimulator
-			summixSimulator.Simulator("finalObject.o");
-			
+			String[] argArray = {"finalObject.o"};
+			try {
+				summixSimulator.Simulator.main(argArray);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 }
