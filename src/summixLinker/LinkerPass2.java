@@ -20,7 +20,9 @@ public class LinkerPass2 {
 
 		while(objectCycler.hasNext())
 		{
-			processObjectFile(objectCycler.next());
+			TextFile temp = objectCycler.next();
+			temp.reset();
+			processObjectFile(temp);
 		}
 
 		return finalObjectFile;
