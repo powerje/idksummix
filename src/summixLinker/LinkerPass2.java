@@ -104,7 +104,7 @@ public class LinkerPass2 {
 			if (!processedFirstEnd)
 			{
 				processedFirstEnd = true;
-				startAddress = ExternalSymbolTable.shortToHexStringNoPrefix((short)Integer.parseInt(line.substring(1), 16));
+				startAddress =  ExternalSymbolTable.shortToHexStringNoPrefix((short)((int)ExternalSymbolTable.getValue(programName) + Integer.parseInt(line.substring(1), 16)));
 			}
 			foundEnd = true;
 		}
