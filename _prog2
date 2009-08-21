@@ -2,7 +2,7 @@ Prog2 .ORIG
 .ENT ANS,Start
 .EXT PRINT,X
 ANS .BLKW x1
-Start LD R1,x
+Start LD R1,X
 ADD R2,R1,R1
 ST R2,ANS
 JMP PRINT
