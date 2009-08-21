@@ -13,6 +13,7 @@ public class LinkerPass2 {
 	private static short programSize;
 	private static boolean processedFirstHeader;
 	private static String finalObjectHeader;
+	private static boolean haveNotBuiltHeader = true;
 
 	public static TextFile processObjects(ArrayList<TextFile> objects)
 	{
@@ -25,6 +26,7 @@ public class LinkerPass2 {
 			processObjectFile(temp);
 		}
 
+		finalObjectFile.display();
 		return finalObjectFile;
 	}
 
@@ -58,7 +60,7 @@ public class LinkerPass2 {
 		{
 
 			short front = (short) (ExternalSymbolTable.getValue(programName) + Short.parseShort(line.substring(1, 5), 16)); //First four after T
-			short back = Short.parseShort(line.substring(5, 9), 16); //Last four after T
+			short back = (short)Integer.parseInt(line.substring(5, 9), 16); //Last four after T
 			short temp = 0;
 			
 			if (line.length() == 11) //Line has M0 or M1 record, but no X record
@@ -93,11 +95,13 @@ public class LinkerPass2 {
 			
 			finalObjectFile.input("T" + SymbolTable.shortToHexStringNoPrefix(front) + SymbolTable.shortToHexStringNoPrefix(back));
 		}
-		else if(line.startsWith("E"))
+		else if(line.startsWith("E") && haveNotBuiltHeader)
 		{
 			finalObjectHeader += ExternalSymbolTable.shortToHexStringNoPrefix(programSize);
 			finalObjectFile.input("E");
+			finalObjectFile.insertLine(0, finalObjectHeader);
 			foundEnd = true;
+			haveNotBuiltHeader = false;
 		}
 		else if(line.startsWith(";"))
 		{
