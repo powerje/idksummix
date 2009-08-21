@@ -26,6 +26,7 @@ public class LinkerPass2 {
 			processObjectFile(temp);
 		}
 
+		finalObjectFile.input("E" + ExternalSymbolTable.shortToHexStringNoPrefix(programSize));
 		finalObjectFile.display();
 		return finalObjectFile;
 	}
@@ -52,7 +53,7 @@ public class LinkerPass2 {
 			if(!processedFirstHeader)
 			{
 				processedFirstHeader = true;
-				finalObjectHeader = "H" + programName + line.substring(1, 7); //Add in H[program name][start address] still need to add the size
+				finalObjectHeader = "H" + programName + ExternalSymbolTable.shortToHexStringNoPrefix((ExternalSymbolTable.getValue(line.substring(1, 7)))); //Add in H[program name][start address] still need to add the size
 			}
 
 		}
@@ -98,7 +99,6 @@ public class LinkerPass2 {
 		else if(line.startsWith("E") && haveNotBuiltHeader)
 		{
 			finalObjectHeader += ExternalSymbolTable.shortToHexStringNoPrefix(programSize);
-			finalObjectFile.input("E");
 			finalObjectFile.insertLine(0, finalObjectHeader);
 			foundEnd = true;
 			haveNotBuiltHeader = false;
