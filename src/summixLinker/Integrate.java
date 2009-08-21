@@ -98,7 +98,7 @@ public class Integrate {
 
 						//add assembled object to object files
 						objectFiles.add(p2File);  //add to the end of the arrayList
-						p2File.display();
+						//p2File.display();
 					}
 					else if(!(args.length > i) && fileSwitch)
 					{
@@ -130,11 +130,7 @@ public class Integrate {
 						e.printStackTrace();
 					}
 				}
-			}
-			else if(args[i].equalsIgnoreCase("-s")) 
-			{
-				//sim mode
-			}				
+			}		
 			else
 			{
 				System.out.println("ERROR: " + args[i] + "is a malformed switch.");

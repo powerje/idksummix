@@ -9,10 +9,9 @@ import summixAssembler.TextFile;
  * @author Dan
  */
 public class LinkerPass1 {
-	/**
-	 * 
-	 */
+	/** The program load address to keep track of */
 	static int PLA;
+	
 	/**
 	 * 
 	 * @param objects
