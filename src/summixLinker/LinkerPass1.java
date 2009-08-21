@@ -13,9 +13,9 @@ public class LinkerPass1 {
 	static int PLA;
 	
 	/**
-	 * 
-	 * @param objects
-	 * @param memoryStart
+	 * Process all object files sent in an ArrayList and fills the external symbol table based on them
+	 * @param objects ArrayList of object files
+	 * @param memoryStart the first location in memory for the final program to run
 	 */
 	public static void processObjects(ArrayList<TextFile> objects, int memoryStart)
 	{
@@ -35,8 +35,8 @@ public class LinkerPass1 {
 	}
 	
 	/**
-	 * 
-	 * @param code
+	 * Process individual object file
+	 * @param code TextFile that contains the data in the object file
 	 */
 	private static void processObjectFile(TextFile code) {
 		while (!code.isEndOfFile()) {
@@ -52,8 +52,8 @@ public class LinkerPass1 {
 	}
 
 	/**
-	 * 
-	 * @param line
+	 * Processes all relocatable external symbols
+	 * @param line string containing data on the relocatable symbol
 	 */
 	private static void processRelocatableExternalSymbol(String line) {
 		String symbolName = line.substring(1, line.indexOf('=')); //everything from the R til the =
@@ -62,8 +62,8 @@ public class LinkerPass1 {
 	}
 
 	/**
-	 * 
-	 * @param line
+	 * Processes all absolute external symbols
+	 * @param line string containing data on the absolute symbol
 	 */
 	private static void processAbsoluteExternalSymbol(String line) {
 		String symbolName = line.substring(1, line.indexOf('=')); //everything from the A til the =
@@ -72,8 +72,8 @@ public class LinkerPass1 {
 	}
 
 	/**
-	 * 
-	 * @param line
+	 * Processes header records for each object file
+	 * @param line string containing header record
 	 */
 	private static void processHeaderRecord(String line) {
 		String programName = line.substring(1,6);
@@ -88,9 +88,9 @@ public class LinkerPass1 {
 	}
 	
 	/**
-	 * 
-	 * @param page1
-	 * @param page2
+	 * Checks two addresses to ensure they are on the same page
+	 * @param page1 the first address
+	 * @param page2 the second address
 	 */
 	private static void checkPage(short page1, short page2) {
 		page1 = (short) (page1 >>> 7);
