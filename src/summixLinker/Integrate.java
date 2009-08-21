@@ -82,6 +82,9 @@ public class Integrate {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							
+							summixAssembler.MachineOpTable.initialize();
+							summixAssembler.PseudoOpTable.initialize();
 							TextFile p1File = new TextFile();
 							Pass1 pass1 = new Pass1(sFile);
 							p1File = pass1.processFile();
