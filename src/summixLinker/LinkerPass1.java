@@ -11,6 +11,8 @@ import summixAssembler.TextFile;
 public class LinkerPass1 {
 	/** The program load address to keep track of */
 	static int PLA;
+	/** The length of the current program being processed */
+	static int programLength;
 	
 	/**
 	 * Process all object files sent in an ArrayList and fills the external symbol table based on them
@@ -50,6 +52,7 @@ public class LinkerPass1 {
 				processRelocatableExternalSymbol(line);
 			}
 		}
+		PLA += programLength;	//get ready for the next program
 	}
 
 	/**
@@ -79,13 +82,12 @@ public class LinkerPass1 {
 	private static void processHeaderRecord(String line) {
 		String programName = line.substring(1,7);
 		int programAddr = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,11));
-		int programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,15));
+		programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,15));
 		if (!(line.charAt(15)=='R'))  {	
 			//non-relocatable program
 			System.out.println("ERROR: Non-relocatable program " + programName + " cannot be linked properly.");
 		}
 		ExternalSymbolTable.input(programName, (short) programAddr, false);
-		PLA += programLength;	//get ready for the next program
 	}
 	
 	/**
