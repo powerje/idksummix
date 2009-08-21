@@ -69,7 +69,7 @@ public class LinkerPass2 {
 			
 			if (line.length() == 11) //Line has M0 or M1 record, but no X record
 			{
-				if (line.charAt(10) == 0) //M0
+				if (line.charAt(10) == '0') //M0
 				{
 					temp = ExternalSymbolTable.getValue(programName);
 					temp &= 0x1FF;
@@ -83,7 +83,7 @@ public class LinkerPass2 {
 			}
 			else if (line.length() > 11) //Line has M0/M1 record, AND has an X record
 			{
-				if (line.charAt(10) == 0) //M0
+				if (line.charAt(10) == '0') //M0
 				{
 					temp = ExternalSymbolTable.getValue(line.substring(12));
 					temp &= 0x1FF;
