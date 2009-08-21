@@ -77,7 +77,7 @@ public class LinkerPass1 {
 	 * @param line string containing header record
 	 */
 	private static void processHeaderRecord(String line) {
-		String programName = line.substring(1,6);
+		String programName = line.substring(1,7);
 		int programAddr = PLA + summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(7,11));
 		int programLength = summixSimulator.SummiX_Utilities.hexStringToInt(line.substring(11,15));
 		if (!(line.charAt(15)=='R'))  {	
