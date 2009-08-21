@@ -26,6 +26,7 @@ public class LinkerPass1 {
 		//iterate through each object file and pull their info into the external symbol table
 		while (i.hasNext()) {
 			TextFile current = i.next();
+			current.reset();
 			processObjectFile(current);
 		}
 		
