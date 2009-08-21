@@ -1,0 +1,6 @@
+Prog1 .ORIG
+.ENT x
+.EXT Start
+x .FILL x4
+Main JMP Start
+.END Main
