@@ -1,5 +1,6 @@
 package summixSimulator;
 
+import java.util.Random;
 import java.util.Scanner;
 import summixSimulator.SummiX_Utilities.InstructionCode;
 
@@ -270,7 +271,9 @@ public class Executor {
 				if ((machine.getSimState()) == SummiX_Utilities.Simulator_State.STEP || (machine.getSimState() == SummiX_Utilities.Simulator_State.TRACE)) {
 					System.out.println("RND");
 				}
-				machine.setRegister(0, (short)Math.random());
+	    		Random randomNumbers = new Random();
+	    		int ran = (short) randomNumbers.nextInt(); //random int within the range of 16 bits
+				machine.setRegister(0, (short) ran);
 				break; 
 			case ERR: //was an error op code
 				System.out.println("System error.");
