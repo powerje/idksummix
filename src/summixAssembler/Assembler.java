@@ -134,8 +134,8 @@ public class Assembler {
 		p2File = pass2.processFile();
 		
 		//Create lFile from sFile, p2File, symbol table, and literal table
-		ListFile list = new ListFile(sFile, p2File);
-		lFile = list.CreateListFile();
+		//ListFile list = new ListFile(sFile, p2File);
+		//lFile = list.CreateListFile();
 		
 		//If -v switch is set, display p2File and lFile before write
 		if (verboseSwitch)

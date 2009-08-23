@@ -31,8 +31,8 @@ public class Integrate {
 		int i = 0, memoryStart;
 		String sourceFileName = null;
 		String ipla = new String();
-		boolean fileSwitch=false, objectSwitch=false;
-
+		boolean fileSwitch=false,objectSwitch=false;
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		//different modes to execute
@@ -57,48 +57,50 @@ public class Integrate {
 		 */
 		while (i < args.length)
 		{
+			//f switch
 			if(args[i].equalsIgnoreCase("-f")) //Check file switch, if it's there, increment and make sure that the filename is next
 			{
 				fileSwitch = true;
 				//while the user chose -f and we're not past the end of arguments entered loop through
-				while(fileSwitch && (i < (args.length - 1)))
+				while(fileSwitch && (i < args.length))
 				{
 					i++;
-					//verify that the next arg isn't the -o identifier.
-					if(args[i].equalsIgnoreCase("-o"))
-					{
-						fileSwitch = false;
-					}
 
-					if ((args.length > i) && fileSwitch)
+					if ((i < args.length) && fileSwitch)
 					{
-						//clear symbol table, location counter, etc..
+						//verify that the next arg isn't the -o identifier.
+						if(args[i].equalsIgnoreCase("-o"))
+						{
+							fileSwitch = false;
+							objectSwitch = true;
+							i--;
+						} else {			
+							//clear symbol table, location counter, etc..
+							sourceFileName = args[i];
+							//create p1file
+							TextFile sFile = new TextFile();
+							try {
+								sFile = new TextFile(sourceFileName);
+							} catch (IOException e) {
+								System.out.println("Could not open file: " + args[i]);
+								System.exit(-1);
+							}
 
-						sourceFileName = args[i];
-						//create p1file
-						TextFile sFile = new TextFile();
-						try {
-							sFile = new TextFile(sourceFileName);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							//init tables
+							summixAssembler.MachineOpTable.initialize();
+							summixAssembler.PseudoOpTable.initialize();
+
+							//create p1File
+							Pass1 pass1 = new Pass1(sFile);
+							TextFile p1File = pass1.processFile();
+
+							//create p2File
+							Pass2 pass2 = new Pass2(p1File);
+							TextFile p2File = pass2.processFile();
+
+							//add to the end of the arrayList
+							objectFiles.add(p2File);
 						}
-
-						//init tables
-						summixAssembler.MachineOpTable.initialize();
-						summixAssembler.PseudoOpTable.initialize();
-
-						//create p1File
-						Pass1 pass1 = new Pass1(sFile);
-						TextFile p1File = pass1.processFile();
-						
-						//create p2File
-						Pass2 pass2 = new Pass2(p1File);
-						TextFile p2File = pass2.processFile();
-
-						//add assembled object to object files
-						objectFiles.add(p2File);  //add to the end of the arrayList
-						//p2File.display();
 					}
 					else if(!(args.length > i) && fileSwitch)
 					{
@@ -107,45 +109,52 @@ public class Integrate {
 					}
 				}
 			}
+			//o switch
 			else if (args[i].equalsIgnoreCase("-o")) {
-				//in here we need to save these in whatever container we keep our assembled files in to give to the loader
-				boolean foundOne = false;
 				objectSwitch = true;
-				i++;
+				//in here we need to save these in whatever container we keep our assembled files in to give to the loader
+				while ((i < args.length) && objectSwitch) {
 
-				//verify that the next arg isn't the -f identifier.
-				if(args[i].equalsIgnoreCase("-f"))
-				{
-					objectSwitch = false;
+					i++;
+					if ((i < args.length) && objectSwitch) {
+						try {
+							if (!args[i].equalsIgnoreCase("-f")) {
+								TextFile objectFile = new TextFile(args[i]);
+								objectFiles.add(objectFile);	
+							} else {
+								//fileSwitch
+								objectSwitch = false;
+								fileSwitch = true;
+								i--;
+							}
+						} catch (IOException e) {
+							if (args[i].equalsIgnoreCase("-o")) {
+								System.out.println("ERROR: Missing [fileName] after the -o switch on command line.");
+								objectSwitch = false;								
+							} else {
+								System.out.println("Could not open file: " + args[i]);
+								System.exit(-1);
+							}
+						}
+					}  
 				}
-
-				while (args.length > i) {
-					foundOne = true;
-					try {
-						TextFile objectFile = new TextFile(args[i]);
-						objectFiles.add(objectFile);
-						i++;
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}		
+			}
+			// bad switch
 			else
 			{
-				System.out.println("ERROR: " + args[i] + "is a malformed switch.");
+				System.out.println("ERROR: " + args[i] + " is a malformed switch.");
 			}
 			i++;
 		}
 
-		TextFile finalObj = new TextFile();
-		finalObj = Linker.processObjects(objectFiles, memoryStart);
-		//do not do this, LinkerPass1.processObjects(objectFiles, memoryStart);
+	TextFile finalObj = new TextFile();
+	finalObj = Linker.processObjects(objectFiles, memoryStart);
+	//do not do this, LinkerPass1.processObjects(objectFiles, memoryStart);
 
-		try {
-			finalObj.write("finalObject.o");
+	try {
+		finalObj.write("finalObject.o");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Could not write finalObject.o.");
 			e.printStackTrace();
 		}
 
@@ -154,7 +163,7 @@ public class Integrate {
 		try {
 			summixSimulator.Simulator.main(argArray);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Could not load finalObject.o.");
 			e.printStackTrace();
 		}
 	}
