@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import summixAssembler.TextFile;
 /**
- * 
+ * LinkerPass1 contains the first pass of the summix linker/loader.  Its main function is to populate the
+ * external symbol table and check for page overflow within the program.
  * @author Jim
  * @author Dan
  */

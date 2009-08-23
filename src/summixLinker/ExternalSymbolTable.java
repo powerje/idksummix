@@ -2,7 +2,17 @@ package summixLinker;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * External Symbol Table contains global symbols for user with the summix linker/loader.
+ * @author Jim
+ *
+ */
 public class ExternalSymbolTable {
+	/**
+	 * Produces a string representation of a hex value with a preceding 0x
+	 * @param data the hex value  to represent as a string
+	 * @return string representation of the hex value of the given data with a preceding 0x
+	 */
 	public static String shortToHexString(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
@@ -16,6 +26,11 @@ public class ExternalSymbolTable {
 		return "0x" + returnVal.toUpperCase();
 	}
 	
+	/**
+	 * Produces a string representation of a hex value
+	 * @param data the hex value  to represent as a string
+	 * @return string representation of the hex value of the given data
+	 */	
 	public static String shortToHexStringNoPrefix(short data) {
 		String returnVal = Integer.toHexString((int) data);
 		if (returnVal.length() > 4) 
@@ -30,7 +45,7 @@ public class ExternalSymbolTable {
 	}
 
 	/**
-	 * Symbol class used by the symbol table internally to store representations of symbols
+	 * Symbol class used by the external symbol table internally to store representations of symbols
 	 * @author Jim
 	 *
 	 */
@@ -44,6 +59,7 @@ public class ExternalSymbolTable {
 			this.value = value;
 			this.isRelative = relative;
 		}
+		
 		/**
 		 * Returns a String object representing the specified symbol. 
 		 */
