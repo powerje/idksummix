@@ -115,14 +115,14 @@ public class Integrate {
 				fileSwitch = false;
 				//if no arguments after -o
 				if (i==(args.length-1)) {
-					System.out.println("Missing [Filename] in -o switch.");
+					System.out.println("ERROR: Missing [Filename] in -o switch.");
 					System.exit(-1);
 				}
 			} else if (args[i].equals("-f")) {
 				objectSwitch = false;
 				fileSwitch = true;
 				if (i==(args.length-1)) {
-					System.out.println("Missing [Filename] in -f switch.");
+					System.out.println("ERROR: Missing [Filename] in -f switch.");
 					System.exit(-1);
 				}
 			} 
