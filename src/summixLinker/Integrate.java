@@ -8,7 +8,13 @@ import java.util.ArrayList;
 import summixAssembler.*;
 
 import summixAssembler.TextFile;
-
+/**
+ * The integrate class combines the summixAssembler and summixSimulator with the summixLinker to
+ * create one program from one or more source files and run them in the simulator.
+ * @author Mike
+ * @author Jim
+ *
+ */
 public class Integrate {
 
 	/** this container holds our assembled TextFile objects */
@@ -16,7 +22,12 @@ public class Integrate {
 	/** this container holds our source code TextFile objects */
 	static ArrayList<TextFile> sourceFiles = new ArrayList<TextFile>();
 
-
+	/**
+	 * Takes command line arguments from the user, calls the assembler to assemble
+	 * source code files, creates an arraylist of object files to send to the linker,
+	 * and calls the simulator to run the final program.
+	 * @param args string array of the command line arguments given by the user
+	 */
 	public static void main(String[] args) {
 
 		//Display intro
@@ -32,7 +43,7 @@ public class Integrate {
 		String sourceFileName = null;
 		String ipla = new String();
 		boolean fileSwitch=false,objectSwitch=false;
-		
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		//different modes to execute
@@ -147,12 +158,12 @@ public class Integrate {
 			i++;
 		}
 
-	TextFile finalObj = new TextFile();
-	finalObj = Linker.processObjects(objectFiles, memoryStart);
-	//do not do this, LinkerPass1.processObjects(objectFiles, memoryStart);
+		TextFile finalObj = new TextFile();
+		finalObj = Linker.processObjects(objectFiles, memoryStart);
+		//do not do this, LinkerPass1.processObjects(objectFiles, memoryStart);
 
-	try {
-		finalObj.write("finalObject.o");
+		try {
+			finalObj.write("finalObject.o");
 		} catch (IOException e) {
 			System.out.println("Could not write finalObject.o.");
 			e.printStackTrace();
