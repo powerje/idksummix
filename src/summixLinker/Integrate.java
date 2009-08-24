@@ -132,7 +132,7 @@ public class Integrate {
 		
 		//get start of memory from user
 	    //loop through to get valid user input, take it in hex
-		System.out.print("Please input an IPLA (Initial Program Load Address): ");
+		System.out.print("Please input an IPLA (Initial Program Load Address) in hex: ");
 		try {
 			ipla = br.readLine();
 			if (ipla.length() > 4) {
