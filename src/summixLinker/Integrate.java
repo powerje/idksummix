@@ -18,9 +18,9 @@ import summixAssembler.TextFile;
 public class Integrate {
 
 	/** this container holds our assembled TextFile objects */
-	static ArrayList<TextFile> objectFiles = new ArrayList<TextFile>();
+	private static ArrayList<TextFile> objectFiles = new ArrayList<TextFile>();
 	/** this container holds our source code TextFile objects */
-	static ArrayList<TextFile> sourceFiles = new ArrayList<TextFile>();
+	private static ArrayList<TextFile> sourceFiles = new ArrayList<TextFile>();
 
 	/**
 	 * Takes command line arguments from the user, calls the assembler to assemble
