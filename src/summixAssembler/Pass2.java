@@ -1102,7 +1102,7 @@ public class Pass2 {
 					}//Relative Symbol
 					else if(needsRelocation && !needsExternalRecord)
 					{
-						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  intToHexString(Integer.valueOf(argTokArray[0].substring(1), 16)) + "M1");
+						p2File.input("T" + shortToHexString(LocationCounter.getAddress()) +  shortToHexString(SymbolTable.getValue(argTokArray[0])) + "M1");
 					}//Relative .EXT Symbol
 					else if (needsRelocation && needsExternalRecord)
 					{
@@ -1119,7 +1119,6 @@ public class Pass2 {
 				}
 				catch(NumberFormatException e)
 				{
-					System.out.println("te");
 					badArgs = true;
 				}
 			}
