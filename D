@@ -1,0 +1,7 @@
+PRINT	.ORIG
+		.EXT enterA2
+		.ENT output
+output	TRAP x21
+		TRAP x33
+		BRNZP enterA2
+		.END

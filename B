@@ -1,0 +1,8 @@
+Lab2TP	.ORIG
+one		.EQU	#1
+		.EXT 	enterA,enterA2,enterC
+		.ENT 	enterB
+enterB	LD		one,=#1
+		ADD 	one,one,R0
+		BRNZP 	enterA
+		.END

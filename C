@@ -1,0 +1,4 @@
+HALT	.ORIG 
+		.ENT halt
+halt	 TRAP 	x25
+		.END
