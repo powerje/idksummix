@@ -11,8 +11,8 @@ import summixAssembler.TextFile;
 /**
  * The integrate class combines the summixAssembler and summixSimulator with the summixLinker to
  * create one program from one or more source files and run them in the simulator.
- * @author Mike
- * @author Jim
+ * @author Mike Irwin
+ * @author Jim Power
  *
  */
 public class Integrate {
