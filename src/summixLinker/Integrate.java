@@ -46,7 +46,7 @@ public class Integrate {
 		
 		//check to see if user entered any arguments
 		if (args.length==0) {
-			System.out.println("Must input arguments in the form: -f [sourceFile] -o [objectFile]");
+			System.out.println("ERROR: Must input arguments in the form: -f [sourceFile] -o [objectFile]");
 			System.exit(-1);
 		}
 
