@@ -1,7 +1,6 @@
 package summixLinker;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import summixAssembler.TextFile;
 
