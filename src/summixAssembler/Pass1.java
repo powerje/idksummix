@@ -118,12 +118,11 @@ public class Pass1 {
 	}
 
 	/**
-	 * The method takes no parameters and returns nothing. 
-	 * It fills a token array with all the tokens in a line of a TextFile and 
-	 * sets the global variable num_tokens to the number of tokens place into the array.
-	 * 0 < num_tokens < 5
+	 * Processes a record containing the .ENT pseudoOp
+	 * 
+	 * @param arg - a string containing the arguments for the .ENT pseudoOp
 	 */
-
+	
 	private void processENT(String arg)
 	{
 		StringTokenizer st = new StringTokenizer(arg, ",");
@@ -134,6 +133,12 @@ public class Pass1 {
 	     }	
 	}
 	
+	/**
+	 * Processes a record containing the .EXT pseudoOp
+	 * 
+	 * @param arg - a string containing the arguments for the .EXT pseudoOp
+	 */
+	
 	private void processEXT(String arg)
 	{
 		StringTokenizer st = new StringTokenizer(arg, ",");
@@ -142,6 +147,13 @@ public class Pass1 {
 	    	 String st1 = st.nextToken();
 	    	 SymbolTable.setExt(st1);	     }
 	}
+	
+	/**
+	 * The method takes no parameters and returns nothing. 
+	 * It fills a token array with all the tokens in a line of a TextFile and 
+	 * sets the global variable num_tokens to the number of tokens place into the array.
+	 * 0 < num_tokens < 5
+	 */
 	
 	private void getTokens()
 	{
