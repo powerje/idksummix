@@ -1,7 +1,6 @@
 PRINT	.ORIG
 		.EXT enterA2
 		.ENT output
-output	TRAP x21
-		TRAP x33
+output	TRAP x31
 		BRNZP enterA2
 		.END
