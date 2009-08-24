@@ -587,7 +587,8 @@ public class Pass2 {
 		StringTokenizer st = new StringTokenizer(arg, ",");
 		String input = new String("T");
 		boolean badArg = false;
-
+		boolean needsRelocation = false;
+		
 		if (PseudoOpTable.isPseudoOp(op))
 		{
 			processPuesdoOpWithArg(op, arg);
@@ -736,7 +737,7 @@ public class Pass2 {
 					DR = regVal(argTokArray[0]);
 					pgoffset9 = literalAddressVal(argTokArray[1]);
 					pgoffset9 &= 0x1FF;
-
+					needsRelocation = true;
 					finalOp |= DR << 9;
 					finalOp |= pgoffset9;
 
@@ -913,11 +914,24 @@ public class Pass2 {
 			}
 			else //If not badArgs, means args are good! Process them.
 			{
-				boolean needsRelocation = false;
+
 				boolean needsExternalRecord = false;
 				int externalHere = 0;
 				//Check to see if the args have a relative symbol in them
 				if (argTokArray[0] != null && SymbolTable.isDefined(argTokArray[0]) && SymbolTable.isRelative(argTokArray[0]))
+				{
+					needsRelocation = true;
+				}
+				if (argTokArray[1] != null && SymbolTable.isDefined(argTokArray[1]) && SymbolTable.isRelative(argTokArray[1]))
+				{
+					needsRelocation = true;
+				}
+				if (argTokArray[2] != null && SymbolTable.isDefined(argTokArray[2]) && SymbolTable.isRelative(argTokArray[2]))
+				{
+					needsRelocation = true;
+				}
+				
+				if (argTokArray[0] != null && LiteralTable.isLitereal((argTokArray[0])) && SymbolTable.isRelative(argTokArray[0]))
 				{
 					needsRelocation = true;
 				}
