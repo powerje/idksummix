@@ -135,6 +135,10 @@ public class Integrate {
 		System.out.print("Please input an IPLA (Initial Program Load Address): ");
 		try {
 			ipla = br.readLine();
+			if (ipla.length() > 4) {
+				System.out.println("ERROR: Too many characters in IPLA.");
+				System.exit(-1);
+			}
 		} catch (IOException e1) {
 			System.out.print("ERROR: Integrator is unable to take user input, bailing out.");
 			System.exit(0);
