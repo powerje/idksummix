@@ -108,25 +108,28 @@ public class Integrate {
 						System.exit(-1);
 					}	
 				}
-			} else {
-				if (objectSwitch) {
-					System.out.println("Missing [Filename] in -o switch.");
-				} else if (fileSwitch) {
-					System.out.println("Missing [Filename] in -f switch.");	
-				}
-			}
+			} 
 
 			if (args[i].equalsIgnoreCase("-o")) {
 				objectSwitch = true;
 				fileSwitch = false;
+				//if no arguments after -o
+				if (i==(args.length-1)) {
+					System.out.println("Missing [Filename] in -o switch.");
+					System.exit(-1);
+				}
 			} else if (args[i].equals("-f")) {
 				objectSwitch = false;
-				fileSwitch = true;						
+				fileSwitch = true;
+				if (i==(args.length-1)) {
+					System.out.println("Missing [Filename] in -f switch.");
+					System.exit(-1);
+				}
 			} 
-
 			i++;
 		}
 
+		
 		//get start of memory from user
 	    //loop through to get valid user input, take it in hex
 		System.out.print("Please input an IPLA (Initial Program Load Address): ");
@@ -146,7 +149,7 @@ public class Integrate {
 		try {
 			finalObj.write("finalObject.o");
 		} catch (IOException e) {
-			System.out.println("Could not write finalObject.o.");
+			System.out.println("ERROR: Could not write finalObject.o.");
 			e.printStackTrace();
 		}
 
@@ -155,7 +158,7 @@ public class Integrate {
 		try {
 			summixSimulator.Simulator.main(argArray);
 		} catch (IOException e) {
-			System.out.println("Could not load finalObject.o.");
+			System.out.println("ERROR: Could not load finalObject.o.");
 			e.printStackTrace();
 		}
 	}
