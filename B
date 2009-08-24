@@ -1,9 +1,11 @@
-Lab2TP	.ORIG
+AddB	.ORIG
 one		.EQU	#1
-		.EXT 	enterA,enterA2,enterC
+		.EXT 	enterA,enterA2,enterC,value
 		.ENT 	enterB
 enterB	BR	one
 		LD		R1,=#1
-		ADD 	R0,one,one
-		BRNZP 	enterA
+		LDI		R1,value
+		ADD 	R0,one,R1
+		JMP 	enterA
+;		RET
 		.END
