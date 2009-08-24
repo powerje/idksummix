@@ -11,9 +11,9 @@ import summixAssembler.TextFile;
  */
 public class LinkerPass1 {
 	/** The program load address to keep track of */
-	static int PLA;
+	private static int PLA;
 	/** The length of the current program being processed */
-	static int programLength;
+	private static int programLength;
 	
 	/**
 	 * Process all object files sent in an ArrayList and fills the external symbol table based on them
