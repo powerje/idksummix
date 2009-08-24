@@ -49,7 +49,7 @@ public class Integrate {
 
 		//input IPLA
 		//loop through to get valid user input, take it in hex
-		System.out.print("Please input an IPLA (Initial Program Load Address: ");
+		System.out.print("Please input an IPLA (Initial Program Load Address): ");
 		try {
 			ipla = br.readLine();
 		} catch (IOException e1) {
@@ -66,93 +66,67 @@ public class Integrate {
 		 */
 		while (i < args.length)
 		{
-			//f switch
-			if(args[i].equalsIgnoreCase("-f")) //Check file switch, if it's there, increment and make sure that the filename is next
-			{
-				fileSwitch = true;
-				//while the user chose -f and we're not past the end of arguments entered loop through
-				while(fileSwitch && (i < args.length))
-				{
-					i++;
-
-					if ((i < args.length) && fileSwitch)
-					{
-						//verify that the next arg isn't the -o identifier.
-						if(args[i].equalsIgnoreCase("-o"))
-						{
-							fileSwitch = false;
-							objectSwitch = true;
-							i--;
-						} else {			
-							//clear symbol table, location counter, etc..
-							sourceFileName = args[i];
-							//create p1file
-							TextFile sFile = new TextFile();
-							try {
-								sFile = new TextFile(sourceFileName);
-							} catch (IOException e) {
-								System.out.println("Could not open file: " + args[i]);
-								System.exit(-1);
-							}
-
-							//init tables
-							summixAssembler.MachineOpTable.initialize();
-							summixAssembler.PseudoOpTable.initialize();
-
-							//create p1File
-							Pass1 pass1 = new Pass1(sFile);
-							TextFile p1File = pass1.processFile();
-
-							//create p2File
-							Pass2 pass2 = new Pass2(p1File);
-							TextFile p2File = pass2.processFile();
-
-							//add to the end of the arrayList
-							objectFiles.add(p2File);
-						}
+			if (fileSwitch && (i < args.length)) {
+				//verify that the next arg isn't the -o identifier.
+				if(args[i].equalsIgnoreCase("-o")) {
+					fileSwitch = false;
+					objectSwitch = true;
+				} else {			
+					//clear symbol table, location counter, etc..
+					sourceFileName = args[i];
+					//create p1file
+					TextFile sFile = new TextFile();
+					try {
+						sFile = new TextFile(sourceFileName);
+					} catch (IOException e) {
+						System.out.println("Could not open file: " + args[i]);
+						System.exit(-1);
 					}
-					else if(!(args.length > i) && fileSwitch)
-					{
-						System.out.println("ERROR: Missing [fileName] after the -f switch on command line.");
-						fileSwitch = false;
-					}
+
+					//init tables
+					summixAssembler.MachineOpTable.initialize();
+					summixAssembler.PseudoOpTable.initialize();
+
+					//create p1File
+					Pass1 pass1 = new Pass1(sFile);
+					TextFile p1File = pass1.processFile();
+
+					//create p2File
+					Pass2 pass2 = new Pass2(p1File);
+					TextFile p2File = pass2.processFile();
+
+					//add to the end of the arrayList
+					objectFiles.add(p2File);
+				}
+			} else if (objectSwitch && (i < args.length)) {
+				if (args[i].equalsIgnoreCase("-f")) {
+					objectSwitch = false;
+					fileSwitch = true;		
+				} else {
+					TextFile objectFile;
+					try {
+						objectFile = new TextFile(args[i]);
+						objectFiles.add(objectFile);
+					} catch (IOException e) {
+						System.out.println("File not found: " + args[i]);
+					}	
+				}
+			} else {
+				if (objectSwitch) {
+					System.out.println("Missing [Filename] in -o switch.");
+				} else if (fileSwitch) {
+					System.out.println("Missing [Filename] in -f switch.");	
 				}
 			}
-			//o switch
-			else if (args[i].equalsIgnoreCase("-o")) {
+
+			if (args[i].equalsIgnoreCase("-o")) {
 				objectSwitch = true;
-				//in here we need to save these in whatever container we keep our assembled files in to give to the loader
-				while ((i < args.length) && objectSwitch) {
+				fileSwitch = false;
+			} else if (args[i].equals("-f")) {
+				objectSwitch = false;
+				fileSwitch = true;						
+			} 
 
-					i++;
-					if ((i < args.length) && objectSwitch) {
-						try {
-							if (!args[i].equalsIgnoreCase("-f")) {
-								TextFile objectFile = new TextFile(args[i]);
-								objectFiles.add(objectFile);	
-							} else {
-								//fileSwitch
-								objectSwitch = false;
-								fileSwitch = true;
-								i--;
-							}
-						} catch (IOException e) {
-							if (args[i].equalsIgnoreCase("-o")) {
-								System.out.println("ERROR: Missing [fileName] after the -o switch on command line.");
-								objectSwitch = false;								
-							} else {
-								System.out.println("Could not open file: " + args[i]);
-								System.exit(-1);
-							}
-						}
-					}  
-				}
-			}
-			// bad switch
-			else
-			{
-				System.out.println("ERROR: " + args[i] + " is a malformed switch.");
-			}
 			i++;
 		}
 
@@ -176,5 +150,5 @@ public class Integrate {
 			e.printStackTrace();
 		}
 	}
-
 }
+
