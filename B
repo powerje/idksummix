@@ -2,7 +2,8 @@ Lab2TP	.ORIG
 one		.EQU	#1
 		.EXT 	enterA,enterA2,enterC
 		.ENT 	enterB
-enterB	LD		one,=#1
-		ADD 	one,one,R0
+enterB	BR	one
+		LD		R1,=#1
+		ADD 	R0,one,one
 		BRNZP 	enterA
 		.END
