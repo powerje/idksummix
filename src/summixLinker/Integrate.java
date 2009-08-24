@@ -69,7 +69,7 @@ public class Integrate {
 					try {
 						sFile = new TextFile(sourceFileName);
 					} catch (IOException e) {
-						System.out.println("Could not open file: " + args[i]);
+						System.out.println("ERROR: Could not open file: " + args[i]);
 						System.exit(-1);
 					}
 
@@ -86,6 +86,12 @@ public class Integrate {
 					TextFile p2File = pass2.processFile();
 
 					//add to the end of the arrayList
+					try {
+						p2File.write(args[i] + ".o");
+					} catch (IOException e) {
+						System.out.println("ERROR: Could not write file: " + args[i] + ".o");
+						System.exit(-1);
+					}
 					objectFiles.add(p2File);
 				}
 			} else if (objectSwitch && (i < args.length)) {
@@ -98,7 +104,8 @@ public class Integrate {
 						objectFile = new TextFile(args[i]);
 						objectFiles.add(objectFile);
 					} catch (IOException e) {
-						System.out.println("File not found: " + args[i]);
+						System.out.println("ERROR: File not found: " + args[i]);
+						System.exit(-1);
 					}	
 				}
 			} else {
