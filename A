@@ -1,0 +1,7 @@
+Main	.ORIG
+		.ENT 	enterA,enterA2
+		.EXT	enterB,halt,output
+		BRNZP	enterB 				;Add 1 to reg 
+enterA	BRNZP 	output
+enterA2	BRNZP 	halt
+		.END
