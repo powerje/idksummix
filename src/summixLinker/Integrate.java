@@ -19,8 +19,6 @@ public class Integrate {
 
 	/** this container holds our assembled TextFile objects */
 	private static ArrayList<TextFile> objectFiles = new ArrayList<TextFile>();
-	/** this container holds our source code TextFile objects */
-	private static ArrayList<TextFile> sourceFiles = new ArrayList<TextFile>();
 
 	/**
 	 * Takes command line arguments from the user, calls the assembler to assemble
