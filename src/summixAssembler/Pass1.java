@@ -535,11 +535,7 @@ public class Pass1 {
 			
 			if(token_array[0].getText().equals(".ENT"))
 			{
-				if(num_tokens < 3)
-				{
-					System.out.println("ERROR: No operand found!.ENT must have an operand!");
-				}
-				else if(num_tokens == 3)
+				if(num_tokens == 3)
 				{
 					processENT(token_array[1].getText());
 				}
@@ -553,11 +549,7 @@ public class Pass1 {
 			
 			if(token_array[0].getText().equals(".EXT"))
 			{
-				if(num_tokens < 3)
-				{
-					System.out.println("ERROR: No operand found!.ENT must have an operand!");
-				}
-				else if(num_tokens == 3)
+				if(num_tokens == 3)
 				{
 					processEXT(token_array[1].getText());
 				}
