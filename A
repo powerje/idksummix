@@ -1,7 +1,9 @@
-Main	.ORIG
-		.ENT 	enterA,enterA2
+MainA	.ORIG
+		.ENT 	enterA,enterA2,value
 		.EXT	enterB,halt,output
-		BRNZP	enterB 				;Add 1 to reg 
-enterA	BRNZP 	output
-enterA2	BRNZP 	halt
+value	.FILL value2
+value2  .FILL x0002
+		JMP	enterB 				;Add 1 to reg 
+enterA	JMP 	output				;output 2 to the screen
+enterA2	JMP 	halt				;Stop the program
 		.END

@@ -1,6 +1,6 @@
-PRINT	.ORIG
+PRINTD	.ORIG
 		.EXT enterA2
 		.ENT output
 output	TRAP x31
-		BRNZP enterA2
+		JMP enterA2
 		.END
