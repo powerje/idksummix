@@ -43,23 +43,13 @@ public class Integrate {
 		boolean fileSwitch=false,objectSwitch=false;
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-		//different modes to execute
-
-
-		//input IPLA
-		//loop through to get valid user input, take it in hex
-		System.out.print("Please input an IPLA (Initial Program Load Address): ");
-		try {
-			ipla = br.readLine();
-		} catch (IOException e1) {
-			System.out.print("ERROR: Integrator is unable to take user input, bailing out.");
-			System.exit(0);
+		
+		//check to see if user entered any arguments
+		if (args.length==0) {
+			System.out.println("Must input arguments in the form: -f [sourceFile] -o [objectFile]");
+			System.exit(-1);
 		}
-		memoryStart = summixSimulator.SummiX_Utilities.hexStringToInt(ipla);
 
-
-		//use many of the same checks / information from assembler
 		/*
 		 Valid input from user: link -f add1.txt add2.txt -o add3.o add4.o
 		 So we need a method to assemble the arguments for the -f switch
@@ -130,10 +120,22 @@ public class Integrate {
 			i++;
 		}
 
+		//get start of memory from user
+	    //loop through to get valid user input, take it in hex
+		System.out.print("Please input an IPLA (Initial Program Load Address): ");
+		try {
+			ipla = br.readLine();
+		} catch (IOException e1) {
+			System.out.print("ERROR: Integrator is unable to take user input, bailing out.");
+			System.exit(0);
+		}
+		memoryStart = summixSimulator.SummiX_Utilities.hexStringToInt(ipla);
+		
+		
+		//create finalObject.o
 		TextFile finalObj = new TextFile();
 		finalObj = Linker.processObjects(objectFiles, memoryStart);
-		//do not do this, LinkerPass1.processObjects(objectFiles, memoryStart);
-
+	
 		try {
 			finalObj.write("finalObject.o");
 		} catch (IOException e) {
