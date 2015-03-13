@@ -1,0 +1,26 @@
+
+
+---
+
+# New Pages #
+
+  * Add '"#sidebar navBar"' at the top of the page.
+  * Add `<wiki:toc max_depth="3" />` at the top of the page.
+
+# Naming #
+
+  * No spaces are allowed.
+  * Capitalize **every** FIRST letter of the words in a wiki page; [navBar](navBar.md) and program variables is the exception.
+  * Add new pages to the [navBar](navBar.md) page when appropriate.
+  * Program variables should be named exactly as they are in the program. That means using camel casing.
+
+# Writing Methods #
+
+  * Use triple equal signs for the methods.
+    * `===getAdd(short)===`
+  * Methods with a return value should state the return type before the method's name. The following example takes a String as a parameter, and returns a short.
+    * `===short returnValue(String)===`
+  * State the **types** of the parameters in the header line (the one with all the equal signs), and then on the next line of the method entry, state what those positions stand for. In the below example getAdd returns a short, and takes a short as a parameter. The next line explains what those parameters actually are. This becomes VERY important when a method takes two parameters of the same type like addVal(short, short). You need to be able to distinguish which short represents what.
+`===short getAdd(short)===`
+
+`address getAdd(value) - This method uses the value of a literal as a key to the [LiteralTable] and returns the associated memory address.`

@@ -1,0 +1,47 @@
+
+# Format #
+For the purposes of this assignment, you may assume a maximum of **200 source records**
+
+Record Position Meaning
+  * 1-6 Label, if any, left justified
+  * 7-9 Unused
+  * 10-14 Operation field
+  * 15-17 Unused
+  * 18-end of record Operands and comments
+
+(comments begin with a semicolon (;)
+Exception: A semicolon (;) in the rst record position indicates that
+the entire record is a comment.
+
+Labels may be up to 6 alphanumeric characters (e.g., they may not include blanks). The first character of a label must be alphabetic, but may not be an "R" or an "x".
+
+Example sFile given for the lab:
+```
+;2345678901234567890123456890
+; Example Program
+Lab2EG   .ORIG   x30B0
+count    .FILL   #4
+Begin    LD      ACC,count       ;R1 <- 4
+         LEA     R0,msg
+loop     TRAP    x22             ;print "hi! "
+         ADD     ACC,ACC,#-1     ;R1--
+         BRP     loop
+         JMP     Next
+msg      .STRZ   "hi! "
+Next     AND     R0,R0,x0        ;R0 <- 0
+         NOT     R0,R0           ;R0 <- xFFFF
+         ST      R0,Array        ;M[Array] <- xFFFF
+         LEA     R5,Array
+         LD      R6,=#100        ;R6 <= #100
+         STR     R0,R5,#1        ;M[Array+1] <= xFFFF
+         TRAP    x25
+ACC      .EQU    #1
+; ----- Scratch Space -----
+Array    .BLKW   #3
+         .FILL   x10
+         .END    Begin
+```
+# Usage #
+The [sFile](sFile.md) is implemented by making an object of type [TextFile](TextFile.md). The input file given from the user is then read into the [sFile](sFile.md) using the [TextFile](TextFile.md) methods.
+# Origin #
+# Destination #

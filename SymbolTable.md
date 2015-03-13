@@ -1,0 +1,31 @@
+
+
+---
+
+# Implementation #
+For the purposes of this assignment, you may assume a **maximum of 100 symbols**
+## Classes ##
+### Symbol ###
+The Symbol class contains a String name, an int value and a boolean relative.
+## Variables ##
+## Methods ##
+
+### input(String, short, boolean) ###
+input(key, value, relative) - This method adds a symbol to the [SymbolTable](SymbolTable.md).  The symbols name is key with the value of value, and relative is true if the symbol is relocatable.
+### input(String) ###
+input(key) - This method adds a symbol to the [SymbolTable](SymbolTable.md).  The symbols name is key with the value to be determined later.  This symbol is always relative.
+### update(String, short) ###
+update(key, value) - This method updates a symbol in the [SymbolTable](SymbolTable.md).  The symbol with the name key is given the value value.
+### short getValue(String) ###
+address getValue(key) - This function returns the address given by the symbol denoted by key.
+### boolean isRelative(String) ###
+isRelative isRelative(key) - This function returns true if the symbol denoted by key is relative.
+### display() ###
+display() - The literal table writes itself to output.
+#### Example Output ####
+
+---
+
+# Responsibilities #
+
+---

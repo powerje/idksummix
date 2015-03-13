@@ -1,0 +1,174 @@
+
+
+# Implementation #
+The TextFile class is a wrapper class that contains an arraylist of strings. The class has methods that allow users of objects made from the class to manipulate the arraylist of strings as though it were a text file. [sFile](sFile.md), [p1File](p1File.md), [p2File](p2File.md) and [lFile](lFile.md) are all passed around the program as TextFile objects.
+
+## Variables ##
+
+
+## Methods ##
+### input(String) ###
+input(text) - Adds a String of text to the last line of the text file.
+
+### String getLine() ###
+text getLine() - Returns a String of text that represents the current line of the text file from the pointer's current position to the end and increments the pointer to the next line. This call can be mixed with getToken(), but if a getToken() call was made earlier getLine() will only return what is left on the current line.
+
+Use the isEndOfFile() to ensure that you are not at the end of file before calling this method. DO NOT CALL THIS METHOD IF isEndOfFile() returns true.
+
+Pointer position line 0, spot 6
+
+4 strings inside of TextFile
+
+"Hello, this is manuel."
+
+"I'm watching Burn Notice"
+
+""
+
+"It's a really great show"
+
+getLine() returns " this is manuel."
+
+Pointer is now line 1, spot 0
+
+getLine() returns "I'm watching Burn Notice"
+
+Pointer is now line 2, spot 0
+
+getLine() returns ""
+
+Pointer is now line 3, spot 0
+
+
+
+### Token getToken() ###
+token getToken() - Returns a token that represents the next non-white space token. Then it increments the pointer to the end of that text. If it's at the end of the string, it returns "" and increments to the next line. You can use methods on the Token to retrieve the text itself, and the type.
+
+Tokens come in five varities
+  * QUOTE Tokens
+    * Any string encapsulated within quotation marks. It will include the quotation marks with the string. **`"hi! "`** is an example of a quotation token. Be careful with this type of token, **`"hi!  ;print "`** is an example of a quotation token that is well formed, by syntactically incorrect. The writer of the source code meant to close off the original " but did not.
+  * ERROR tokens
+    * Any string with a leading " that is not terminated by a following quotation mark somewhere else on the line. Whomever is handling this token should emit an error if they get a token with a leading " with no ending ". Also, a single quotation mark by itself is an error token. Examples:
+      * "hi!       ;print hi!
+      * "
+  * ALPHA Tokens
+    * Any string without a leading " or ;. Examples:
+      * HALT
+      * ACC,count
+      * [R0](https://code.google.com/p/idksummix/source/detail?r=0),[R0](https://code.google.com/p/idksummix/source/detail?r=0),x0
+  * COMMENT Tokens
+    * Any string with a leading ;. Examples:
+      * ;print "hi! "
+      * ; Example Program
+      * ;M[Array](Array.md) <- xFFFF
+  * EOL Tokens
+    * An empty string. Should be used to check to see if you've gotten out the last token.
+
+
+
+Use the isEndOfFile() to ensure that you are not at the end of file before calling this method. DO NOT CALL THIS METHOD IF isEndOfFile() returns true.
+
+
+The below source code inside of TextFile
+
+```
+; Example Program
+Lab2EG .ORIG x30B0
+count .FILL #4
+LD ACC,count ;R1 <- 4
+LEA R0,msg
+loop TRAP x22 ;print "hi! "
+ADD ACC,ACC,#-1 ;R1--
+BRP loop
+JMP Next
+msg .STRZ "hi! "
+Next AND R0,R0,x0 ;R0 <- 0
+NOT R0,R0 ;R0 <- xFFFF
+ST R0,Array ;M[Array] <- xFFFF
+LEA R5,Array
+LD R6,=#100 ;R6 <= #100
+STR R0,R5,#1 ;M[Array+1] <= xFFFF
+TRAP x25
+ACC .EQU #1
+; ----- Scratch Space -----
+Array .BLKW #3
+.FILL x10
+.END
+```
+
+
+**STARTING FROM POINTER line 0, spot 0**
+
+getToken() returns "; Example Program"
+
+Pointer is now line 0, spot 17
+
+getToken() returns ""
+
+Pointer is now line 1, spot 0
+
+getToken() returns "Lab2EG"
+
+Pointer is now line 1, spot 6
+
+getToken() returns ".ORIG"
+
+Pointer is now line 1, spot 12
+
+getToken() returns "x30B0"
+
+Pointer is now line 1, spot 18
+
+getToken() returns ""
+
+Pointer is now line 2, spot 0
+
+
+**STARTING FROM POINTER line 9, spot 0**
+
+getToken() returns "msg"
+
+Pointer is now line 9, spot 3
+
+getToken() returns ".STRZ"
+
+Pointer is now line 9, spot 9
+
+getToken() returns ""hi! ""
+
+Pointer is now line 9, spot 16
+
+getToken() returns ""
+
+Pointer is now line 10, spot 0
+
+
+### TextFile(string) ###
+TextFile(name) - Takes in a file called "name" as input and converts it into the TextFile format.
+
+### write(String) ###
+write(name) - Outputs the TextFile to a file called "name".
+
+### display() ###
+display() - Outputs the TextFile to the screen.
+
+### reset() ###
+reset() - Returns the pointer to line 0, spot 0
+
+### boolean isEndOfFile() ###
+end isEndOfFile() - Returns end which is true if the pointer for the TextFile object is pointing at the end of file, or if the textfile object is completely empty.
+
+
+---
+
+# Input #
+# Responsibilities #
+
+
+## Symbol Table ##
+## Literals Table ##
+## Error Checking ##
+
+---
+
+# Output #

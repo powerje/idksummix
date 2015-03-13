@@ -1,0 +1,22 @@
+
+
+---
+
+# Implementation #
+TBD
+## Variables ##
+## Methods ##
+### short getOp(String) ###
+getOp getOp(name) - getOp returns the value of the op code given by the key name.
+### short getShiftedOp(String) ###
+getShiftedOp getShiftedOp(name) - getOp returns the value of the op code given by the key name shifted into its position in a 16 bit instruction.
+### bool isVariable(String) ###
+isVariable isVariable(opName) - isVariable is true if opName has variable length.
+### short getSize(String) ###
+length getSize(opName) - returns the length associated with the opName.
+
+---
+
+# Responsibilities #
+
+---

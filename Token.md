@@ -1,0 +1,24 @@
+
+
+---
+
+# Implementation #
+## Classes ##
+## Variables ##
+## Methods ##
+
+### Token(String, TokenType) ###
+Token(text, type) - The constructor for a Token builds a token with a String containing text and with TokenType type.
+
+### String getText() ###
+text getText() - Returns the text of the String contained in the token.
+
+### TokenType getType() ###
+type getType() - Returns the [TokenType](TokenType.md) enumerated type of the token.
+
+
+---
+
+# Responsibilities #
+
+---
